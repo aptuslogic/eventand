@@ -17,6 +17,7 @@ namespace ATAPS.Controllers
         // GET: Host
         public ActionResult Index()
         {
+            int temp = -1;
             int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             EventDisplayObject eventDO = new EventDisplayObject();
             eventDO.Event = db.EventRecords.Where(o => o.ID == accessEventID).FirstOrDefault();
