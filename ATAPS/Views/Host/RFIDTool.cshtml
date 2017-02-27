@@ -1,0 +1,219 @@
+﻿@model List<ATAPS.Models.Agenda>
+@{
+    ViewBag.Title = "RFIDTool";
+}
+
+@section Scripts {
+    <script language="javascript">
+        $(document).ready(function () {
+            $('#agendaOnly').hide();
+            $('#agendaWithActivities').hide();
+            $('#agendaSelect').empty();
+            // call populate Agenda DDL
+            $.getJSON("/api/Call/GetAgendasByEventDateID",
+                {
+                    filter: @ViewBag.EventDateID
+                },
+                    function (data) {
+                        // map the Agenda list to the DDL
+                        var defOpt = $('<option />').val(0).text("--- Select Agenda ---");
+                        $("#agendaSelect").append(defOpt);
+                        for(var i=0;i<data.length;i++){
+                            var option = $('<option />').val(data[i].ID).text(data[i].AgendaName);
+                            $("#agendaSelect").append(option);
+                        }
+
+                        // map the Agenda List onchanged function to re-fresh the Activities
+                        $( "#agendaSelect" ).change(function() {
+                            // when this is called, call the PopulateActivity API
+                            var id = $('#agendaSelect').val();
+                            $.getJSON("/api/Call/GetActivitiesByAgendaID",
+                                {
+                                    filter: id
+                                },
+                                function (data){
+                                    // got back the list
+                                    if(data.length > 0){
+                                        // there are activities
+                                        $('#agendaOnly').hide();
+                                        $('#agendaWithActivities').show();
+                                        $('#activitySelect').empty();
+                                        var defOptAct = $('<option />').val(0).text("--- Select Activity ---");
+                                        $("#activitySelect").append(defOptAct);
+                                        for(var i=0;i<data.length;i++){
+                                            var actOption = $('<option />').val(data[i].Activity.ID).text(data[i].Activity.ActivityName);
+                                            $("#activitySelect").append(actOption);
+                                        }
+
+                                    } else {
+                                        // there are no activities
+                                        $('#agendaOnly').show();
+                                        $('#agendaWithActivities').hide();
+
+
+                                    }
+                                });
+                            $( "#activitySelect" ).change(function() {
+                                // when this is called, call the PopulateActivity API
+                                var id = $('#activitySelect').val();
+                                $.getJSON("/api/Call/GetActivityByID",
+                                    {
+                                        filter: id
+                                    },
+                                    function (data){
+                                        // got back the list
+                                        $('#attendeeCurrentCount').html('');
+                                        if(data.ActivityType != null){
+                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                            // there is an activity by that ID
+                                            // Enable / Disable CheckIn radio
+                                            if(data.ActivityType.CheckIn == true){
+                                                $('#dirIn').attr('disabled', false);}
+                                            else{$('#dirIn').attr('disabled', true);}
+                                            
+                                            // Enable / Disable CheckOut radio
+                                            if(data.ActivityType.CheckOut == true){
+                                                $('#dirOut').attr('disabled', false);}
+                                            else{$('#dirOut').attr('disabled', true);}
+                                            
+                                            // Enable / Disable AttendeeLimitInput radio
+                                            if(data.ActivityType.AttendeeLimit == true){
+                                                $('#attendeeLimit').show();
+                                                $('#attendeeCurrentCount').attr('disabled', false);
+                                                $('#attendeeCurrentCount').html('');
+                                                // display the current CheckedIn count, color the Span if beyond limit (and limit exists)
+                                                if(data.CheckedInCount != null){
+                                                    $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                                }
+                                            }
+                                            else{
+                                                $('#attendeeLimit').hide();
+                                                //$('#attendeeCurrentCount').attr('disabled', true);
+                                                //$('#attendeeCurrentCount').html('');
+                                            }
+                                        }
+                                    });
+                            });
+                            $('#SearchString').keyup(function () {
+                                var search = this.value;
+                                var aID = $('#agendaSelect').val();;
+                                var cID = $('#activitySelect').val();
+                                if(cID <= 0){cID = -1;}
+                                dStr = "";
+                                if($("input:radio[name='groupDir']:checked").val()){
+                                    dStr = $("input:radio[name='groupDir']:checked").val();
+                                }
+                                $.getJSON("/api/Call/TagAttendeeInByID",
+                                    {
+                                        // arguments
+                                        rfid: search,
+                                        agendaID: aID,
+                                        activityID: cID,
+                                        dir: dStr
+                                    }, function (data){
+                                        // check the return code
+                                        if (data.Attendee.ID == 0){
+                                            // more than one found
+                                            $('#fullName').html('NO USER FOUND FOR THIS RFID');
+                                        } else{
+                                            // only one found
+                                            $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
+                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                        }
+                                        if(data.DuplicateCheckin){
+                                            $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                                        }
+
+                                    });
+                            });
+                            $("#submit-search").click(function () {
+                                var search = $('#SearchString').val();
+                                var aID = $('#agendaSelect').val();
+                                $.getJSON("/api/Call/TagAttendeeInByID",
+                                    {
+                                        // arguments
+                                        rfid: search,
+                                        agendaID: aID,
+                                        activityID: -1
+                                    }, function (data){
+                                        // check the return code
+
+                                        if (data.Attendee.ID == 0){
+                                            // more than one found
+                                            $('#fullName').html('NO USER FOUND FOR THIS RFID');
+                                        } else{
+                                            // only one found
+                                            $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
+                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                        }
+                                        if(data.DuplicateCheckin){
+                                            $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                                        }
+                                    });
+                            });
+                            
+                        });
+                    });
+        });
+    </script>}
+
+<h2>RFIDTool</h2>
+<p>
+    <div class="form-group">
+        <span class="control-label col-md-2">Select Agenda Element: </span>
+        <select id="agendaSelect" class="col-md-10 dropdown"></select>
+    </div>
+    @*This area will show differently if there are / are-not Activities for this Agenda*@
+    <div id="agendaOnly">
+        <h3>Agenda Only</h3>
+        <div class="form-group">
+            @*<span class="control-label col-md-2">Check-In: </span>
+            <select id="inOutSelect" class="col-md-10"></select>*@
+
+            @*-----Nothing else is required here-----*@
+
+            
+        </div>
+    </div>
+    <div id="agendaWithActivities">
+        <h3>Agenda with Activities</h3>
+        <div class="form-group">
+            @*<span class="control-label col-md-2">Check-In: </span>
+            <select id="inOutSelect" class="col-md-10"></select>*@
+
+            @*-----Activity Selector to show what, precicisely, the Attendee is being checked in / out of-----*@
+            <h4>Select Activity to Log</h4>
+            <select id="activitySelect" class="col-md-10"></select>
+            <div class="col-md-10" style="margin-top: 2em;">
+                <div class="row" style="margin: 1em;">
+                    <input type="radio" name="groupDir" value="In" id="dirIn" style="float: left; clear: none;" class="radio col-md-2" /><label for="dirIn" class="col-md-6" style="float: left; clear: none;">Check IN</label><br />
+                </div>
+                <div class="row" style="margin: 1em;">
+                    <input type="radio" name="groupDir" value="Out" id="dirOut" style="float: left; clear: none;" class="radio col-md-2" /><label for="dirOut" style="float: left; clear: none;" class="col-md-6">Check OUT</label><br />
+                </div>
+            </div>
+            <div id="attendeeLimit" style="margin-top: 1em;">
+                Attendee Limit<br/>
+                <input id="attendeeLimitSet" type="number"/><br/>
+            </div>
+            <text><span style="font-size: 36px;" id="attendeeCurrentCount">999</span></text><br/>
+            <text><span style="color: red;" id="alert-text"></span></text>
+        </div>
+    </div>
+    <div class="form-group">
+        <span class="control-label col-md-2">Full Name: </span>
+        <span class="ccol-md-10" id="fullName"></span><br />
+        <div id="attendeeImage">
+
+        </div>
+    </div>
+    @using (Html.BeginForm())
+    {
+    <p>
+        RFID: @Html.TextBox("SearchString", "")
+        <input type="button" id="submit-search" value="Search"/>
+    </p>
+    }
+    </p>
+
+

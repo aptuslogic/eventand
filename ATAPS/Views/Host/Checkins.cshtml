@@ -1,0 +1,47 @@
+﻿@model List<ATAPS.Models.DisplayObject.EventDateDisplayObject>
+@{
+    ViewBag.Title = "Checkins";
+}
+
+<h2>Checkins</h2>
+<p>
+    Select Agenda:
+    "Agenda List Here":  Clicking one of these links will send the user to the particular Agenda the checkins will guide
+
+    @foreach (var item in Model)
+    {
+        // this is the list of EventDates
+    <p><strong>@Html.DisplayFor(modelItem => item.EventDate.EventDate1)</strong></p>
+        <table class="table">
+            <tr>
+                <th>
+                    Agenda Name
+                </th>
+                <th>
+                    Activities
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var agendaItem in item.AgendaFull)
+            {
+                <tr>
+                    <td>
+                        <a href="../Host/RFIDTool?filter=@agendaItem.Agenda.EventDateID">@agendaItem.Agenda.AgendaName</a>
+                    </td>
+                    <td>
+                        @foreach (var activity in agendaItem.ActivityList)
+                        {
+                            <p>
+                                @activity.ActivityName
+                            </p>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <br />
+        <br />
+    }
+    </p>
+

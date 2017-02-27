@@ -1,0 +1,18 @@
+﻿@Model System.DateTime
+@{
+    ViewBag.Title = "RefreshTest";
+}
+
+<h2>RefreshTest</h2>
+<h4>Current Date Is: @Model</h4>
+<h4>Current Ticks: <span id="refreshme">@Model.Ticks</span></h4>
+
+<script type="text/javascript">
+    function refresh() {
+        $.post('/dbCheckin/RefreshTimer', function (result) {
+            $('#refreshme').html(result);
+        });
+    }
+    setInterval(refresh, 3000);
+</script>
+
