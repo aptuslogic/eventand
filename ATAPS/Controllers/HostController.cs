@@ -18,12 +18,14 @@ namespace ATAPS.Controllers
         public ActionResult Index()
         {
             int temp = -1;
+            int tempAgain = -1;
             int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             EventDisplayObject eventDO = new EventDisplayObject();
             eventDO.Event = db.EventRecords.Where(o => o.ID == accessEventID).FirstOrDefault();
             eventDO.EventDates = db.EventDates.Where(o => o.EventRecordsID == accessEventID).ToList();
             eventDO.Client = db.Clients.Where(o => o.ID == eventDO.Event.ClientID).FirstOrDefault();
 
+            List<Attendee> attList = db.Attendees.Where(o => o.EventID == accessEventID).ToList();
             // Holds links to various event bits
             return View(eventDO);
         }
@@ -71,6 +73,68 @@ namespace ATAPS.Controllers
             ViewBag.EventID = accessEventID;
             ViewBag.EventDateID = filter;
             return View();
+        }
+        
+        public ActionResult RFIDByName(int? filter, string sortOrder, string searchString, int? pageNum)
+        {
+            if (filter == null || filter == 0)
+            {
+                //List<EventDate> dateList = db.EventDates.ToList();
+                return HttpNotFound();
+            }
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            ViewBag.EventID = accessEventID;
+            ViewBag.EventDateID = filter;
+
+            int pageSize = 25;
+            ViewBag.PageSize = pageSize;
+            // here we pull the query based on the sort order and direction
+            List<Attendee> attendees = new List<Attendee>();
+
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.PartSortParm = sortOrder == "ParticipantType" ? "ptype_desc" : "ParticipantType";
+            ViewBag.RSVPSortParm = sortOrder == "RSVPStatus" ? "rsvp_desc" : "RSVPStatus";
+            ViewBag.RFIDSortParm = sortOrder == "RFID" ? "rfid_desc" : "RFID";
+            ViewBag.LastSort = sortOrder;
+            if (sortOrder == "") { ViewBag.LastSort = "Name"; }
+
+            attendees = ATAPS_Pile.GetSortedAttendeesWithFilter(accessEventID, sortOrder, searchString, pageNum);
+            if (pageNum == null)
+            {
+                pageNum = 1;
+            }
+            decimal pages = 1 + (attendees.Count() / pageSize);
+            if (pageNum * pageSize > attendees.Count())
+            {
+                int modCheck = attendees.Count() % pageSize; // get remainder
+                int lastPage = (int)Math.Ceiling(pages); // last page
+                attendees = attendees.Skip((lastPage - 1) * pageSize).Take(modCheck).ToList();
+            }
+            else
+            {
+                int startAt = (pageNum ?? default(int)) - 1;
+                attendees = attendees.Skip(startAt * pageSize).Take(pageSize).ToList();
+            }
+            // finally populate pagination tags
+
+
+            //decimal pages = 1 + (attendees.Count() / pageSize);
+            int upperLim = (int)pages;
+            int lowerLim = 1;
+            int curPage = pageNum ?? default(int);
+            ViewBag.CurPage = curPage;
+            ViewBag.Pages = upperLim;
+            ViewBag.LowerLim = lowerLim;
+            ViewBag.UpperLim = upperLim;
+
+            List<int> pageList = ATAPS_Pile.GetAttendeePageList(lowerLim, upperLim, curPage, attendees.Count());
+
+            ViewBag.PageList = pageList;
+
+            EventRecord eRec = db.EventRecords.Find(accessEventID);
+            ViewBag.EventName = eRec.EventName;
+            return View(attendees);
+            
         }
 
 

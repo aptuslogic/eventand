@@ -112,12 +112,16 @@ namespace ATAPS.Controllers
                 retVal = found;
                 // check to see if this is a duplicate check
                 AttendeeLastCheck confirm = db.AttendeeLastChecks.Where(o => o.AttendeeID == found.ID).OrderByDescending(o => o.LastUpdate).FirstOrDefault();
-                if (confirm.LastAgenda == agendaID && confirm.LastActivity == actID && confirm.CheckDir == dir)
+                if (confirm != null)
                 {
-                    // this is a duplicate
-                    retJSON.DuplicateCheckin = true;
+                    if (confirm.LastAgenda == agendaID && confirm.LastActivity == actID && confirm.CheckDir == dir)
+                    {
+                        // this is a duplicate
+                        retJSON.DuplicateCheckin = true;
+                    }
                 }
-                else
+
+                if(retJSON.DuplicateCheckin == false)
                 {
                     AttendeeLastCheck tagIn = new AttendeeLastCheck();
                     tagIn.AgendaID = agendaID;

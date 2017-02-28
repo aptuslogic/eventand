@@ -529,6 +529,7 @@
     <Content Include="Views\Host\RFIDTool.cshtml" />
     <Content Include="Views\Host\Attendees.cshtml" />
     <Content Include="Views\Host\AttendeeDetails.cshtml" />
+    <Content Include="Views\Host\RFIDByName.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

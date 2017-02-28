@@ -1,6 +1,6 @@
-﻿@model List<ATAPS.Models.Agenda>
+﻿@model IEnumerable<ATAPS.Models.Attendee>
 @{
-    ViewBag.Title = "RFIDTool";
+    ViewBag.Title = "RFIDByName";
 }
 
 @section Scripts {
@@ -8,6 +8,7 @@
         $(document).ready(function () {
             $('#agendaOnly').hide();
             $('#agendaWithActivities').hide();
+            $('#attendee-table-area').hide();
             $('#agendaSelect').empty();
             // call populate Agenda DDL
             $.getJSON("/api/Call/GetAgendasByEventDateID",
@@ -27,6 +28,7 @@
                         $( "#agendaSelect" ).change(function() {
                             // when this is called, call the PopulateActivity API
                             var id = $('#agendaSelect').val();
+                            $('#attendee-table-area').show();
                             $.getJSON("/api/Call/GetActivitiesByAgendaID",
                                 {
                                     filter: id
@@ -70,12 +72,12 @@
                                             if(data.ActivityType.CheckIn == true){
                                                 $('#dirIn').attr('disabled', false);}
                                             else{$('#dirIn').attr('disabled', true);}
-                                            
+
                                             // Enable / Disable CheckOut radio
                                             if(data.ActivityType.CheckOut == true){
                                                 $('#dirOut').attr('disabled', false);}
                                             else{$('#dirOut').attr('disabled', true);}
-                                            
+
                                             // Enable / Disable AttendeeLimitInput radio
                                             if(data.ActivityType.AttendeeLimit == true){
                                                 $('#attendeeLimit').show();
@@ -96,33 +98,46 @@
                             });
                             $('#SearchString').keyup(function () {
                                 var search = this.value;
-                                var aID = $('#agendaSelect').val();;
-                                var cID = $('#activitySelect').val();
-                                if(cID <= 0){cID = -1;}
-                                dStr = "";
-                                if($("input:radio[name='groupDir']:checked").val()){
-                                    dStr = $("input:radio[name='groupDir']:checked").val();
-                                }
-                                $.getJSON("/api/Call/TagAttendeeInByID",
+                                $.getJSON("/api/Call/GetAttendeesFiltered",
                                     {
-                                        // arguments
-                                        rfid: search,
-                                        agendaID: aID,
-                                        activityID: cID,
-                                        dir: dStr
-                                    }, function (data){
-                                        // check the return code
-                                        if (data.Attendee.ID == 0){
-                                            // more than one found
-                                            $('#fullName').html('NO USER FOUND FOR THIS RFID');
-                                        } else{
-                                            // only one found
-                                            $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
-                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                        id: @ViewBag.EventID,
+                                        sortOrder: "@ViewBag.LastSort",
+                                        searchString: search,
+                                        pageNum: 1
+                                    },
+                                    function (data) {
+                                        // clear rows and pagenav
+                                        $("#attendee-table-body").empty();
+                                        $("#page-list-nav").empty();
+                                        // populate new rows
+                                        for (var i = 0; i < data.Attendees.length; i++) {
+                                            var att = data.Attendees[i];
+                                            if(att.ActivityListNames == null){att.ActivityListNames = "";}
+                                            var newRow = "";
+                                            if(att.RSVPStatus != 0){
+                                                newRow += '<tr bgcolor="#DDFFDD">';
+                                            } else {
+                                                newRow += '<tr bgcolor="#FFFFFF">';
+                                            }
+                                            newRow += '<td><input type="radio" name="attSelect" value="'+att.RfID+'"/></td>';
+                                            newRow += "<td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td><td>"+att.ActivityListNames+"</td>";
+                                            newRow += '<td>';
+                                            newRow += '<a href="../Host/AttendeesDetails/'+att.ID+'?filter='+att.EventID+'">AttendeesDetails</a>';
+                                            newRow += '</td></tr>';
+                                            $("#attendee-table-body").append(newRow);
                                         }
-                                        if(data.DuplicateCheckin){
-                                            $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                                        // now populate page nav
+                                        $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
+
+                                        for (var i=0;i<data.Pages.length;i++){
+                                            var page = data.Pages[i];
+                                            if(page == data.CurPage){$("#page-list-nav").append('<span style="margin: 1em"><stong>'+page+'</stong></span>');
+                                            } else {
+                                                $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
+                                            }
                                         }
+                                        $("#page-list-nav").append('..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
+
 
                                     });
                             });
@@ -132,13 +147,17 @@
                                 var cID = $('#activitySelect').val();
                                 if(cID <= 0){cID = -1;}
                                 dStr = "";
+                                attID = "";
                                 if($("input:radio[name='groupDir']:checked").val()){
                                     dStr = $("input:radio[name='groupDir']:checked").val();
+                                }
+                                if($("input:radio[name='attSelect']:checked").val()){
+                                    attID = $("input:radio[name='attSelect']:checked").val();
                                 }
                                 $.getJSON("/api/Call/TagAttendeeInByID",
                                     {
                                         // arguments
-                                        rfid: search,
+                                        rfid: attID,
                                         agendaID: aID,
                                         activityID: cID,
                                         dir: dStr
@@ -158,7 +177,7 @@
                                         }
                                     });
                             });
-                            
+
                         });
                     });
         });
@@ -166,7 +185,7 @@
 
 <h2>RFIDTool</h2>
 <p>
-    <a href="../Host/RFIDByName?filter=@ViewBag.EventDateID">Check In / Out By Name</a>
+    <a href="../Host/RFIDTool?filter=@ViewBag.EventDateID">Check In / Out With RFID</a>
 </p>
 <p>
     <div class="form-group">
@@ -178,18 +197,18 @@
         <h3>Agenda Only</h3>
         <div class="form-group">
             @*<span class="control-label col-md-2">Check-In: </span>
-            <select id="inOutSelect" class="col-md-10"></select>*@
+                <select id="inOutSelect" class="col-md-10"></select>*@
 
             @*-----Nothing else is required here-----*@
 
-            
+
         </div>
     </div>
     <div id="agendaWithActivities">
         <h3>Agenda with Activities</h3>
         <div class="form-group">
             @*<span class="control-label col-md-2">Check-In: </span>
-            <select id="inOutSelect" class="col-md-10"></select>*@
+                <select id="inOutSelect" class="col-md-10"></select>*@
 
             @*-----Activity Selector to show what, precicisely, the Attendee is being checked in / out of-----*@
             <h4>Select Activity to Log</h4>
@@ -203,10 +222,10 @@
                 </div>
             </div>
             <div id="attendeeLimit" style="margin-top: 1em;">
-                Attendee Limit<br/>
-                <input id="attendeeLimitSet" type="number"/><br/>
+                Attendee Limit<br />
+                <input id="attendeeLimitSet" type="number" /><br />
             </div>
-            <text><span style="font-size: 36px;" id="attendeeCurrentCount">999</span></text><br/>
+            <text><span style="font-size: 36px;" id="attendeeCurrentCount">999</span></text><br />
             <text><span style="color: red;" id="alert-text"></span></text>
         </div>
     </div>
@@ -220,10 +239,84 @@
     @using (Html.BeginForm())
     {
     <p>
-        RFID: @Html.TextBox("SearchString", "")
-        <input type="button" id="submit-search" value="Search"/>
+        Name: @Html.TextBox("SearchString", "")
+        <input type="button" id="submit-search" value="Check In / Out" />
     </p>
     }
     </p>
+<div id="attendee-table-area">
+    <table class="table" id="attendee-table">
+        <thead>
+            <tr>
+                <th>
+                    Select
+                </th>
+                <th>
+                    @Html.ActionLink("Last Name", "Attendees", new { filter = ViewBag.FilterID, sortOrder = ViewBag.NameSortParm, searchString = ViewBag.CurSearch })
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    @Html.ActionLink("Participant Type", "Attendees", new { filter = ViewBag.FilterID, sortOrder = ViewBag.PartSortParm, searchString = ViewBag.CurSearch })
+                </th>
+                <th>
+                    @Html.ActionLink("RFID", "Attendees", new { filter = ViewBag.FilterID, sortOrder = ViewBag.RFIDSortParm, searchString = ViewBag.CurSearch })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Mobile)
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="attendee-table-body">
+            @foreach (var item in Model)
+            {
 
+                <tr @{if (item.RSVPStatus.Trim() != "0") { <text> bgcolor="#DDFFDD" </text>   } }>
+                    <td>
+                        <input type="radio" name="attSelect" value="@item.RfID"/>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParticipantType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RfID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mobile)
+                    </td>
+                    <td>
+                        @*@Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) |*@
+                        @Html.ActionLink("AttendeeDetails", "AttendeeDetails", new { id = item.ID, filter = ViewBag.FilterID })
+                        @*@Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID })*@
+                    </td>
+                </tr>
+    }
+        </tbody>
+    </table>
+
+    <div id="page-list-nav">
+
+        <a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
+        @foreach (int page in ViewBag.PageList)
+        {
+            if (page == ViewBag.CurPage)
+            {
+                <span style="margin: 1em"><stong>@page</stong></span>
+            }
+            else
+            {
+                <a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
+            }
+
+        }
+        ..<a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
+    </div>
+</div>
 
