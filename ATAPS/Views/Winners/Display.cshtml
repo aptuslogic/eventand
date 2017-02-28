@@ -1,0 +1,18 @@
+﻿<h2>Winners Parade - Display Board</h2>
+
+<a href="/Winners">Back to main winners screen</a>
+
+<h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeName"></h1>
+
+<script language="Javascript">
+    ShowName();
+    function ShowName()
+    {
+        if (typeof ShowName.i == "undefined") ShowName.i = 0;
+        var names = new Array("Joseph Adams", "Eric Adem", "Bob Smith", "Danny Trejo");
+        var c = document.getElementById("AttendeeName");
+        c.innerHTML = names[ShowName.i];
+        ShowName.i = (ShowName.i + 1) % names.length;
+        setTimeout("ShowName()", 5000);
+    }
+</script>
