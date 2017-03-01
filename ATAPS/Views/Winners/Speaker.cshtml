@@ -1,3 +1,82 @@
-﻿<h2>Winners Parade - Speaker Screen</h2>
+﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
+<h2>Winners Parade - Speaker Screen</h2>
 <a href="/Winners">Back to main winners screen</a>
+<h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeInfo"></h1>
+
+<script language="Javascript">
+
+    // integrate animate.css
+    $(document).ready(function () {
+        $.fn.extend({
+            animateCss: function (animationName) {
+                var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+                this.addClass('animated ' + animationName).one(animationEnd, function () {
+                    $(this).removeClass('animated ' + animationName);
+                });
+            }
+        });
+    });
+
+    // start the display cycle
+    $(document).ready(function () {
+        ShowInfo();
+    });
+
+    // do one update request and display the results
+    function ShowInfo()
+    {
+        // the container object
+        var c = $("#AttendeeInfo");
+
+        // grab previous attendee so that we compare
+        var prevId = c.data("id");
+
+        // send an ajax request to get an update
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/WinnersUpdate/" + (prevId == undefined ? "" : ("?prevId=" + prevId)),
+            success: function (data) {
+
+                // see if the incoming attendee is different from what we already displaying
+                if (c.data("id") != data["curr_id"])
+                {
+                    // save this as the new attendee
+                    c.data("id", data["curr_id"]);
+
+                    //ega fix the formatting so it says current and up next, and then labels and text underneath that
+
+                    // transition the old info out
+                    c.animateCss("fadeOut");
+
+                    // display the new info and transition it in after previous animation is complete
+                    c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+
+                        // show the info
+                        str = "Name: " + data["curr_name"] + "<br>";
+                        str += "Phonetic: " + data["curr_phonetic"] + "<br><br>";
+                        str += "Next name: " + data["next_name"] + "<br>";
+                        str += "Next phonetic: " + data["next_phonetic"];
+                        c.html(str);
+
+                        c.animateCss("fadeIn");
+                        c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+
+                            // continue the cycle
+                            setTimeout("ShowInfo()", 5000);//ega no need for timer here once synced up to admin sceen, just call ShowInfo() directly instead
+
+                        });
+                    });
+
+                }
+                else
+                {
+                    // if same attendee, then try again in one second
+                    setTimeout("ShowInfo()", 1000);
+                }
+
+            }
+        });
+    }
+</script>

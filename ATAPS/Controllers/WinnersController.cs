@@ -28,13 +28,7 @@ namespace ATAPS.Controllers
         // GET: Winners/Display
         public ActionResult Display()
         {
-            Attendee retval = new Attendee();
-
-            // reference @Model.LastName and @ViewBag.parm in the view to see these values
-            retval.LastName = "some dude";
-            ViewBag.parm = "some text";
-
-            return View(retval);
+            return View();
         }
 
         // GET: Winners/Presenter
@@ -67,33 +61,42 @@ namespace ATAPS.Controllers
             return View();//ega return json here
         }
 
-        // GET: Winners/DisplayUpdate
-        public ActionResult DisplayUpdate(int? prevID, int? filter)
+        // GET: Winners/WinnersUpdate
+        public ActionResult WinnersUpdate(int? prevID)
         {
-            //ega pass in an id param and do where clause
-
             // grab a record from the database
-            Attendee attendee = db.Attendees.OrderBy (x => x.ID).FirstOrDefault();
+            List<Attendee> attendees = new List<Attendee>();
+            //ega limit query to two 
+            if (prevID == null)
+            {
+                attendees = db.Attendees.OrderBy(x => x.ID).ToList();
+            }
+            else
+            {
+                attendees = db.Attendees.Where(x => x.ID > prevID).OrderBy(x => x.ID).ToList();
+            }
 
             // store it in a result array
             IDictionary<string, string> data = new Dictionary<string, string>();
-            data["name"] = attendee.FirstName + " " + attendee.LastName;
-            data["id"] = attendee.ID.ToString ();
+            if (attendees.Count >= 1)
+            {
+                data["curr_id"] = attendees[0].ID.ToString();
+                data["curr_name"] = attendees[0].FirstName + " " + attendees[0].LastName;
+                data["curr_phonetic"] = attendees[0].PhoneticFirst + " " + attendees[0].PhoneticLast;
+                data["curr_preferred"] = attendees[0].PreferredFirst + " " + attendees[0].PreferredLast;
+                //data["curr_picture"] = attendees[0].AttPicture;//ega not sure the format of this field, it's not just a filename apparently
+                if (attendees.Count >= 2)
+                {
+                    data["next_id"] = attendees[1].ID.ToString();
+                    data["next_name"] = attendees[1].FirstName + " " + attendees[1].LastName;
+                    data["next_phonetic"] = attendees[1].PhoneticFirst + " " + attendees[1].PhoneticLast;
+                    data["next_preferred"] = attendees[1].PreferredFirst + " " + attendees[1].PreferredLast;
+                    //data["next_picture"] = attendees[1].AttPicture;//ega not sure the format of this field, it's not just a filename apparently
+                }
+            }
 
             // json encode and return it
             return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        // GET: Winners/PresenterUpdate
-        public ActionResult PresenterUpdate()
-        {
-            return View();//ega return json here
-        }
-
-        // GET: Winners/SpeakerUpdate
-        public ActionResult SpeakerUpdate()
-        {
-            return View();//ega return json here
         }
     }
 }

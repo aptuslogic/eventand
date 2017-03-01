@@ -1,45 +1,77 @@
 ﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
 <h2>Winners Parade - Display Board</h2>
 <a href="/Winners">Back to main winners screen</a>
-<h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeName"></h1>
+<h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeInfo"></h1>
 
 <script language="Javascript">
 
+    //ega no header/footer
+    //ega fix status bar flashing at bottom of screen
+    //ega what happens on client side when there aren't enough records?
+    //ega handle timeout
+
+    // integrate animate.css
+    $(document).ready(function () {
+        $.fn.extend({
+            animateCss: function (animationName) {
+                var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+                this.addClass('animated ' + animationName).one(animationEnd, function () {
+                    $(this).removeClass('animated ' + animationName);
+                });
+            }
+        });
+    });
+
     // start the display cycle
     $(document).ready(function () {
-        ShowName();
+        ShowInfo();
     });
 
     // do one update request and display the results
-    function ShowName()
+    function ShowInfo()
     {
+        // the container object
+        var c = $("#AttendeeInfo");
+
+        // grab previous attendee so that we compare
+        var prevId = c.data("id");
+
         // send an ajax request to get an update
         $.ajax({
-            //ega handle timeout
             dataType: "json",
-            url: "/Winners/DisplayUpdate/5",//ega pass old id here
+            url: "/Winners/WinnersUpdate/" + (prevId == undefined ? "" : ("?prevId=" + prevId)),
             success: function (data) {
 
-                // the container object
-                var c = $("#AttendeeName");
-
-                // see if the incoming name is different from what we already displaying
-                if (c.data("name") != data["name"])
+                // see if the incoming attendee is different from what we already displaying
+                if (c.data("id") != data["curr_id"])
                 {
-                    // save this as the new name
-                    c.data("name", data["name"]);
+                    // save this as the new attendee
+                    c.data("id", data["curr_id"]);
 
-                    //ega do some kind of transition
+                    // transition the old info out
+                    c.animateCss("bounceOutRight");
 
-                    // display the new name
-                    c.html(data["name"]);
+                    // display the new info and transition it in after previous animation is complete
+                    c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                        c.html(data["curr_name"]);
+                        c.animateCss("bounceInLeft");
+                        c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+
+                            // continue the cycle
+                            setTimeout("ShowInfo()", 5000);//ega no need for timer here once synced up to admin sceen, just call ShowInfo() directly instead
+
+                        });
+                    });
+                }
+                else
+                {
+                    // if same attendee, then try again in one second
+                    setTimeout("ShowInfo()", 1000);
                 }
 
             }
         });
-
-        // set a timer to do another request in one second
-        setTimeout("ShowName()", 1000);
     }
 </script>
