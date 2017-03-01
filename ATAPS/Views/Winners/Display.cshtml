@@ -1,18 +1,45 @@
-﻿<h2>Winners Parade - Display Board</h2>
+﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 
+<h2>Winners Parade - Display Board</h2>
 <a href="/Winners">Back to main winners screen</a>
-
 <h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeName"></h1>
 
 <script language="Javascript">
-    ShowName();
+
+    // start the display cycle
+    $(document).ready(function () {
+        ShowName();
+    });
+
+    // do one update request and display the results
     function ShowName()
     {
-        if (typeof ShowName.i == "undefined") ShowName.i = 0;
-        var names = new Array("Joseph Adams", "Eric Adem", "Bob Smith", "Danny Trejo");
-        var c = document.getElementById("AttendeeName");
-        c.innerHTML = names[ShowName.i];
-        ShowName.i = (ShowName.i + 1) % names.length;
-        setTimeout("ShowName()", 5000);
+        // send an ajax request to get an update
+        $.ajax({
+            //ega handle timeout
+            dataType: "json",
+            url: "/Winners/DisplayUpdate/5",//ega pass old id here
+            success: function (data) {
+
+                // the container object
+                var c = $("#AttendeeName");
+
+                // see if the incoming name is different from what we already displaying
+                if (c.data("name") != data["name"])
+                {
+                    // save this as the new name
+                    c.data("name", data["name"]);
+
+                    //ega do some kind of transition
+
+                    // display the new name
+                    c.html(data["name"]);
+                }
+
+            }
+        });
+
+        // set a timer to do another request in one second
+        setTimeout("ShowName()", 1000);
     }
 </script>
