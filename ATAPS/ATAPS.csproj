@@ -270,6 +270,9 @@
     <Compile Include="Models\EventRecord.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Parm.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ViewModels\ActivityDisplayObject.cs" />
     <Compile Include="Models\ViewModels\AgendaDisplayObject.cs" />
     <Compile Include="Models\ViewModels\AttendeeDisplayObject.cs" />

@@ -99,6 +99,7 @@ warning 6002: The table/view 'RFIDDB.dbo.Attendees' does not have a primary key 
           <Property Name="Mobile" Type="varchar" MaxLength="20" />
           <Property Name="EventID" Type="int" />
           <Property Name="ActivityListNames" Type="nvarchar" MaxLength="1000" />
+          <Property Name="WinnerQueueOrder" Type="int" />
         </EntityType>
         <EntityType Name="AttendeeType">
           <Key>
@@ -165,12 +166,21 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <Property Name="EventDesc" Type="varchar" MaxLength="1000" />
           <Property Name="ClientID" Type="int" />
         </EntityType>
+        <EntityType Name="Parms">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParmName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParmValue" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityContainer Name="RFIDDBModelStoreContainer">
           <EntitySet Name="ActivityType" EntityType="Self.ActivityType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AgendaTemplate" EntityType="Self.AgendaTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttendeeLastCheck" EntityType="Self.AttendeeLastCheck" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttendeeType" EntityType="Self.AttendeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parms" EntityType="Self.Parms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Activity" EntityType="Self.Activity" store:Type="Tables" Schema="dbo"/>
           <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" store:Type="Tables" Schema="dbo"/>
           <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" Schema="dbo"/>
@@ -249,6 +259,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="EventID" Type="Int32" />
           <Property Name="ActivityListNames" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="WinnerQueueOrder" Type="Int32" />
         </EntityType>
         <EntityType Name="AttendeeType">
           <Key>
@@ -311,6 +322,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <EntitySet Name="ActivityTypes" EntityType="RFIDDBModel.ActivityType" />
           <EntitySet Name="AgendaTemplates" EntityType="RFIDDBModel.AgendaTemplate" />
           <EntitySet Name="AttendeeLastChecks" EntityType="RFIDDBModel.AttendeeLastCheck" />
+          <EntitySet Name="Parms" EntityType="RFIDDBModel.Parm" />
         </EntityContainer>
         <EntityType Name="ActivityType">
           <Key>
@@ -342,6 +354,14 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <Property Name="LastActivity" Type="Int32" />
           <Property Name="AttendeeID" Type="Int32" Nullable="false" />
           <Property Name="CheckDir" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Parm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParmName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ParmValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -393,6 +413,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <EntitySetMapping Name="Attendees">
             <EntityTypeMapping TypeName="RFIDDBModel.Attendee">
               <MappingFragment StoreEntitySet="Attendees">
+                <ScalarProperty Name="WinnerQueueOrder" ColumnName="WinnerQueueOrder" />
                 <ScalarProperty Name="ActivityListNames" ColumnName="ActivityListNames" />
                 <ScalarProperty Name="EventID" ColumnName="EventID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -496,6 +517,15 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
                 <ScalarProperty Name="LastAgenda" ColumnName="LastAgenda" />
                 <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
                 <ScalarProperty Name="AgendaID" ColumnName="AgendaID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parms">
+            <EntityTypeMapping TypeName="RFIDDBModel.Parm">
+              <MappingFragment StoreEntitySet="Parms">
+                <ScalarProperty Name="ParmValue" ColumnName="ParmValue" />
+                <ScalarProperty Name="ParmName" ColumnName="ParmName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

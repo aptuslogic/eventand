@@ -33,5 +33,6 @@ namespace ATAPS.Models
         public string Mobile { get; set; }
         public Nullable<int> EventID { get; set; }
         public string ActivityListNames { get; set; }
+        public Nullable<int> WinnerQueueOrder { get; set; }
     }
 }

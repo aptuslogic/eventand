@@ -38,5 +38,6 @@ namespace ATAPS.Models
         public virtual DbSet<ActivityType> ActivityTypes { get; set; }
         public virtual DbSet<AgendaTemplate> AgendaTemplates { get; set; }
         public virtual DbSet<AttendeeLastCheck> AttendeeLastChecks { get; set; }
+        public virtual DbSet<Parm> Parms { get; set; }
     }
 }
