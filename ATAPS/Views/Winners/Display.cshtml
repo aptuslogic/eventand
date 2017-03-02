@@ -7,11 +7,6 @@
 
 <script language="Javascript">
 
-    //ega no header/footer
-    //ega fix status bar flashing at bottom of screen
-    //ega what happens on client side when there aren't enough records?
-    //ega handle timeout
-
     // integrate animate.css
     $(document).ready(function () {
         $.fn.extend({
@@ -35,13 +30,10 @@
         // the container object
         var c = $("#AttendeeInfo");
 
-        // grab previous attendee so that we compare
-        var prevId = c.data("id");
-
         // send an ajax request to get an update
         $.ajax({
             dataType: "json",
-            url: "/Winners/WinnersUpdate/" + (prevId == undefined ? "" : ("?prevId=" + prevId)),
+            url: "/Winners/WinnersUpdate/",
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
@@ -53,19 +45,18 @@
                     // transition the old info out
                     c.animateCss("bounceOutRight");
 
-                    //ega how to show pictures?
-
                     // display the new info and transition it in after previous animation is complete
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show attendee info
-                        c.html(data["curr_preferred"]);
+                        var img = "<img class=\"img-thumbnail\" src=\"https://assets.toptal.io/assets/front/static/public/blocks/home/showcase/featured/charles_cook_small_a6984e.jpg\">";
+                        c.html(img + "<br><br>" + data["curr_preferred"]);
 
                         c.animateCss("bounceInLeft");
                         c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                             // continue the cycle
-                            setTimeout("ShowInfo()", 5000);//ega no need for timer here once synced up to admin sceen, just call ShowInfo() directly instead
+                            ShowInfo();
 
                         });
                     });
@@ -79,4 +70,5 @@
             }
         });
     }
+
 </script>

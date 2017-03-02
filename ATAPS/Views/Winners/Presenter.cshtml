@@ -30,13 +30,10 @@
         // the container object
         var c = $("#AttendeeInfo");
 
-        // grab previous attendee so that we compare
-        var prevId = c.data("id");
-
         // send an ajax request to get an update
         $.ajax({
             dataType: "json",
-            url: "/Winners/WinnersUpdate/" + (prevId == undefined ? "" : ("?prevId=" + prevId)),
+            url: "/Winners/WinnersUpdate/",
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
@@ -62,7 +59,7 @@
                         c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                             // continue the cycle
-                            setTimeout("ShowInfo()", 5000);//ega no need for timer here once synced up to admin sceen, just call ShowInfo() directly instead
+                            ShowInfo();
 
                         });
                     });
