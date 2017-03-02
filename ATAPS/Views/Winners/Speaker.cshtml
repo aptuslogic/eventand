@@ -45,8 +45,6 @@
                     // save this as the new attendee
                     c.data("id", data["curr_id"]);
 
-                    //ega fix the formatting so it says current and up next, and then labels and text underneath that
-
                     // transition the old info out
                     c.animateCss("fadeOut");
 
@@ -54,10 +52,12 @@
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show the info
-                        str = "Name: " + data["curr_name"] + "<br>";
-                        str += "Phonetic: " + data["curr_phonetic"] + "<br><br>";
-                        str += "Next name: " + data["next_name"] + "<br>";
-                        str += "Next phonetic: " + data["next_phonetic"];
+                        str = "<strong><u>Current Attendee</u></strong><br>";
+                        str += "Preferred name: " + data["curr_preferred"] + "<br>";
+                        str += "Phonetic: <i>" + data["curr_phonetic"] + "</i><br><br>";
+                        str += "<strong><u>Next Up</u></strong><br>";
+                        str += "Preferred name: " + data["next_name"] + "<br>";
+                        str += "Phonetic: <i>" + data["next_phonetic"] + "</i>";
                         c.html(str);
 
                         c.animateCss("fadeIn");

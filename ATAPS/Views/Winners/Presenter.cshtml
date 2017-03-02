@@ -52,8 +52,10 @@
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show the info
-                        str = "Name: " + data["curr_name"] + "<br><br>";
-                        str += "Next name: " + data["next_name"] + "<br>";
+                        str = "<strong><u>Current Attendee</u></strong><br>";
+                        str += data["curr_name"] + "<br><br>";
+                        str += "<strong><u>Next Up</u></strong><br>";
+                        str += data["next_name"] + "<br>";
                         c.html(str);
 
                         c.animateCss("fadeIn");

@@ -53,9 +53,14 @@
                     // transition the old info out
                     c.animateCss("bounceOutRight");
 
+                    //ega how to show pictures?
+
                     // display the new info and transition it in after previous animation is complete
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                        c.html(data["curr_name"]);
+
+                        // show attendee info
+                        c.html(data["curr_preferred"]);
+
                         c.animateCss("bounceInLeft");
                         c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
