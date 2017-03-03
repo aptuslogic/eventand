@@ -39,6 +39,9 @@
         $.ajax({
             dataType: "json",
             url: "/Winners/WinnersUpdate/",
+            error: function (data) {
+                setTimeout("ShowInfo()", 250);
+            },
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
@@ -54,7 +57,8 @@
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show attendee info
-                        var img = "<img class=\"img-thumbnail\" src=\"https://assets.toptal.io/assets/front/static/public/blocks/home/showcase/featured/charles_cook_small_a6984e.jpg\">";
+//                        var img = "<img class=\"img-thumbnail\" src=\"https://assets.toptal.io/assets/front/static/public/blocks/home/showcase/featured/charles_cook_small_a6984e.jpg\">";
+var img = "<img class=\"img-thumbnail\" src=\"/Content/generic_conference_photo.png\">";//ega
                         c.html(img + "<br><br>" + data["curr_preferred"]);
 
                         c.animateCss("bounceInLeft");

@@ -34,6 +34,9 @@
         $.ajax({
             dataType: "json",
             url: "/Winners/WinnersUpdate/",
+            error: function (data) {
+                setTimeout("ShowInfo()", 250);
+            },
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
