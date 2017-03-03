@@ -46,6 +46,9 @@ namespace ATAPS.Controllers
         // GET: Winners/Prev
         public ActionResult Prev()
         {
+            // init result
+            IDictionary<string, string> data = new Dictionary<string, string>();
+
             // get current queue position
             Parm parm = db.Parms.Where(x => x.ParmName == "CurrWinnerQueuePos").First();
             int currQueuePos = int.Parse(parm.ParmValue);
@@ -55,19 +58,27 @@ namespace ATAPS.Controllers
             attendees = db.Attendees.Where(x => x.WinnerQueueOrder <= currQueuePos).OrderByDescending(x => x.WinnerQueueOrder).ToList();
 
             // update the queue position
-            parm.ParmValue = attendees[1].WinnerQueueOrder.ToString();
-            db.SaveChanges();
+            if (attendees.Count >= 2)
+            {
+                parm.ParmValue = attendees[1].WinnerQueueOrder.ToString();
+                db.SaveChanges();
+                data["status"] = "success";
+            }
+            else
+            {
+                data["status"] = "failure";
+            }
 
             // return json result
-            IDictionary<string, string> data = new Dictionary<string, string>();
-            data["prev_queue_pos"] = currQueuePos.ToString();
-            data["new_queue_pos"] = attendees[1].WinnerQueueOrder.ToString();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         
         // GET: Winners/Next
         public ActionResult Next()
         {
+            // init result
+            IDictionary<string, string> data = new Dictionary<string, string>();
+
             // get current queue position
             Parm parm = db.Parms.Where(x => x.ParmName == "CurrWinnerQueuePos").First();
             int currQueuePos = int.Parse(parm.ParmValue);
@@ -77,13 +88,18 @@ namespace ATAPS.Controllers
             attendees = db.Attendees.Where(x => x.WinnerQueueOrder >= currQueuePos).OrderBy(x => x.WinnerQueueOrder).ToList();
 
             // update the queue position
-            parm.ParmValue = attendees[1].WinnerQueueOrder.ToString();
-            db.SaveChanges();
+            if (attendees.Count >= 2)
+            {
+                parm.ParmValue = attendees[1].WinnerQueueOrder.ToString();
+                db.SaveChanges();
+                data["status"] = "success";
+            }
+            else
+            {
+                data["status"] = "failure";
+            }
 
             // return json result
-            IDictionary<string, string> data = new Dictionary<string, string>();
-            data["prev_queue_pos"] = currQueuePos.ToString();
-            data["new_queue_pos"] = attendees[1].WinnerQueueOrder.ToString();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -97,6 +113,7 @@ namespace ATAPS.Controllers
 
             // return json result
             IDictionary<string, string> data = new Dictionary<string, string>();
+            data["status"] = "success";
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

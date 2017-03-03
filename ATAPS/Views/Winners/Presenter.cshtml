@@ -37,7 +37,7 @@
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
-                if (c.data("id") != data["curr_id"])
+                if ("curr_id" in data && c.data("id") != data["curr_id"])
                 {
                     // save this as the new attendee
                     c.data("id", data["curr_id"]);
@@ -50,9 +50,13 @@
 
                         // show the info
                         str = "<strong><u>Current Attendee</u></strong><br>";
-                        str += data["curr_name"] + "<br><br>";
-                        str += "<strong><u>Next Up</u></strong><br>";
-                        str += data["next_name"] + "<br>";
+                        str += data["curr_name"];
+                        if ("next_id" in data)
+                        {
+                            str += "<br><br>";
+                            str += "<strong><u>Next Up</u></strong><br>";
+                            str += data["next_name"];
+                        }
                         c.html(str);
 
                         c.animateCss("fadeIn");

@@ -1,27 +1,91 @@
-﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+﻿<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css">
+
+<style>
+.spinner {
+    display: inline-block;
+    opacity: 0;
+    width: 0;
+    -webkit-transition: opacity 0.25s, width 0.25s;
+    -moz-transition: opacity 0.25s, width 0.25s;
+    -o-transition: opacity 0.25s, width 0.25s;
+    transition: opacity 0.25s, width 0.25s;
+}
+
+.has-spinner.active {
+    cursor:progress;
+}
+
+.has-spinner.active .spinner {
+    opacity: 1;
+    width: auto;
+}
+
+.has-spinner.btn.active .spinner {
+    width: 16px;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 
 <h2>Winners Parade - Admin Controls</h2>
 <a href="/Winners">Back to main winners screen</a><br /><br />
 
-<button onclick="PrevAttendee()" class="btn btn-primary">&lt;&lt; Previous Attendee</button>
-<button onclick="NextAttendee()" class="btn btn-primary">Next Attendee &gt;&gt;</button>
+<button onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+    Previous Attendee
+    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+</button>
+
+<button onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+    Next Attendee
+    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+</button>
+
 <br /><br />
-<button onclick="ResetAttendee()" class="btn btn-danger">Reset to First Attendee</button>
+
+<button onclick="ResetAttendee()" class="btn btn-danger has-spinner" style="width:200px">
+    Reset to First Attendee
+    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+</button>
 
 <script language="Javascript">
-    function PrevAttendee ()
+
+    $(document).ready(function () {
+        $('button').click(function () {
+            $(this).toggleClass('active');
+        });
+    });
+
+    function PrevAttendee()
     {
-        $.ajax("/Winners/Prev");
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/Prev",
+            success: function (data) {
+                $(".active").toggleClass("active");
+            }
+        });
     }
 
     function NextAttendee ()
     {
-        $.ajax("/Winners/Next");
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/Next",
+            success: function (data) {
+                $(".active").toggleClass("active");
+            }
+        });
     }
 
     function ResetAttendee()
     {
-        $.ajax("/Winners/Reset");
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/Reset",
+            success: function (data) {
+                $(".active").toggleClass("active");
+            }
+        });
     }
 
 </script>

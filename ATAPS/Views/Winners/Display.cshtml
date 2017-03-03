@@ -37,7 +37,7 @@
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
-                if (c.data("id") != data["curr_id"])
+                if ("curr_id" in data && c.data("id") != data["curr_id"])
                 {
                     // save this as the new attendee
                     c.data("id", data["curr_id"]);
