@@ -21,7 +21,6 @@
 }
 
 .has-spinner.btn.active .spinner {
-    width: 16px;
 }
 </style>
 
@@ -29,6 +28,8 @@
 
 <h2>Winners Parade - Admin Controls</h2>
 <a href="/Winners">Back to main winners screen</a><br /><br />
+
+<div id="AttendeeInfo"></div><br /><br />
 
 <button id="PrevBtn" onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
     Previous Attendee
@@ -49,6 +50,36 @@
 
 <script language="Javascript">
 
+    $(document).ready(function () {
+        ShowInfo();
+    });
+
+    function ShowInfo ()
+    {
+        // send an udpate request, receive it and display it
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/WinnersUpdate/",
+            success: function (data) {
+
+                // show attendee info
+                var str = "<strong><u>Current attendee:</u></strong><br>";
+                str += "Name: " + data["curr_name"] + "<br>";
+                str += "Preferred name: " + data["curr_preferred"] + "<br>";
+                str += "Phonetic: " + data["curr_phonetic"] + "<br>";
+                if ("next_name" in data)
+                {
+                    str += "<br>";
+                    str += "<strong><u>Next up:</u></strong><br>";
+                    str += "Name: " + data["next_name"] + "<br>";
+                    str += "Preferred name: " + data["next_preferred"] + "<br>";
+                    str += "Phonetic: " + data["next_phonetic"] + "<br>";
+                }
+                $("#AttendeeInfo").html(str);
+            }
+        });
+    }
+
     function PrevAttendee()
     {
         $("#PrevBtn").addClass('active');
@@ -57,6 +88,7 @@
             url: "/Winners/Prev",
             success: function (data) {
                 $("#PrevBtn").removeClass('active');
+                ShowInfo();
             }
         });
     }
@@ -69,6 +101,7 @@
             url: "/Winners/Next",
             success: function (data) {
                 $("#NextBtn").removeClass("active");
+                ShowInfo();
             }
         });
     }
@@ -83,7 +116,7 @@
                 url: "/Winners/Reset",
                 success: function (data) {
                     $("#ResetBtn").removeClass('active');
-                    alert("The attendee list position has been reset.");
+                    ShowInfo();
                 }
             });
         }
