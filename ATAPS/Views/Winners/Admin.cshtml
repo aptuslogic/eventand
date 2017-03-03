@@ -30,62 +30,63 @@
 <h2>Winners Parade - Admin Controls</h2>
 <a href="/Winners">Back to main winners screen</a><br /><br />
 
-<button onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+<button id="PrevBtn" onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
     Previous Attendee
     <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
 </button>
 
-<button onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+<button id="NextBtn" onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
     Next Attendee
     <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
 </button>
 
 <br /><br />
 
-<button onclick="ResetAttendee()" class="btn btn-danger has-spinner" style="width:200px">
+<button id="ResetBtn" onclick="ResetAttendee()" class="btn btn-danger has-spinner" style="width:200px">
     Reset to First Attendee
     <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
 </button>
 
 <script language="Javascript">
 
-    $(document).ready(function () {
-        $('button').click(function () {
-            $(this).toggleClass('active');
-        });
-    });
-
     function PrevAttendee()
     {
+        $("#PrevBtn").addClass('active');
         $.ajax({
             dataType: "json",
             url: "/Winners/Prev",
             success: function (data) {
-                $(".active").toggleClass("active");
+                $("#PrevBtn").removeClass('active');
             }
         });
     }
 
     function NextAttendee ()
     {
+        $("#NextBtn").addClass('active');
         $.ajax({
             dataType: "json",
             url: "/Winners/Next",
             success: function (data) {
-                $(".active").toggleClass("active");
+                $("#NextBtn").removeClass("active");
             }
         });
     }
 
     function ResetAttendee()
     {
-        $.ajax({
-            dataType: "json",
-            url: "/Winners/Reset",
-            success: function (data) {
-                $(".active").toggleClass("active");
-            }
-        });
+        if (confirm("Are you sure you wish to reset?"))
+        {
+            $("#ResetBtn").addClass('active');
+            $.ajax({
+                dataType: "json",
+                url: "/Winners/Reset",
+                success: function (data) {
+                    $("#ResetBtn").removeClass('active');
+                    alert("The attendee list position has been reset.");
+                }
+            });
+        }
     }
 
 </script>
