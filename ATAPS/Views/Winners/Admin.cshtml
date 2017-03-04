@@ -76,6 +76,27 @@
                     str += "Phonetic: " + data["next_phonetic"] + "<br>";
                 }
                 $("#AttendeeInfo").html(str);
+
+                // enable/disable buttons
+                if (data["can_click_prev"] == "true")
+                {
+                    $("#PrevBtn").removeClass("disabled");
+                    $("#ResetBtn").removeClass("disabled");
+                }
+                else
+                {
+                    $("#PrevBtn").addClass("disabled");
+                    $("#ResetBtn").addClass("disabled");
+                }
+                if (data["can_click_next"] == "true")
+                {
+                    $("#NextBtn").removeClass("disabled");
+                }
+                else
+                {
+                    $("#NextBtn").addClass("disabled");
+                }
+
             }
         });
     }
