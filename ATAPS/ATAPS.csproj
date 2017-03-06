@@ -209,6 +209,7 @@
     <Compile Include="Controllers\EventRecordsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HostController.cs" />
+    <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="Controllers\WinnersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -537,6 +538,10 @@
     <Content Include="Views\Host\AttendeeDetails.cshtml" />
     <Content Include="Views\Host\RFIDByName.cshtml" />
     <Content Include="Views\Winners\Display.cshtml" />
+    <Content Include="Views\Registration\Index.cshtml" />
+    <Content Include="Views\Registration\BulkCheckin.cshtml" />
+    <Content Include="Views\Registration\TableCheckin.cshtml" />
+    <Content Include="Views\Registration\Busses.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
