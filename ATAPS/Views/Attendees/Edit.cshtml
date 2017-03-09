@@ -1,11 +1,12 @@
-﻿@model ATAPS.Models.Attendee
+﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+
+@model ATAPS.Models.Attendee
 
 @{
     ViewBag.Title = "Edit";
 }
 
 <h2>Edit</h2>
-
 
 @using (Html.BeginForm())
 {
@@ -16,6 +17,9 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.EventID)
+        @Html.HiddenFor(model => model.ActivityListNames)
+        @Html.HiddenFor(model => model.WinnerQueueOrder)
 
         <div class="form-group">
             @Html.LabelFor(model => model.ParticipantID, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -75,6 +79,8 @@
 
         @Html.HiddenFor(model => model.IsPrimary)
 
+@{
+/*
         <div class="form-group">
             @Html.LabelFor(model => model.AttPicture, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -88,6 +94,21 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Filename, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Filename, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+*/}
+
+        @{ 
+        /*
+                what is class file-upload?  should i replace that with something else?
+        */
+        }
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Picture">Picture</label>
+            <div class="col-md-10">
+                <input class="form-control file-upload" id="Picture" name="Picture" type="file" />
             </div>
         </div>
 
@@ -154,3 +175,9 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script language="Javascript">
+    $(document).ready(function () {
+        $("form").attr("enctype", "multipart/form-data");
+    });
+</script>

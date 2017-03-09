@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using ATAPS.Models;
 using ATAPS.Helpers;
 using System.IO;
+using ImageProcessor;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace ATAPS.Controllers
 {
@@ -201,17 +204,100 @@ namespace ATAPS.Controllers
             return View(attendee);
         }
 
+        private void RotateImg (string fname)
+        {
+            // rotate the image if needed, and save it back out to the file
+            using (System.Drawing.Image myImage = System.Drawing.Image.FromFile(fname))
+            {
+                if (myImage.PropertyIdList.Contains(0x0112))
+                {
+                    int rotationValue = myImage.GetPropertyItem(0x0112).Value[0];
+                    switch (rotationValue)
+                    {
+                        case 1: // landscape, do nothing
+                            break;
+
+                        case 8: // rotated 90 right, so de-rotate
+                            myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate270FlipNone);
+                            myImage.Save(fname, ImageFormat.Jpeg);//ega this assumes jpg
+                            break;
+
+                        case 3: // bottoms up
+                            myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate180FlipNone);
+                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            break;
+
+                        case 6: // rotated 90 left
+                            myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate90FlipNone);
+                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            break;
+                    }
+                }
+            }
+
+            // read the image into a buffer
+            byte[] photoBytes = System.IO.File.ReadAllBytes(fname);
+            int quality = 80;
+            ImageProcessor.Imaging.Formats.ISupportedImageFormat format = new ImageProcessor.Imaging.Formats.JpegFormat { Quality = 70 };//ega assumes jpg
+            Size size = new Size(300, 0);
+
+            using (MemoryStream inStream = new MemoryStream(photoBytes))
+            {
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    using (ImageFactory imageFactory = new ImageFactory())
+                    {
+                        // Load, resize, set the format and quality and save an image.
+                        imageFactory.Load(inStream).Resize(size).Format(format).Quality(quality).Save(outStream);
+                        System.IO.File.Delete(fname);
+                        using (FileStream file = new FileStream(fname, FileMode.Create, System.IO.FileAccess.Write))
+                        {
+                            byte[] bytes = new byte[outStream.Length];
+                            outStream.Read(bytes, 0, (int)outStream.Length);
+                            file.Write(bytes, 0, bytes.Length);
+                            outStream.Close();
+                        }
+                    }
+                }
+            }
+        }
+
         // POST: Attendees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
+        public ActionResult Edit([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile,EventID,ActivityListNames,WinnerQueueOrder")] Attendee attendee, int? filter)
         {
+            //ega pre-populate the client side control
+
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
+
             if (ModelState.IsValid)
             {
+                // save an uploaded picture, if any
+                if (Request.Files.Count > 0)
+                {
+                    // set local and web path of uploaded photo
+                    string local_path = Server.MapPath("~") + "\\Content\\";
+                    string web_path = "/Content/";
+                    string prefix = "attendee_photo_" + attendee.ID;
+                    string suffix = (Request.Files["Picture"].ContentType == "image/jpeg") ? ".jpg" : ".png";
+                    string local_fname = local_path + prefix + suffix;
+                    string url = web_path + prefix + suffix;
+
+                    // save the uploaded file
+                    var uploadedFile = Request.Files["Picture"];
+                    uploadedFile.SaveAs(local_fname);
+
+                    // resize and rotate the image
+                    this.RotateImg(local_fname);
+
+                    // set the url in the Attendees record
+                    attendee.Filename = url;
+                }
+
                 db.Entry(attendee).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index", new { filter = filter });

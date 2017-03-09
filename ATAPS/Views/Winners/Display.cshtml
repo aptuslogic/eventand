@@ -57,9 +57,9 @@
                     c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show attendee info
-                        //var img = "<img class=\"img-thumbnail\" src=\"https://assets.toptal.io/assets/front/static/public/blocks/home/showcase/featured/charles_cook_small_a6984e.jpg\">";
-                        var img = "<img class=\"img-thumbnail\" src=\"/Content/generic_conference_photo.png\">";//ega
-                        c.html(img + "<br><br>" + data["curr_preferred"]);
+                        var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/generic_conference_photo.png";
+                        var imgref = "<img class=\"img-thumbnail\" src=\"" + img + "\">";
+                        c.html(imgref + "<br><br>" + data["curr_preferred"]);
 
                         c.animateCss("bounceInLeft");
                         c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
