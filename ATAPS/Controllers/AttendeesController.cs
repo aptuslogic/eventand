@@ -287,6 +287,7 @@ namespace ATAPS.Controllers
 
                     // save the uploaded file
                     var uploadedFile = Request.Files["Picture"];
+                    System.IO.File.Delete(local_fname);
                     uploadedFile.SaveAs(local_fname);
 
                     // resize and rotate the image
