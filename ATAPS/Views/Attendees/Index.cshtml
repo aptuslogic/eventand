@@ -35,7 +35,9 @@
                     // populate new rows
                     for (var i = 0; i < data.Attendees.length; i++) {
                         var att = data.Attendees[i];
-                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
+                        att.Filename = (att.Filename == null) ? "" : att.Filename;
+                        var img = "<img src=\"" + att.Filename + "\" alt=\"None\" style=\"height:50px\" />";
+                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> |';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> |';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a></td></tr>';
@@ -90,6 +92,8 @@
                 First Name
             </th>
 
+            <th>Thumbnail</th>
+
             <th>
                 @Html.DisplayNameFor(model => model.ParticipantID)
             </th>
@@ -124,6 +128,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>
+                <td style="text-align:center">
+                    <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ParticipantID)
                 </td>
@@ -142,9 +149,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
-                <th>
+                <td>
                     @Html.DisplayFor(modelItem => item.ActivityListNames)
-                </th>
+                </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) |
                     @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) |
