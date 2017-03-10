@@ -278,8 +278,8 @@ namespace ATAPS.Controllers
                 if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
                 {
                     // set local and web path of uploaded photo
-                    string local_path = Server.MapPath("~") + "\\Content\\";
-                    string web_path = "/Content/";
+                    string local_path = Server.MapPath("~") + "\\Content\\attendee_photos\\";
+                    string web_path = "/Content/attendee_photos/";
                     string prefix = "attendee_photo_" + attendee.ID;
                     string suffix = (Request.Files["Picture"].ContentType == "image/jpeg") ? ".jpg" : ".png";
                     string local_fname = local_path + prefix + suffix;
