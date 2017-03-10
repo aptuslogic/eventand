@@ -275,7 +275,7 @@ namespace ATAPS.Controllers
             if (ModelState.IsValid)
             {
                 // save an uploaded picture, if any
-                if (Request.Files.Count > 0)
+                if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
                 {
                     // set local and web path of uploaded photo
                     string local_path = Server.MapPath("~") + "\\Content\\";

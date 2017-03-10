@@ -1,9 +1,9 @@
 ﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link rel="stylesheet" type="text/css" href="~/Content/style.css">
 
-<h2>Winners Parade - Display Board</h2>
-<a href="/Winners">Back to main winners screen</a>
-<h1 style="width:100%; text-align:center; margin-top:150px; margin-bottom:150px" id="AttendeeInfo"></h1>
+<div class="AttendeePhoto"></div>
+<div class="AttendeeName"></div>
 
 <script language="Javascript">
 
@@ -32,8 +32,9 @@
     // do one update request and display the results
     function ShowInfo()
     {
-        // the container object
-        var c = $("#AttendeeInfo");
+        // the container objects
+        var c_photo = $(".AttendeePhoto");
+        var c_name = $(".AttendeeName");
 
         // send an ajax request to get an update
         $.ajax({
@@ -45,24 +46,27 @@
             success: function (data) {
 
                 // see if the incoming attendee is different from what we already displaying
-                if ("curr_id" in data && c.data("id") != data["curr_id"])
+                if ("curr_id" in data && c_photo.data("id") != data["curr_id"])
                 {
                     // save this as the new attendee
-                    c.data("id", data["curr_id"]);
+                    c_photo.data("id", data["curr_id"]);
 
                     // transition the old info out
-                    c.animateCss("bounceOutRight");
+                    c_photo.animateCss("bounceOutRight");
+                    c_name.animateCss("bounceOutRight");
 
                     // display the new info and transition it in after previous animation is complete
-                    c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                    c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show attendee info
                         var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/generic_conference_photo.png";
                         var imgref = "<img class=\"img-thumbnail\" src=\"" + img + "\">";
-                        c.html(imgref + "<br><br>" + data["curr_preferred"]);
+                        c_photo.html(imgref);
+                        c_name.html(data["curr_preferred"]);
 
-                        c.animateCss("bounceInLeft");
-                        c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                        c_photo.animateCss("bounceInLeft");
+                        c_name.animateCss("bounceInLeft");
+                        c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                             // continue the cycle
                             ShowInfo();
