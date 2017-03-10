@@ -269,8 +269,6 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile,EventID,ActivityListNames,WinnerQueueOrder")] Attendee attendee, int? filter)
         {
-            //ega pre-populate the client side control
-
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
 

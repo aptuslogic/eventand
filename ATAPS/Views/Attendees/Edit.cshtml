@@ -99,15 +99,9 @@
 
 */}
 
-        @{ 
-        /*
-                what is class file-upload?  should i replace that with something else?
-        */
-        }
-
         <div class="form-group">
-            <label class="control-label col-md-2" for="Picture">Picture</label>
-            <div class="col-md-10">
+            <label id="PictureLabel" class="control-label col-md-2" for="Picture">Picture</label>
+            <div id="PictureField" class="col-md-10">
                 <input class="form-control file-upload" id="Picture" name="Picture" type="file" />
             </div>
         </div>
@@ -177,7 +171,20 @@
 }
 
 <script language="Javascript">
+
+    // set up the form to support file uploading
     $(document).ready(function () {
         $("form").attr("enctype", "multipart/form-data");
     });
+
+    // show the existing photo, if any, with replacement instructions
+    $(document).ready(function () {
+        var fname = "@Html.DisplayFor(model => model.Filename)";
+        if (fname != "")
+        {
+            $("#PictureLabel").append ("<br>Note: Only upload if you want to replace the current photo:");
+            $("#PictureField").append ("<img height=\"100\" src=\"" + fname + "\">");
+        }
+    });
+
 </script>
