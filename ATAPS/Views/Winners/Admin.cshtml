@@ -67,6 +67,8 @@
                 str += "Name: " + data["curr_name"] + "<br>";
                 str += "Preferred name: " + data["curr_preferred"] + "<br>";
                 str += "Phonetic: " + data["curr_phonetic"] + "<br>";
+                var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/generic_conference_photo.png";
+                str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
                 if ("next_name" in data)
                 {
                     str += "<br>";
@@ -74,6 +76,8 @@
                     str += "Name: " + data["next_name"] + "<br>";
                     str += "Preferred name: " + data["next_preferred"] + "<br>";
                     str += "Phonetic: " + data["next_phonetic"] + "<br>";
+                    var img = (data["next_picture"] != null) ? data["next_picture"] : "/Content/generic_conference_photo.png";
+                    str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
                 }
                 $("#AttendeeInfo").html(str);
 
