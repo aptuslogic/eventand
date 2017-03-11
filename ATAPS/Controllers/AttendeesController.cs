@@ -204,7 +204,7 @@ namespace ATAPS.Controllers
             return View(attendee);
         }
 
-        private void RotateImg (string fname)
+        private void ResizeRotateImg (string fname)
         {
             // rotate the image if needed, and save it back out to the file
             using (System.Drawing.Image myImage = System.Drawing.Image.FromFile(fname))
@@ -274,6 +274,9 @@ namespace ATAPS.Controllers
 
             if (ModelState.IsValid)
             {
+                // save previous picture, if a new one is not uploaded
+                attendee.Filename = Request.Params["OrigPicture"];
+                
                 // save an uploaded picture, if any
                 if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
                 {
@@ -291,7 +294,7 @@ namespace ATAPS.Controllers
                     uploadedFile.SaveAs(local_fname);
 
                     // resize and rotate the image
-                    this.RotateImg(local_fname);
+                    this.ResizeRotateImg(local_fname);
 
                     // set the url in the Attendees record
                     attendee.Filename = url;
