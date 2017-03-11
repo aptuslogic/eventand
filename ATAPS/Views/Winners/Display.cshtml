@@ -1,4 +1,5 @@
-﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+﻿<script src="/Content/animation.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 <link rel="stylesheet" type="text/css" href="~/Content/style.css">
 
@@ -52,8 +53,8 @@
                     c_photo.data("id", data["curr_id"]);
 
                     // transition the old info out
-                    c_photo.animateCss("bounceOutRight");
-                    c_name.animateCss("bounceOutRight");
+                    c_photo.animateCss(wp_display_out_anim);
+                    c_name.animateCss(wp_display_out_anim);
 
                     // display the new info and transition it in after previous animation is complete
                     c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
@@ -64,8 +65,8 @@
                         c_photo.html(imgref);
                         c_name.html(data["curr_preferred"]);
 
-                        c_photo.animateCss("bounceInLeft");
-                        c_name.animateCss("bounceInLeft");
+                        c_photo.animateCss(wp_display_in_anim);
+                        c_name.animateCss(wp_display_in_anim);
                         c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                             // continue the cycle
