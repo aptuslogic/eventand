@@ -60,7 +60,7 @@
                     c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
 
                         // show attendee info
-                        var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/generic_conference_photo.png";
+                        var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
                         var imgref = "<img class=\"img-thumbnail\" src=\"" + img + "\">";
                         c_photo.html(imgref);
                         c_name.html(data["curr_preferred"]);
