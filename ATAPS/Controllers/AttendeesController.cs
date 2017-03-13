@@ -229,6 +229,9 @@ namespace ATAPS.Controllers
 
         private void ResizeRotateImg (string fname)
         {
+            // determine image format
+            ImageFormat img_format = (fname.ToLower().Contains(".jpg") || fname.ToLower().Contains(".jpeg")) ? ImageFormat.Jpeg : ImageFormat.Png;
+
             // rotate the image if needed, and save it back out to the file
             using (System.Drawing.Image myImage = System.Drawing.Image.FromFile(fname))
             {
@@ -242,17 +245,17 @@ namespace ATAPS.Controllers
 
                         case 8: // rotated 90 right, so de-rotate
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate270FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega this assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
 
                         case 3: // bottoms up
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate180FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
 
                         case 6: // rotated 90 left
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate90FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
                     }
                 }
@@ -261,7 +264,15 @@ namespace ATAPS.Controllers
             // read the image into a buffer
             byte[] photoBytes = System.IO.File.ReadAllBytes(fname);
             int quality = 80;
-            ImageProcessor.Imaging.Formats.ISupportedImageFormat format = new ImageProcessor.Imaging.Formats.JpegFormat { Quality = 70 };//ega assumes jpg
+            ImageProcessor.Imaging.Formats.ISupportedImageFormat format;
+            if (img_format == ImageFormat.Jpeg)
+            {
+                format = new ImageProcessor.Imaging.Formats.JpegFormat { Quality = 70 };
+            }
+            else
+            {
+                format = new ImageProcessor.Imaging.Formats.PngFormat { };
+            }
             Size size = new Size(300, 0);
 
             using (MemoryStream inStream = new MemoryStream(photoBytes))
