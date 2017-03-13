@@ -172,13 +172,36 @@ namespace ATAPS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
+        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
         {
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
             attendee.EventID = filter;
             if (ModelState.IsValid)
             {
+                // save an uploaded picture, if any
+                if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
+                {
+                    // set local and web path of uploaded photo
+                    string local_path = Server.MapPath("~") + "\\Content\\attendee_photos\\";
+                    string web_path = "/Content/attendee_photos/";
+                    string prefix = "attendee_photo_" + attendee.ID;
+                    string suffix = (Request.Files["Picture"].ContentType == "image/jpeg") ? ".jpg" : ".png";
+                    string local_fname = local_path + prefix + suffix;
+                    string url = web_path + prefix + suffix;
+
+                    // save the uploaded file
+                    var uploadedFile = Request.Files["Picture"];
+                    System.IO.File.Delete(local_fname);
+                    uploadedFile.SaveAs(local_fname);
+
+                    // resize and rotate the image
+                    this.ResizeRotateImg(local_fname);
+
+                    // set the url in the Attendees record
+                    attendee.Filename = url;
+                }
+
                 db.Attendees.Add(attendee);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { filter = filter });
