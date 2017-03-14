@@ -31,6 +31,7 @@ namespace ATAPS.Controllers
             List<Attendee> attendees = new List<Attendee>();
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.QueueSortParm = sortOrder == "WinnerQueueOrder" ? "wqo_desc" : "WinnerQueueOrder";
             ViewBag.PartSortParm = sortOrder == "ParticipantType" ? "ptype_desc" : "ParticipantType";
             ViewBag.RSVPSortParm = sortOrder == "RSVPStatus" ? "rsvp_desc" : "RSVPStatus";
             ViewBag.RFIDSortParm = sortOrder == "RFID" ? "rfid_desc" : "RFID";
@@ -167,18 +168,63 @@ namespace ATAPS.Controllers
             return View();
         }
 
+        // GET: Attendees/ResetOrder
+        public ActionResult ResetOrder(int? filter)
+        {
+            // read inputs
+            if (filter == null) { return HttpNotFound(); }
+            ViewBag.FilterID = filter;
+
+            // read all attendees and reset their queue order
+            List<Attendee> attendees = new List<Attendee>();
+            attendees = db.Attendees.ToList();
+            foreach (Attendee attendee in attendees)
+            {
+                attendee.WinnerQueueOrder = null;
+            }
+
+            // save changes
+            db.SaveChanges();
+
+            // redirect back to index page
+            return RedirectToAction("Index", new { filter = filter });
+        }
+
         // POST: Attendees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
+        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
         {
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
             attendee.EventID = filter;
             if (ModelState.IsValid)
             {
+                // save an uploaded picture, if any
+                if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
+                {
+                    // set local and web path of uploaded photo
+                    string local_path = Server.MapPath("~") + "\\Content\\attendee_photos\\";
+                    string web_path = "/Content/attendee_photos/";
+                    string prefix = "attendee_photo_" + attendee.ID;
+                    string suffix = (Request.Files["Picture"].ContentType == "image/jpeg") ? ".jpg" : ".png";
+                    string local_fname = local_path + prefix + suffix;
+                    string url = web_path + prefix + suffix;
+
+                    // save the uploaded file
+                    var uploadedFile = Request.Files["Picture"];
+                    System.IO.File.Delete(local_fname);
+                    uploadedFile.SaveAs(local_fname);
+
+                    // resize and rotate the image
+                    this.ResizeRotateImg(local_fname);
+
+                    // set the url in the Attendees record
+                    attendee.Filename = url;
+                }
+
                 db.Attendees.Add(attendee);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { filter = filter });
@@ -204,8 +250,11 @@ namespace ATAPS.Controllers
             return View(attendee);
         }
 
-        private void RotateImg (string fname)
+        private void ResizeRotateImg (string fname)
         {
+            // determine image format
+            ImageFormat img_format = (fname.ToLower().Contains(".jpg") || fname.ToLower().Contains(".jpeg")) ? ImageFormat.Jpeg : ImageFormat.Png;
+
             // rotate the image if needed, and save it back out to the file
             using (System.Drawing.Image myImage = System.Drawing.Image.FromFile(fname))
             {
@@ -219,17 +268,17 @@ namespace ATAPS.Controllers
 
                         case 8: // rotated 90 right, so de-rotate
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate270FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega this assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
 
                         case 3: // bottoms up
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate180FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
 
                         case 6: // rotated 90 left
                             myImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate90FlipNone);
-                            myImage.Save(fname, ImageFormat.Jpeg);//ega assumes jpg
+                            myImage.Save(fname, img_format);
                             break;
                     }
                 }
@@ -238,7 +287,15 @@ namespace ATAPS.Controllers
             // read the image into a buffer
             byte[] photoBytes = System.IO.File.ReadAllBytes(fname);
             int quality = 80;
-            ImageProcessor.Imaging.Formats.ISupportedImageFormat format = new ImageProcessor.Imaging.Formats.JpegFormat { Quality = 70 };//ega assumes jpg
+            ImageProcessor.Imaging.Formats.ISupportedImageFormat format;
+            if (img_format == ImageFormat.Jpeg)
+            {
+                format = new ImageProcessor.Imaging.Formats.JpegFormat { Quality = 70 };
+            }
+            else
+            {
+                format = new ImageProcessor.Imaging.Formats.PngFormat { };
+            }
             Size size = new Size(300, 0);
 
             using (MemoryStream inStream = new MemoryStream(photoBytes))
@@ -274,12 +331,15 @@ namespace ATAPS.Controllers
 
             if (ModelState.IsValid)
             {
+                // save previous picture, if a new one is not uploaded
+                attendee.Filename = Request.Params["OrigPicture"];
+                
                 // save an uploaded picture, if any
                 if (Request.Files.Count > 0 && (Request.Files["Picture"].ContentType == "image/jpeg" || Request.Files["Picture"].ContentType == "image/png"))
                 {
                     // set local and web path of uploaded photo
-                    string local_path = Server.MapPath("~") + "\\Content\\";
-                    string web_path = "/Content/";
+                    string local_path = Server.MapPath("~") + "\\Content\\attendee_photos\\";
+                    string web_path = "/Content/attendee_photos/";
                     string prefix = "attendee_photo_" + attendee.ID;
                     string suffix = (Request.Files["Picture"].ContentType == "image/jpeg") ? ".jpg" : ".png";
                     string local_fname = local_path + prefix + suffix;
@@ -287,10 +347,11 @@ namespace ATAPS.Controllers
 
                     // save the uploaded file
                     var uploadedFile = Request.Files["Picture"];
+                    System.IO.File.Delete(local_fname);
                     uploadedFile.SaveAs(local_fname);
 
                     // resize and rotate the image
-                    this.RotateImg(local_fname);
+                    this.ResizeRotateImg(local_fname);
 
                     // set the url in the Attendees record
                     attendee.Filename = url;
@@ -330,6 +391,30 @@ namespace ATAPS.Controllers
             Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
             db.Attendees.Remove(attendee);
             db.SaveChanges();
+            return RedirectToAction("Index", new { filter = filter });
+        }
+
+         // GET: Attendees/Queue/5
+        public ActionResult Queue(int? id, int? filter)
+        {
+            // read inputs
+            if (filter == null) { return HttpNotFound(); }
+            ViewBag.FilterID = filter;
+
+            // find max queue order and add one
+            List<Attendee> attendees = new List<Attendee>();
+            attendees = db.Attendees.OrderBy(x => x.WinnerQueueOrder).ToList();
+            int? last_queue_position = attendees[attendees.Count - 1].WinnerQueueOrder;
+            int next_queue_position = (last_queue_position == null) ? 1 : (int) (last_queue_position + 1);
+
+            // read this attendee
+            Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
+
+            // set queue order and save changes
+            attendee.WinnerQueueOrder = next_queue_position;
+            db.SaveChanges();
+
+            // return to index view
             return RedirectToAction("Index", new { filter = filter });
         }
 

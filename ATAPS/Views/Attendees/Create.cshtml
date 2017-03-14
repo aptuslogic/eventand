@@ -1,4 +1,6 @@
-﻿@model ATAPS.Models.Attendee
+﻿<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+
+@model ATAPS.Models.Attendee
 
 @{
     ViewBag.Title = "Create";
@@ -81,6 +83,8 @@
             </div>
         </div>
 
+@{
+/*
         <div class="form-group">
             @Html.LabelFor(model => model.AttPicture, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -94,6 +98,15 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Filename, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Filename, "", new { @class = "text-danger" })
+            </div>
+        </div>
+*/}
+
+        <div class="form-group">
+            <label id="PictureLabel" class="control-label col-md-2" for="Picture">Picture</label>
+            <div id="PictureField" class="col-md-10">
+                <input class="form-control file-upload" id="Picture" name="Picture" type="file" />
+                <div id="PictureFieldPrevious"><img height="0" id="NewPic" /></div>
             </div>
         </div>
 
@@ -160,3 +173,17 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script language="Javascript">
+
+    // set up the form to support file uploading
+    $(document).ready(function () {
+        $("form").attr("enctype", "multipart/form-data");
+        $("#Picture").change(function (e) {
+            i = document.getElementById("NewPic");
+            i.src = URL.createObjectURL(e.target.files[0]);
+            i.height = 100;
+        });
+    });
+
+</script>

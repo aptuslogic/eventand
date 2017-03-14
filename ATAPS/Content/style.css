@@ -1,4 +1,5 @@
-﻿.AttendeePhoto
+﻿/* Styling for the attendee photo on the display screen for winner's parade */
+.AttendeePhoto
 {
     position:absolute;
     left:0px;
@@ -7,6 +8,7 @@
     margin-top:100px;
 }
 
+/* Styling for the attendee name on the display screen for winner's parade */
 .AttendeeName
 {
     position:absolute;
