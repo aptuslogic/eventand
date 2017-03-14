@@ -31,6 +31,7 @@ namespace ATAPS.Controllers
             List<Attendee> attendees = new List<Attendee>();
 
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.QueueSortParm = sortOrder == "WinnerQueueOrder" ? "wqo_desc" : "WinnerQueueOrder";
             ViewBag.PartSortParm = sortOrder == "ParticipantType" ? "ptype_desc" : "ParticipantType";
             ViewBag.RSVPSortParm = sortOrder == "RSVPStatus" ? "rsvp_desc" : "RSVPStatus";
             ViewBag.RFIDSortParm = sortOrder == "RFID" ? "rfid_desc" : "RFID";

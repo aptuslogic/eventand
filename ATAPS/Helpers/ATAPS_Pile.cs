@@ -48,6 +48,12 @@ namespace ATAPS.Helpers
                 case "name_desc":
                     attendees = attendees.OrderByDescending(s => s.LastName).ToList();
                     break;
+                case "WinnerQueueOrder":
+                    attendees = attendees.OrderBy(s => s.WinnerQueueOrder).ToList();
+                    break;
+                case "wqo_desc":
+                    attendees = attendees.OrderByDescending(s => s.WinnerQueueOrder).ToList();
+                    break;
                 case "ParticipantType":
                     attendees = attendees.OrderBy(s => s.ParticipantType).ToList();
                     break;
