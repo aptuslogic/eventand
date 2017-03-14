@@ -12,6 +12,7 @@ namespace ATAPS.Models.DisplayObject
         public ActivityDetail ActivityDetail { get; set; }
         public ActivityType ActivityType { get; set; }
         public List<Attendee> AttendeeList { get; set; }
+        public List<AttendeeLastCheck> CurrentCheckins { get; set; }
         public int CheckedInCount { get; set; }
     }
 }

@@ -11,5 +11,7 @@ namespace ATAPS.Models.DisplayObject
         public EventDate EventDate { get; set; }
 
         public List<Activity> ActivityList { get; set; }
+        public List<ActivityDisplayObject> ActivityFullList { get; set; }
+        public List<Attendee> CheckedInAttendees { get; set; }
     }
 }

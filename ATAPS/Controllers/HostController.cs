@@ -17,8 +17,6 @@ namespace ATAPS.Controllers
         // GET: Host
         public ActionResult Index()
         {
-            int temp = -1;
-            int tempAgain = -1;
             int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             EventDisplayObject eventDO = new EventDisplayObject();
             eventDO.Event = db.EventRecords.Where(o => o.ID == accessEventID).FirstOrDefault();
@@ -294,9 +292,72 @@ namespace ATAPS.Controllers
             return View(retVal);
         }
 
+        public ActionResult Agendas()
+        {
+            int filter = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
 
+            ViewBag.FilterID = filter;
+            List<EventDateDisplayObject> datesDO = new List<EventDateDisplayObject>();
+            if (filter == null || filter == 0)
+            {
+                //List<EventDate> dateList = db.EventDates.ToList();
+                return HttpNotFound();
+            }
 
-        // See all EventDates associated with the Event
+            if (filter > 0)
+            {
+                datesDO = DBHelper.GetAllEventDatesByEventID(filter);
+            }
+
+            ViewBag.AttendeeCount = db.Attendees.Where(o => o.EventID == filter).Count();
+            EventRecord eventRec = db.EventRecords.Find(filter);
+            ViewBag.EventName = eventRec.EventName;
+            ViewBag.EventID = eventRec.ID;
+            return View(datesDO);
+        }
+
+        public ActionResult AgendaCheckins(int id)
+        {
+            // when viewing a specific agenda, show the Activities (if any) and the total Attendees for the Agenda
+            AgendaDisplayObject retVal = DBHelper.GetAgendaWithDataByID(id);
+            retVal.ActivityFullList = new List<ActivityDisplayObject>();
+            foreach(Activity act in retVal.ActivityList)
+            {
+                ActivityDisplayObject toAdd = new ActivityDisplayObject();
+                
+                toAdd.Activity = act;
+                toAdd.CurrentCheckins = ATAPS_Pile.GetActivityAttendeeCurrentByActivityID(act.ID, id);
+                if(toAdd.CurrentCheckins == null)
+                {
+                    toAdd.CurrentCheckins = new List<AttendeeLastCheck>();
+                    toAdd.CheckedInCount = 0;
+                }
+                else
+                {
+                    toAdd.CheckedInCount = toAdd.CurrentCheckins.Count();
+                }
+                retVal.ActivityFullList.Add(toAdd);
+            }
+            
+            return View(retVal);
+        }
+
+        public ActionResult ActivityDetails(int filter, int id)
+        {
+            ViewBag.FilterID = filter;
+            ActivityDisplayObject retVal = new ActivityDisplayObject();
+
+            retVal.Activity = db.Activities.Where(o => o.ID == id).FirstOrDefault();
+            retVal.CurrentCheckins = ATAPS_Pile.GetActivityAttendeeCurrentByActivityID(id, retVal.Activity.AgendaID);
+            retVal.AttendeeList = new List<Attendee>();
+            foreach(AttendeeLastCheck check in retVal.CurrentCheckins)
+            {
+                retVal.AttendeeList.Add(db.Attendees.Where(o => o.ID == check.AttendeeID).FirstOrDefault());
+            }
+            retVal.CheckedInCount = retVal.CurrentCheckins.Count();
+            
+            return View(retVal);
+        }
 
 
     }

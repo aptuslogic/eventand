@@ -546,6 +546,10 @@
     <Content Include="Views\Registration\BulkCheckin.cshtml" />
     <Content Include="Views\Registration\TableCheckin.cshtml" />
     <Content Include="Views\Registration\Busses.cshtml" />
+    <Content Include="Views\Host\Agendas.cshtml" />
+    <Content Include="Views\Registration\CreateBus.cshtml" />
+    <Content Include="Views\Host\AgendaCheckins.cshtml" />
+    <Content Include="Views\Host\ActivityDetails.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
