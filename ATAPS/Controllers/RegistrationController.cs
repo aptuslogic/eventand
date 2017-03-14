@@ -20,6 +20,7 @@ namespace ATAPS.Controllers
         // GET: Registration
         public ActionResult Index()
         {
+            int temp = 0; // force Git change
             return View();
         }
 
