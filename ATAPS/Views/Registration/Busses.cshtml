@@ -1,9 +1,21 @@
-﻿
+﻿@model ATAPS.Models.DisplayObject.AgendaDisplayObject
 @{
     ViewBag.Title = "Busses";
 }
 
 <h2>Busses</h2>
+
+<p>
+    <a href="../Registration/CreateBus">Create New Bus</a>
+</p>
+
+@foreach(var bus in Model.ActivityList)
+{
+    <p>
+        <a href="../Registration/BulkCheckin?filter=@bus.ID">@bus.ActivityName</a>
+    </p>
+}
+
 
 <p>
     <a href="../Registration/Index">Back to Registration</a>

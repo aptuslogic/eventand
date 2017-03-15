@@ -110,6 +110,7 @@ namespace ATAPS.Controllers
                 pageNum = 1;
             }
             decimal pages = 1 + (attendees.Count() / pageSize);
+            int temp = 0;
             if (pageNum * pageSize > attendees.Count())
             {
                 int modCheck = attendees.Count() % pageSize; // get remainder
@@ -166,28 +167,6 @@ namespace ATAPS.Controllers
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
             return View();
-        }
-
-        // GET: Attendees/ResetOrder
-        public ActionResult ResetOrder(int? filter)
-        {
-            // read inputs
-            if (filter == null) { return HttpNotFound(); }
-            ViewBag.FilterID = filter;
-
-            // read all attendees and reset their queue order
-            List<Attendee> attendees = new List<Attendee>();
-            attendees = db.Attendees.ToList();
-            foreach (Attendee attendee in attendees)
-            {
-                attendee.WinnerQueueOrder = null;
-            }
-
-            // save changes
-            db.SaveChanges();
-
-            // redirect back to index page
-            return RedirectToAction("Index", new { filter = filter });
         }
 
         // POST: Attendees/Create
@@ -391,30 +370,6 @@ namespace ATAPS.Controllers
             Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
             db.Attendees.Remove(attendee);
             db.SaveChanges();
-            return RedirectToAction("Index", new { filter = filter });
-        }
-
-         // GET: Attendees/Queue/5
-        public ActionResult Queue(int? id, int? filter)
-        {
-            // read inputs
-            if (filter == null) { return HttpNotFound(); }
-            ViewBag.FilterID = filter;
-
-            // find max queue order and add one
-            List<Attendee> attendees = new List<Attendee>();
-            attendees = db.Attendees.OrderBy(x => x.WinnerQueueOrder).ToList();
-            int? last_queue_position = attendees[attendees.Count - 1].WinnerQueueOrder;
-            int next_queue_position = (last_queue_position == null) ? 1 : (int) (last_queue_position + 1);
-
-            // read this attendee
-            Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
-
-            // set queue order and save changes
-            attendee.WinnerQueueOrder = next_queue_position;
-            db.SaveChanges();
-
-            // return to index view
             return RedirectToAction("Index", new { filter = filter });
         }
 

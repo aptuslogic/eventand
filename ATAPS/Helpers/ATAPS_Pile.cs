@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using ATAPS.Models;
 using OfficeOpenXml;
+using System.Configuration;
 
 namespace ATAPS.Helpers
 {
@@ -83,7 +84,51 @@ namespace ATAPS.Helpers
             return retVal;
         }
 
+        internal static bool CreateRegistrationAgenda()
+        {
+            // no Registration Agenda has yet been created for this Event
+
+            RFIDDBEntities db = new RFIDDBEntities();
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = new Parm();
+
+            List<EventDate> eDates = db.EventDates.Where(o => o.EventRecordsID == accessEventID).OrderBy(o => o.EventDate1).ToList();
+
+            checkinParm.ParmName = "RegistrationAgendaID";
+            Agenda regAg = new Agenda();
+            regAg.AgendaName = "Registration";
+            regAg.AgendaOrder = 0;
+            regAg.AgendaType = 1;
+            regAg.EventDateID = eDates[0].ID;
+
+            db.Agendas.Add(regAg);
+            db.SaveChanges();
+
+            checkinParm.ParmValue = regAg.ID.ToString();
+            db.Parms.Add(checkinParm);
+            db.SaveChanges();
+
+            return true;
+        }
+
         internal static int GetActivityAttendeeCurrentCountByActivityID(int actID, int agnID)
+        {
+            List<AttendeeLastCheck> latest = GetActivityAttendeeCurrentByActivityID(actID, agnID);
+            int retVal = latest.Count();
+            return retVal;
+        }
+
+        public static List<Attendee> GetTotalAgendaAttendanceByID(int agnID)
+        {
+            RFIDDBEntities db = new RFIDDBEntities();
+            List<AttendeeLastCheck> checks = db.AttendeeLastChecks.Where(o => o.AgendaID == agnID).ToList();
+
+            List<Attendee> retVal = db.Attendees.Where(p => checks.Any(p2 => p2.AttendeeID == p.ID)).ToList();
+
+            return retVal;
+        }
+
+        public static List<AttendeeLastCheck> GetActivityAttendeeCurrentByActivityID(int actID, int agnID)
         {
             RFIDDBEntities db = new RFIDDBEntities();
             int retVal = 0;
@@ -92,7 +137,7 @@ namespace ATAPS.Helpers
             // we have time to ponder the problem.  I know this is close, but should be possible to do without the loop.
             // UPDATE:  I added a LINQ query that seems to be right, but still have to loop through the var to get the count.
             List<AttendeeLastCheck> checks = db.AttendeeLastChecks.Where(o => o.LastActivity == actID).OrderBy(o => o.AttendeeID).ThenByDescending(o => o.LastUpdate).ToList();
-            
+
             //var res = from element in checks
             //          group element by element.AttendeeID
             //  into groups
@@ -118,9 +163,8 @@ namespace ATAPS.Helpers
                     }
                 }
             }
-            //retVal = temp;
-            retVal = latest.Count();
-            return retVal;
+
+            return latest;
         }
 
         public static List<int> GetAttendeePageList(int lowerLim, int upperLim, int curPage, int attCount)
