@@ -37,12 +37,14 @@
                         var att = data.Attendees[i];
                         att.Filename = (att.Filename == null) ? "" : att.Filename;
                         var img = "<img src=\"" + att.Filename + "\" alt=\"None\" style=\"height:50px\" />";
-                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.WinnerQueueOrder+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
+                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>";
+                        newRow += Number.isInteger (att.WinnerQueueOrder) ? att.WinnerQueueOrder : "Not in Queue";
+                        newRow += "</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += "<td></td>";
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | ';
-                        newRot += '<a href="../Attendees/Queue/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';
+                        newRow += '<a href="../Attendees/Queue/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
@@ -143,7 +145,14 @@
                     @Html.DisplayFor(modelItem => item.PrimaryID)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WinnerQueueOrder)
+                    @if (item.WinnerQueueOrder != null)
+                    {
+                        <text>@item.WinnerQueueOrder</text>
+                    }
+                    else
+                    {
+                        <text>Not in Queue</text>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ParticipantType)
