@@ -77,6 +77,9 @@
 <p>
     @Html.ActionLink("Upload XLS", "Upload", new { filter = ViewBag.FilterID })
 </p>
+<p>
+    @Html.ActionLink("Reset Queue Order", "ResetOrder", new { filter = ViewBag.FilterID })
+</p>
 
 @using (Html.BeginForm())
 {
