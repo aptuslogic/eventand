@@ -19,6 +19,31 @@ namespace ATAPS.Controllers
     {
         private RFIDDBEntities db = new RFIDDBEntities();
 
+        // GET: Attendees/Scan
+        public ActionResult Scan(int? filter, string searchString)
+        {
+            // check inputs
+            if (filter == null) { return HttpNotFound(); }
+            ViewBag.FilterID = filter;
+
+            List<Attendee> attendees = new List<Attendee>();
+
+            // check search string
+            if (searchString != null)
+            {
+                attendees = ATAPS_Pile.GetSortedAttendeesWithFilter(filter, null, searchString, 1);
+            }
+
+            //ega change current links to pass the event id
+            //ega show results with link next to each
+            //ega link to queue and come back to this page not index
+            //ega include back and reset links
+            //ega link from the other page too and attendeses menu
+
+            // return the view
+            return View(attendees);
+        }
+
         // GET: Attendees
         public ActionResult Index(int? filter, string sortOrder, string searchString, int? pageNum)
         {

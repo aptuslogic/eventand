@@ -526,7 +526,6 @@
     <Content Include="Views\Attendees\Delete.cshtml" />
     <Content Include="Views\Attendees\Details.cshtml" />
     <Content Include="Views\Attendees\Edit.cshtml" />
-    <Content Include="Views\Attendees\Index.cshtml" />
     <Content Include="Content\files\TemplateAttendeeSheet.xlsx" />
     <None Include="Properties\PublishProfiles\Local Publish.pubxml" />
     <Content Include="Views\AgendaTemplates\Create.cshtml" />
@@ -553,6 +552,8 @@
     <Content Include="Views\Registration\CreateBus.cshtml" />
     <Content Include="Views\Host\AgendaCheckins.cshtml" />
     <Content Include="Views\Host\ActivityDetails.cshtml" />
+    <Content Include="Views\Attendees\Scan.cshtml" />
+    <Content Include="Views\Attendees\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
