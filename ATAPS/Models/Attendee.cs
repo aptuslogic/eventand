@@ -34,5 +34,7 @@ namespace ATAPS.Models
         public Nullable<int> EventID { get; set; }
         public string ActivityListNames { get; set; }
         public Nullable<int> WinnerQueueOrder { get; set; }
+        public string Title { get; set; }
+        public string Department { get; set; }
     }
 }

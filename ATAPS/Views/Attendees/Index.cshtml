@@ -42,7 +42,7 @@
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
-                        newRot += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';//ega this is linking to delete for now and so is link below
+                        newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';//ega this is linking to delete for now and so is link below
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
