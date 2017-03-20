@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Configuration;
+using ATAPS.Models.DisplayObject;
+using ATAPS.Helpers;
 
 namespace ATAPS.Controllers
 {
@@ -16,6 +19,8 @@ namespace ATAPS.Controllers
         // GET: Winners
         public ActionResult Index()
         {
+            int filter = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            ViewBag.FilterID = filter;
             return View();
         }
 

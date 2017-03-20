@@ -23,12 +23,6 @@ namespace ATAPS.Controllers
         public ActionResult Scan(int? filter, string sortOrder, string searchString, int? pageNum)
         {
 
-            //ega have a back link, make sure it works, where are we linking back to?
-            //ega change current links to pass the event id
-            //ega link from the other page too and attendeses menu
-            //ega test this whole thing
-            //ega commit push
-
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
 
