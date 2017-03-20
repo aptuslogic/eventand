@@ -304,7 +304,7 @@ namespace ATAPS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile")] Attendee attendee, int? filter)
+        public ActionResult Create([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile,EventID,ActivityListNames,WinnerQueueOrder,Title,Department")] Attendee attendee, int? filter)
         {
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
@@ -433,7 +433,7 @@ namespace ATAPS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile,EventID,ActivityListNames,WinnerQueueOrder")] Attendee attendee, int? filter)
+        public ActionResult Edit([Bind(Include = "ID,ParticipantID,PrimaryID,LastName,FirstName,Email,ParticipantType,RSVPStatus,IsPrimary,Picture,AttPicture,Filename,RfID,PhoneticFirst,PhoneticLast,PreferredFirst,PreferredLast,Mobile,EventID,ActivityListNames,WinnerQueueOrder,Title,Department")] Attendee attendee, int? filter)
         {
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
@@ -599,6 +599,9 @@ namespace ATAPS.Controllers
                             already.PrimaryID = item.PrimaryID;
                             already.RfID = item.RfID;
                             already.RSVPStatus = item.RSVPStatus;
+                            already.Title = item.Title;
+                            already.Department = item.Department;
+                            already.ActivityListNames = item.ActivityListNames;
 
                             db.Entry(already).State = EntityState.Modified;
                             db.SaveChanges();

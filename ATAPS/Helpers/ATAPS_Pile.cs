@@ -223,6 +223,9 @@ namespace ATAPS.Helpers
                     toAdd.PreferredFirst = workSheet.Cells[rowNumber, 12].Value.ToString();
                     toAdd.PreferredLast = workSheet.Cells[rowNumber, 13].Value.ToString();
                     toAdd.Mobile = workSheet.Cells[rowNumber, 14].Value.ToString();
+                    toAdd.Title = workSheet.Cells[rowNumber, 15].Value.ToString();
+                    toAdd.Department = workSheet.Cells[rowNumber, 16].Value.ToString();
+                    toAdd.ActivityListNames = workSheet.Cells[rowNumber, 17].Value.ToString();
                     toAdd.EventID = EventID;
 
                     retVal.Add(toAdd);

@@ -100,6 +100,8 @@ warning 6002: The table/view 'RFIDDB.dbo.Attendees' does not have a primary key 
           <Property Name="EventID" Type="int" />
           <Property Name="ActivityListNames" Type="nvarchar" MaxLength="1000" />
           <Property Name="WinnerQueueOrder" Type="int" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Department" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="AttendeeType">
           <Key>
@@ -260,6 +262,8 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <Property Name="EventID" Type="Int32" />
           <Property Name="ActivityListNames" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="WinnerQueueOrder" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AttendeeType">
           <Key>
@@ -413,6 +417,8 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <EntitySetMapping Name="Attendees">
             <EntityTypeMapping TypeName="RFIDDBModel.Attendee">
               <MappingFragment StoreEntitySet="Attendees">
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="WinnerQueueOrder" ColumnName="WinnerQueueOrder" />
                 <ScalarProperty Name="ActivityListNames" ColumnName="ActivityListNames" />
                 <ScalarProperty Name="EventID" ColumnName="EventID" />
