@@ -23,8 +23,11 @@ namespace ATAPS.Controllers
         public ActionResult Scan(int? filter, string sortOrder, string searchString, int? pageNum)
         {
 
-            //ega if more than one result, have the queue link and if they click on it, show confirmation and form again
-            //ega simplify some things, like i do'nt think i need sortable columns
+            //ega have a back link, make sure it works, where are we linking back to?
+            //ega change current links to pass the event id
+            //ega link from the other page too and attendeses menu
+            //ega test this whole thing
+            //ega commit push
 
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
@@ -257,6 +260,29 @@ namespace ATAPS.Controllers
             return View();
         }
 
+        // GET: Attendees/QuickResetOrder
+        public ActionResult QuickResetOrder(int? filter)
+        {
+            // read inputs
+            if (filter == null) { return HttpNotFound(); }
+            ViewBag.FilterID = filter;
+
+            // read all attendees and reset their queue order
+            List<Attendee> attendees = new List<Attendee>();
+            attendees = db.Attendees.ToList();
+            foreach (Attendee attendee in attendees)
+            {
+                attendee.WinnerQueueOrder = null;
+            }
+
+            // save changes
+            db.SaveChanges();
+
+            // redirect back to index page
+            string conf = "Queue positions have been reset.";
+            return RedirectToAction("Scan", new { filter = filter, sortOrder = conf });
+        }
+
         // GET: Attendees/ResetOrder
         public ActionResult ResetOrder(int? filter)
         {
@@ -482,6 +508,31 @@ namespace ATAPS.Controllers
             db.Attendees.Remove(attendee);
             db.SaveChanges();
             return RedirectToAction("Index", new { filter = filter });
+        }
+
+        // GET: Attendees/QuickQueue/5
+        public ActionResult QuickQueue(int? id, int? filter)
+        {
+            // read inputs
+            if (filter == null) { return HttpNotFound(); }
+            ViewBag.FilterID = filter;
+
+            // find max queue order and add one
+            List<Attendee> attendees = new List<Attendee>();
+            attendees = db.Attendees.OrderBy(x => x.WinnerQueueOrder).ToList();
+            int? last_queue_position = attendees[attendees.Count - 1].WinnerQueueOrder;
+            int next_queue_position = (last_queue_position == null) ? 1 : (int)(last_queue_position + 1);
+
+            // read this attendee
+            Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
+
+            // set queue order and save changes
+            attendee.WinnerQueueOrder = next_queue_position;
+            db.SaveChanges();
+
+            // return to index view
+            string conf = attendee.FirstName + " " + attendee.LastName + " is now queued at position " + next_queue_position + ".";
+            return RedirectToAction("Scan", new { filter = filter, sortOrder = conf });
         }
 
         // GET: Attendees/Queue/5

@@ -11,7 +11,7 @@
 <h2>Scan Attendees</h2>
 
 <p>
-    @Html.ActionLink("Reset Queue Order", "ResetOrder", new { filter = ViewBag.FilterID })
+    @Html.ActionLink("Reset Queue Order", "QuickResetOrder", new { filter = ViewBag.FilterID })
 </p>
 
 @if (ViewBag.LastSort != "" && ViewBag.LastSort != null)
@@ -36,7 +36,7 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Last Name", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.NameSortParm, searchString = ViewBag.CurSearch })
+                Last Name
             </th>
             <th>
                 First Name
@@ -45,28 +45,16 @@
             <th>Thumbnail</th>
 
             <th>
-                @Html.DisplayNameFor(model => model.ParticipantID)
+                Queue Order
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PrimaryID)
+                RSVP Status
             </th>
             <th>
-                @Html.ActionLink("Queue Order", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.QueueSortParm, searchString = ViewBag.CurSearch })
-            </th>
-            <th>
-                @Html.ActionLink("Participant Type", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.PartSortParm, searchString = ViewBag.CurSearch })
-            </th>
-            <th>
-                @Html.ActionLink("RSVP Status", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.RSVPSortParm, searchString = ViewBag.CurSearch })
-            </th>
-            <th>
-                @Html.ActionLink("RFID", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.RFIDSortParm, searchString = ViewBag.CurSearch })
+                RFID
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mobile)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ActivityListNames)
             </th>
             <th>Actions</th>
         </tr>
@@ -85,12 +73,6 @@
                     <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ParticipantID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrimaryID)
-                </td>
-                <td>
                     @if (item.WinnerQueueOrder != null)
                     {
                         <text>@item.WinnerQueueOrder</text>
@@ -99,9 +81,6 @@
                     {
                         <text>Not in Queue</text>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ParticipantType)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RSVPStatus)
@@ -113,10 +92,7 @@
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ActivityListNames)
-                </td>
-                <td>
-                    @Html.ActionLink("Queue", "Queue", new { id = item.ID, filter = ViewBag.FilterID })
+                    @Html.ActionLink("Queue", "QuickQueue", new { id = item.ID, filter = ViewBag.FilterID })
                 </td>
             </tr>
         }
