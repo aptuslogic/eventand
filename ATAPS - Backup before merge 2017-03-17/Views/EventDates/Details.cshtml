@@ -1,0 +1,49 @@
+﻿@model ATAPS.Models.EventDate
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EventDate</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Event.EventName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Event.EventName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EventDate1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventDate1)
+        </dd>
+        <dt>
+            Agendas
+        </dt>
+
+        <dd>
+            @foreach(var item in Model.Agendas)
+            {
+                <p>
+                    <a href="../../Agenda/Details/@item.ID?filter=@ViewBag.FilterID">
+                        @Html.DisplayFor(modelItem => item.AgendaName)
+                    </a>
+                </p>
+            }
+        </dd>
+        
+    </dl>
+</div>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { Model.ID }) |
+    @Html.ActionLink("Back to List", "Index") |*@ 
+    <a href="../Edit/@Model.ID?filter=@ViewBag.FilterID">Edit</a> | 
+    <a href="..?filter=@ViewBag.FilterID">Back to List</a>
+</p>

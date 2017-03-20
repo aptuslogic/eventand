@@ -1,0 +1,58 @@
+﻿@model ATAPS.Models.dbCheckIn
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>dbCheckIn</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.activity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.activity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.busNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.busNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.partID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.partID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.chrDirection)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.chrDirection)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.stopNmbr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.stopNmbr)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.rideID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

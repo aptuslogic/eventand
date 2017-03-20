@@ -1,0 +1,144 @@
+﻿@model ATAPS.Models.Attendee
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Attendee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ParticipantID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParticipantID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PrimaryID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PrimaryID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ParticipantType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParticipantType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RSVPStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RSVPStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttPicture)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttPicture)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Filename)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Filename)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RfID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RfID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneticFirst)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneticFirst)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneticLast)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneticLast)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PreferredFirst)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreferredFirst)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PreferredLast)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreferredLast)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Mobile)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Mobile)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

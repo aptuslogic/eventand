@@ -1,0 +1,18 @@
+﻿@model ATAPS.Models.EventRecord
+
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+<h4>Add additional Attendees for Event: @Model.EventName</h4>
+<a href="../../Content/files/TemplateAttendeeSheet.xlsx">Download Template File</a><br/>
+<form action="" method="post" enctype="multipart/form-data">
+
+    <label for="file">Filename:</label>
+    <input type="file" name="file" id="file" />
+
+    <input type="submit" />
+</form>
+<strong>NOTE:  This tool will APPEND the current Attendee list, so only import new Attendees</strong>
+

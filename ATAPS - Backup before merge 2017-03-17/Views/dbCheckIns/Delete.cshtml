@@ -1,0 +1,64 @@
+﻿@model ATAPS.Models.dbCheckIn
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>dbCheckIn</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.activity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.activity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.busNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.busNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.partID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.partID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.chrDirection)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.chrDirection)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.stopNmbr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.stopNmbr)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

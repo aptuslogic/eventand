@@ -1,0 +1,556 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RFIDDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.Activity' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="AgendaID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActivityName" Type="varchar" MaxLength="50" />
+          <Property Name="AgendaID" Type="int" Nullable="false" />
+          <Property Name="ActivityTypeID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.ActivityDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ActivityDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActivityID" Type="int" Nullable="false" />
+          <Property Name="ActivityTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ActivityType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CheckIn" Type="bit" Nullable="false" />
+          <Property Name="CheckOut" Type="bit" Nullable="false" />
+          <Property Name="AttendeeLimit" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.Agendas' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Agendas">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EventDateID" />
+            <PropertyRef Name="AgendaType" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventDateID" Type="int" Nullable="false" />
+          <Property Name="AgendaName" Type="varchar" MaxLength="50" />
+          <Property Name="AgendaOrder" Type="smallint" />
+          <Property Name="AgendaType" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AgendaTemplate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="ActivityType" Type="int" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="AttendeeLastCheck">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AgendaID" Type="int" />
+          <Property Name="LastUpdate" Type="datetime" />
+          <Property Name="LastAgenda" Type="int" />
+          <Property Name="LastActivity" Type="int" />
+          <Property Name="AttendeeID" Type="int" Nullable="false" />
+          <Property Name="CheckDir" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.Attendees' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Attendees">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IsPrimary" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParticipantID" Type="int" />
+          <Property Name="PrimaryID" Type="int" />
+          <Property Name="LastName" Type="varchar" MaxLength="30" />
+          <Property Name="FirstName" Type="varchar" MaxLength="25" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="ParticipantType" Type="varchar" MaxLength="30" />
+          <Property Name="RSVPStatus" Type="char" MaxLength="11" />
+          <Property Name="IsPrimary" Type="bit" Nullable="false" />
+          <Property Name="AttPicture" Type="varbinary(max)" />
+          <Property Name="Filename" Type="varchar" MaxLength="50" />
+          <Property Name="RfID" Type="nvarchar" MaxLength="25" />
+          <Property Name="PhoneticFirst" Type="varchar" MaxLength="255" />
+          <Property Name="PhoneticLast" Type="varchar" MaxLength="255" />
+          <Property Name="PreferredFirst" Type="varchar" MaxLength="25" />
+          <Property Name="PreferredLast" Type="varchar" MaxLength="30" />
+          <Property Name="Mobile" Type="varchar" MaxLength="20" />
+          <Property Name="EventID" Type="int" />
+          <Property Name="ActivityListNames" Type="nvarchar" MaxLength="1000" />
+          <Property Name="WinnerQueueOrder" Type="int" />
+        </EntityType>
+        <EntityType Name="AttendeeType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventID" Type="int" Nullable="false" />
+          <Property Name="AttendeeType" Type="varchar" MaxLength="50" />
+          <Property Name="IsGeneral" Type="bit" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClientDescription" Type="nvarchar" MaxLength="100" />
+          <Property Name="POCName" Type="nvarchar" MaxLength="50" />
+          <Property Name="POCContact" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.currentWinner' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="currentWinner">
+          <Key>
+            <PropertyRef Name="winnerID" />
+          </Key>
+          <Property Name="winnerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="attendeeID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.dbCheckIn' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="dbCheckIn">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="activity" Type="varchar" MaxLength="50" />
+          <Property Name="busNumber" Type="int" />
+          <Property Name="partID" Type="int" />
+          <Property Name="chrDirection" Type="char" MaxLength="1" />
+          <Property Name="stopNmbr" Type="tinyint" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.EventDates' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EventDates">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EventRecordsID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventDate" Type="datetime" />
+          <Property Name="EventRecordsID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EventRecords">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventName" Type="varchar" MaxLength="50" />
+          <Property Name="EventCode" Type="varchar" MaxLength="10" />
+          <Property Name="EventDesc" Type="varchar" MaxLength="1000" />
+          <Property Name="ClientID" Type="int" />
+        </EntityType>
+        <EntityType Name="Parms">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParmName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParmValue" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="RFIDDBModelStoreContainer">
+          <EntitySet Name="ActivityType" EntityType="Self.ActivityType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AgendaTemplate" EntityType="Self.AgendaTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendeeLastCheck" EntityType="Self.AttendeeLastCheck" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendeeType" EntityType="Self.AttendeeType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parms" EntityType="Self.Parms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity" EntityType="Self.Activity" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="Attendees" EntityType="Self.Attendees" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="currentWinner" EntityType="Self.currentWinner" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="dbCheckIn" EntityType="Self.dbCheckIn" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="EventRecords" EntityType="Self.EventRecords" store:Type="Tables" Schema="dbo"/>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RFIDDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ClientDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POCName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POCContact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="AgendaID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActivityName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AgendaID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityTypeID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ActivityDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActivityID" Type="Int32" Nullable="false" />
+          <Property Name="ActivityTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Agenda">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EventDateID" />
+            <PropertyRef Name="AgendaType" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventDateID" Type="Int32" Nullable="false" />
+          <Property Name="AgendaName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AgendaOrder" Type="Int16" />
+          <Property Name="AgendaType" Type="Byte" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attendee">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IsPrimary" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParticipantID" Type="Int32" />
+          <Property Name="PrimaryID" Type="Int32" />
+          <Property Name="LastName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ParticipantType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="RSVPStatus" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="IsPrimary" Type="Boolean" Nullable="false" />
+          <Property Name="AttPicture" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Filename" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RfID" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneticFirst" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneticLast" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="PreferredFirst" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="PreferredLast" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EventID" Type="Int32" />
+          <Property Name="ActivityListNames" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="WinnerQueueOrder" Type="Int32" />
+        </EntityType>
+        <EntityType Name="AttendeeType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventID" Type="Int32" Nullable="false" />
+          <Property Name="AttendeeType1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsGeneral" Type="Boolean" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="currentWinner">
+          <Key>
+            <PropertyRef Name="winnerID" />
+          </Key>
+          <Property Name="winnerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="attendeeID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="dbCheckIn">
+          <Key>
+            <PropertyRef Name="rideID" />
+          </Key>
+          <Property Name="rideID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="activity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="busNumber" Type="Int32" />
+          <Property Name="partID" Type="Int32" />
+          <Property Name="chrDirection" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="stopNmbr" Type="Byte" />
+        </EntityType>
+        <EntityType Name="EventDate">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EventRecordsID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventDate1" Type="DateTime" Precision="3" />
+          <Property Name="EventRecordsID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EventCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="EventDesc" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="ClientID" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="RFIDDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Clients" EntityType="Self.Client" />
+          <EntitySet Name="Activities" EntityType="Self.Activity" />
+          <EntitySet Name="ActivityDetails" EntityType="Self.ActivityDetail" />
+          <EntitySet Name="Agendas" EntityType="Self.Agenda" />
+          <EntitySet Name="Attendees" EntityType="Self.Attendee" />
+          <EntitySet Name="AttendeeTypes" EntityType="Self.AttendeeType" />
+          <EntitySet Name="currentWinners" EntityType="Self.currentWinner" />
+          <EntitySet Name="dbCheckIns" EntityType="Self.dbCheckIn" />
+          <EntitySet Name="EventDates" EntityType="Self.EventDate" />
+          <EntitySet Name="EventRecords" EntityType="Self.EventRecord" />
+          <EntitySet Name="ActivityTypes" EntityType="RFIDDBModel.ActivityType" />
+          <EntitySet Name="AgendaTemplates" EntityType="RFIDDBModel.AgendaTemplate" />
+          <EntitySet Name="AttendeeLastChecks" EntityType="RFIDDBModel.AttendeeLastCheck" />
+          <EntitySet Name="Parms" EntityType="RFIDDBModel.Parm" />
+        </EntityContainer>
+        <EntityType Name="ActivityType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CheckIn" Type="Boolean" Nullable="false" />
+          <Property Name="CheckOut" Type="Boolean" Nullable="false" />
+          <Property Name="AttendeeLimit" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AgendaTemplate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ActivityType" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AttendeeLastCheck">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AgendaID" Type="Int32" />
+          <Property Name="LastUpdate" Type="DateTime" Precision="3" />
+          <Property Name="LastAgenda" Type="Int32" />
+          <Property Name="LastActivity" Type="Int32" />
+          <Property Name="AttendeeID" Type="Int32" Nullable="false" />
+          <Property Name="CheckDir" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Parm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParmName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ParmValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RFIDDBModelStoreContainer" CdmEntityContainer="RFIDDBEntities">
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="RFIDDBModel.Client">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="ClientDescription" ColumnName="ClientDescription" />
+                <ScalarProperty Name="POCName" ColumnName="POCName" />
+                <ScalarProperty Name="POCContact" ColumnName="POCContact" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Activities">
+            <EntityTypeMapping TypeName="RFIDDBModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="ActivityTypeID" ColumnName="ActivityTypeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ActivityName" ColumnName="ActivityName" />
+                <ScalarProperty Name="AgendaID" ColumnName="AgendaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityDetails">
+            <EntityTypeMapping TypeName="RFIDDBModel.ActivityDetail">
+              <MappingFragment StoreEntitySet="ActivityDetail">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ActivityTime" ColumnName="ActivityTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Agendas">
+            <EntityTypeMapping TypeName="RFIDDBModel.Agenda">
+              <MappingFragment StoreEntitySet="Agendas">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EventDateID" ColumnName="EventDateID" />
+                <ScalarProperty Name="AgendaName" ColumnName="AgendaName" />
+                <ScalarProperty Name="AgendaOrder" ColumnName="AgendaOrder" />
+                <ScalarProperty Name="AgendaType" ColumnName="AgendaType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attendees">
+            <EntityTypeMapping TypeName="RFIDDBModel.Attendee">
+              <MappingFragment StoreEntitySet="Attendees">
+                <ScalarProperty Name="WinnerQueueOrder" ColumnName="WinnerQueueOrder" />
+                <ScalarProperty Name="ActivityListNames" ColumnName="ActivityListNames" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ParticipantID" ColumnName="ParticipantID" />
+                <ScalarProperty Name="PrimaryID" ColumnName="PrimaryID" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ParticipantType" ColumnName="ParticipantType" />
+                <ScalarProperty Name="RSVPStatus" ColumnName="RSVPStatus" />
+                <ScalarProperty Name="IsPrimary" ColumnName="IsPrimary" />
+                <ScalarProperty Name="AttPicture" ColumnName="AttPicture" />
+                <ScalarProperty Name="Filename" ColumnName="Filename" />
+                <ScalarProperty Name="RfID" ColumnName="RfID" />
+                <ScalarProperty Name="PhoneticFirst" ColumnName="PhoneticFirst" />
+                <ScalarProperty Name="PhoneticLast" ColumnName="PhoneticLast" />
+                <ScalarProperty Name="PreferredFirst" ColumnName="PreferredFirst" />
+                <ScalarProperty Name="PreferredLast" ColumnName="PreferredLast" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendeeTypes">
+            <EntityTypeMapping TypeName="RFIDDBModel.AttendeeType">
+              <MappingFragment StoreEntitySet="AttendeeType">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="AttendeeType1" ColumnName="AttendeeType" />
+                <ScalarProperty Name="IsGeneral" ColumnName="IsGeneral" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="currentWinners">
+            <EntityTypeMapping TypeName="RFIDDBModel.currentWinner">
+              <MappingFragment StoreEntitySet="currentWinner">
+                <ScalarProperty Name="winnerID" ColumnName="winnerID" />
+                <ScalarProperty Name="attendeeID" ColumnName="attendeeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="dbCheckIns">
+            <EntityTypeMapping TypeName="RFIDDBModel.dbCheckIn">
+              <MappingFragment StoreEntitySet="dbCheckIn">
+                <ScalarProperty Name="rideID" ColumnName="rideID" />
+                <ScalarProperty Name="activity" ColumnName="activity" />
+                <ScalarProperty Name="busNumber" ColumnName="busNumber" />
+                <ScalarProperty Name="partID" ColumnName="partID" />
+                <ScalarProperty Name="chrDirection" ColumnName="chrDirection" />
+                <ScalarProperty Name="stopNmbr" ColumnName="stopNmbr" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventDates">
+            <EntityTypeMapping TypeName="RFIDDBModel.EventDate">
+              <MappingFragment StoreEntitySet="EventDates">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EventDate1" ColumnName="EventDate" />
+                <ScalarProperty Name="EventRecordsID" ColumnName="EventRecordsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventRecords">
+            <EntityTypeMapping TypeName="RFIDDBModel.EventRecord">
+              <MappingFragment StoreEntitySet="EventRecords">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EventName" ColumnName="EventName" />
+                <ScalarProperty Name="EventCode" ColumnName="EventCode" />
+                <ScalarProperty Name="EventDesc" ColumnName="EventDesc" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityTypes">
+            <EntityTypeMapping TypeName="RFIDDBModel.ActivityType">
+              <MappingFragment StoreEntitySet="ActivityType">
+                <ScalarProperty Name="AttendeeLimit" ColumnName="AttendeeLimit" />
+                <ScalarProperty Name="CheckOut" ColumnName="CheckOut" />
+                <ScalarProperty Name="CheckIn" ColumnName="CheckIn" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AgendaTemplates">
+            <EntityTypeMapping TypeName="RFIDDBModel.AgendaTemplate">
+              <MappingFragment StoreEntitySet="AgendaTemplate">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendeeLastChecks">
+            <EntityTypeMapping TypeName="RFIDDBModel.AttendeeLastCheck">
+              <MappingFragment StoreEntitySet="AttendeeLastCheck">
+                <ScalarProperty Name="CheckDir" ColumnName="CheckDir" />
+                <ScalarProperty Name="AttendeeID" ColumnName="AttendeeID" />
+                <ScalarProperty Name="LastActivity" ColumnName="LastActivity" />
+                <ScalarProperty Name="LastAgenda" ColumnName="LastAgenda" />
+                <ScalarProperty Name="LastUpdate" ColumnName="LastUpdate" />
+                <ScalarProperty Name="AgendaID" ColumnName="AgendaID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parms">
+            <EntityTypeMapping TypeName="RFIDDBModel.Parm">
+              <MappingFragment StoreEntitySet="Parms">
+                <ScalarProperty Name="ParmValue" ColumnName="ParmValue" />
+                <ScalarProperty Name="ParmName" ColumnName="ParmName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,203 @@
+﻿@model IEnumerable<ATAPS.Models.Attendee>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Scripts {
+<script language="javascript">
+    $(document).ready(function () {
+        @*function keypressHandler(e)
+        {
+                //e.preventDefault(); //stops default action: submitting form
+                $(this).blur();
+                $('#submit-search').focus().click();//give your submit an ID
+
+        }
+
+        $('#SearchString').keyup(keypressHandler);
+        $('#SearchString').val(@ViewBag.SearchString);
+        $('#SearchString').focus();*@
+        //your code here
+        $('#SearchString').keyup(function () {
+            var search = this.value;
+            $.getJSON("/api/Call/GetAttendeesFiltered",
+                {
+                    id: @ViewBag.FilterID,
+                    sortOrder: "@ViewBag.LastSort",
+                    searchString: search,
+                    pageNum: 1
+                },
+                function (data) {
+                    // clear rows and pagenav
+                    $("#attendee-table-body").empty();
+                    $("#page-list-nav").empty();
+                    // populate new rows
+                    for (var i = 0; i < data.Attendees.length; i++) {
+                        var att = data.Attendees[i];
+                        att.Filename = (att.Filename == null) ? "" : att.Filename;
+                        var img = "<img src=\"" + att.Filename + "\" alt=\"None\" style=\"height:50px\" />";
+                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>";
+                        newRow += Number.isInteger (att.WinnerQueueOrder) ? att.WinnerQueueOrder : "Not in Queue";
+                        newRow += "</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
+                        newRow += "<td></td>";
+                        newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
+                        newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
+                        newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | ';
+                        newRow += '<a href="../Attendees/Queue/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';
+                        $("#attendee-table-body").append(newRow);
+                    }
+                    // now populate page nav
+                    $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
+
+                    for (var i=0;i<data.Pages.length;i++){
+                        var page = data.Pages[i];
+                        if(page == data.CurPage){$("#page-list-nav").append('<span style="margin: 1em"><stong>'+page+'</stong></span>');
+                        } else {
+                            $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
+                        }
+                    }
+                    $("#page-list-nav").append('..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
+
+
+                });
+        });
+
+    });
+</script>}
+
+<h2>All Attendees</h2>
+<p>
+    Event:  @ViewBag.EventName
+</p>
+
+<p>
+    @Html.ActionLink("Create New", "Create", new { filter = ViewBag.FilterID})
+</p>
+<p>
+    @Html.ActionLink("Upload XLS", "Upload", new { filter = ViewBag.FilterID })
+</p>
+<p>
+    @Html.ActionLink("Reset Queue Order", "ResetOrder", new { filter = ViewBag.FilterID })
+</p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Find by name or RFID number: @Html.TextBox("SearchString", "")
+        <input type="submit" value="Search" id="submit-search"/>
+    </p>
+}
+
+<table class="table" id="attendee-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Last Name", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.NameSortParm, searchString = ViewBag.CurSearch })
+            </th>
+            <th>
+                First Name
+            </th>
+
+            <th>Thumbnail</th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.ParticipantID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrimaryID)
+            </th>
+            <th>
+                @Html.ActionLink("Queue Order", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.QueueSortParm, searchString = ViewBag.CurSearch })
+            </th>
+            <th>
+                @Html.ActionLink("Participant Type", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.PartSortParm, searchString = ViewBag.CurSearch })
+            </th>
+            <th>
+                @Html.ActionLink("RSVP Status", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.RSVPSortParm, searchString = ViewBag.CurSearch })
+            </th>
+            <th>
+                @Html.ActionLink("RFID", "Index", new { filter = ViewBag.FilterID, sortOrder = ViewBag.RFIDSortParm, searchString = ViewBag.CurSearch })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActivityListNames)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="attendee-table-body">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td style="text-align:center">
+                    <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParticipantID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrimaryID)
+                </td>
+                <td>
+                    @if (item.WinnerQueueOrder != null)
+                    {
+                        <text>@item.WinnerQueueOrder</text>
+                    }
+                    else
+                    {
+                        <text>Not in Queue</text>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParticipantType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RSVPStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RfID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActivityListNames)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) | 
+                    @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) | 
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
+                    @Html.ActionLink("Queue", "Queue", new { id = item.ID, filter = ViewBag.FilterID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="page-list-nav">
+
+    <a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
+    @foreach (int page in ViewBag.PageList)
+    {
+        if (page == ViewBag.CurPage)
+        {
+            <span style="margin: 1em"><stong>@page</stong></span>
+        }
+        else
+        {
+            <a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
+        }
+
+    }
+    ..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
+</div>
+

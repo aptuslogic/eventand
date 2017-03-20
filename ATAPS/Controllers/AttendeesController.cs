@@ -20,27 +20,90 @@ namespace ATAPS.Controllers
         private RFIDDBEntities db = new RFIDDBEntities();
 
         // GET: Attendees/Scan
-        public ActionResult Scan(int? filter, string searchString)
+        public ActionResult Scan(int? filter, string sortOrder, string searchString, int? pageNum)
         {
-            // check inputs
+
+            //ega if more than one result, have the queue link and if they click on it, show confirmation and form again
+            //ega simplify some things, like i do'nt think i need sortable columns
+
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
 
+            int pageSize = 25;  
+            ViewBag.PageSize = pageSize;
+            // here we pull the query based on the sort order and direction
             List<Attendee> attendees = new List<Attendee>();
 
-            // check search string
-            if (searchString != null)
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.QueueSortParm = sortOrder == "WinnerQueueOrder" ? "wqo_desc" : "WinnerQueueOrder";
+            ViewBag.PartSortParm = sortOrder == "ParticipantType" ? "ptype_desc" : "ParticipantType";
+            ViewBag.RSVPSortParm = sortOrder == "RSVPStatus" ? "rsvp_desc" : "RSVPStatus";
+            ViewBag.RFIDSortParm = sortOrder == "RFID" ? "rfid_desc" : "RFID";
+            ViewBag.LastSort = sortOrder;
+            if (sortOrder == "") { ViewBag.LastSort = "Name"; }
+
+            // find max queue order and add one
+            List<Attendee> all_attendees = new List<Attendee>();
+            all_attendees = db.Attendees.OrderBy(x => x.WinnerQueueOrder).ToList();
+            int? last_queue_position = all_attendees[all_attendees.Count - 1].WinnerQueueOrder;
+            int next_queue_position = (last_queue_position == null) ? 1 : (int)(last_queue_position + 1);
+
+            // get attendees matching the search string
+            attendees = ATAPS_Pile.GetSortedAttendeesWithFilter(filter, sortOrder, searchString, pageNum);
+
+            // if only one result, queue it
+            if (attendees.Count == 1)
             {
-                attendees = ATAPS_Pile.GetSortedAttendeesWithFilter(filter, null, searchString, 1);
+                int id = attendees[0].ID;
+                
+                // read this attendee
+                Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
+
+                // set queue order and save changes
+                attendee.WinnerQueueOrder = next_queue_position;
+                db.SaveChanges();
+
+                // show form again
+                string conf = attendees[0].FirstName + " " + attendees[0].LastName + " is now queued at position " + next_queue_position + ".";
+                return RedirectToAction("Scan", new { filter = filter, sortOrder = conf });//ega can i use something besides re-purposing sortOrder?
             }
 
-            //ega change current links to pass the event id
-            //ega show results with link next to each
-            //ega link to queue and come back to this page not index
-            //ega include back and reset links
-            //ega link from the other page too and attendeses menu
+            if (pageNum == null)
+            {
+                pageNum = 1;
+            }
+            decimal pages = 1 + (attendees.Count() / pageSize);
+            int temp = 0;
+            if (pageNum * pageSize > attendees.Count())
+            {
+                int modCheck = attendees.Count() % pageSize; // get remainder
+                int lastPage = (int)Math.Ceiling(pages); // last page
+                attendees = attendees.Skip((lastPage - 1) * pageSize).Take(modCheck).ToList();
+            }
+            else
+            {
+                int startAt = (pageNum ?? default(int)) - 1;
+                attendees = attendees.Skip(startAt * pageSize).Take(pageSize).ToList();
+            }
+            // finally populate pagination tags
 
-            // return the view
+
+            //decimal pages = 1 + (attendees.Count() / pageSize);
+            int upperLim = (int)pages;
+            int lowerLim = 1;
+            int curPage = pageNum ?? default(int);
+            ViewBag.CurPage = curPage;
+            ViewBag.Pages = upperLim;
+            ViewBag.LowerLim = lowerLim;
+            ViewBag.UpperLim = upperLim;
+
+            List<int> pageList = ATAPS_Pile.GetAttendeePageList(lowerLim, upperLim, curPage, attendees.Count());
+
+            ViewBag.PageList = pageList;
+
+            EventRecord eRec = db.EventRecords.Find(filter);
+            ViewBag.EventName = eRec.EventName;
+            //ModelState.Clear();
             return View(attendees);
         }
 
@@ -408,6 +471,7 @@ namespace ATAPS.Controllers
         }
 
         // POST: Attendees/Delete/5
+   
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id, int? filter)
