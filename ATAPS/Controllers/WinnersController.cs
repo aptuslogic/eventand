@@ -157,6 +157,9 @@ namespace ATAPS.Controllers
             data["can_click_prev"] = (currQueuePos <= attendees[0].WinnerQueueOrder) ? "false" : "true";
             data["can_click_next"] = (currQueuePos >= attendees[attendees.Count - 1].WinnerQueueOrder) ? "false" : "true";
 
+            // return current queue position
+            data["curr_queue_pos"] = currQueuePos.ToString();
+
             // json encode and return it
             return Json(data, JsonRequestBehavior.AllowGet);
         }

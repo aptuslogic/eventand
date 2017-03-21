@@ -63,7 +63,7 @@
             success: function (data) {
 
                 // show attendee info
-                var str = "<strong><u>Current attendee:</u></strong><br>";
+                var str = "<strong><u>Current attendee (position " + data["curr_queue_pos"] + "):</u></strong><br>";
                 str += "Name: " + data["curr_name"] + "<br>";
                 str += "Preferred name: " + data["curr_preferred"] + "<br>";
                 str += "Phonetic: " + data["curr_phonetic"] + "<br>";
