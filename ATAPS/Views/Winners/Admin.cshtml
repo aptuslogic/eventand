@@ -63,42 +63,59 @@
             success: function (data) {
 
                 // show attendee info
-                var str = "<strong><u>Current attendee (position " + data["curr_queue_pos"] + "):</u></strong><br>";
-                str += "Name: " + data["curr_name"] + "<br>";
-                str += "Preferred name: " + data["curr_preferred"] + "<br>";
-                str += "Phonetic: " + data["curr_phonetic"] + "<br>";
-                var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
-                str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
-                if ("next_name" in data)
+                var str = "";
+                if (data["status"] == "success")
                 {
-                    str += "<br>";
-                    str += "<strong><u>Next up:</u></strong><br>";
-                    str += "Name: " + data["next_name"] + "<br>";
-                    str += "Preferred name: " + data["next_preferred"] + "<br>";
-                    str += "Phonetic: " + data["next_phonetic"] + "<br>";
-                    var img = (data["next_picture"] != null) ? data["next_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
+                    var str = "<strong><u>Current attendee (position " + data["curr_queue_pos"] + "):</u></strong><br>";
+                    str += "Name: " + data["curr_name"] + "<br>";
+                    str += "Preferred name: " + data["curr_preferred"] + "<br>";
+                    str += "Phonetic: " + data["curr_phonetic"] + "<br>";
+                    var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
                     str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
+                    if ("next_name" in data)
+                    {
+                        str += "<br>";
+                        str += "<strong><u>Next up:</u></strong><br>";
+                        str += "Name: " + data["next_name"] + "<br>";
+                        str += "Preferred name: " + data["next_preferred"] + "<br>";
+                        str += "Phonetic: " + data["next_phonetic"] + "<br>";
+                        var img = (data["next_picture"] != null) ? data["next_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
+                        str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
+                    }
+                    else
+                    {
+                        str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
+                    }
+                }
+                else
+                {
+                    str += "<br><br><br><br><img style=\"height:50px\"><br>";
+                    str += "<strong>The parade has ended.</strong><br>";
+                    str += "<br><br><br><br><img style=\"height:50px\"><br>";
                 }
                 $("#AttendeeInfo").html(str);
 
                 // enable/disable buttons
-                if (data["can_click_prev"] == "true")
-                {
-                    $("#PrevBtn").removeClass("disabled");
+                if (data["can_click_reset"] == "true") {
                     $("#ResetBtn").removeClass("disabled");
                 }
-                else
-                {
-                    $("#PrevBtn").addClass("disabled");
+                else {
                     $("#ResetBtn").addClass("disabled");
+                }
+                if (data["can_click_prev"] == "true") {
+                    $("#PrevBtn").removeClass("disabled");
+                }
+                else {
+                    $("#PrevBtn").addClass("disabled");
                 }
                 if (data["can_click_next"] == "true")
                 {
                     $("#NextBtn").removeClass("disabled");
+                    $("#NextBtn").html("Next Attendee");
                 }
                 else
                 {
-                    $("#NextBtn").addClass("disabled");
+                    $("#NextBtn").html("End Parade");
                 }
 
             }
