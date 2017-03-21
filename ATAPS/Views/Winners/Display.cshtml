@@ -27,6 +27,7 @@
 
     // start the display cycle
     $(document).ready(function () {
+        console.log("Starting the display cycle");
         ShowInfo();
     });
 
@@ -38,19 +39,24 @@
         var c_name = $(".AttendeeName");
 
         // send an ajax request to get an update
+        console.log("Sending an update request");
         $.ajax({
             dataType: "json",
             url: "/Winners/WinnersUpdate/",
             error: function (data) {
+                console.log("Request timed out, setting timer for next request");
                 setTimeout("ShowInfo()", 250);
             },
             success: function (data) {
+                console.log("Received a response");
 
                 // see if the incoming attendee is different from what we already displaying
                 if ("curr_id" in data && c_photo.data("id") != data["curr_id"])
                 {
+                    console.log("And the response shows a new attendee");
                     // save this as the new attendee
                     c_photo.data("id", data["curr_id"]);
+                    console.log("Fading out the old attendee");
 
                     // transition the old info out
                     c_photo.animateCss(wp_display_out_anim);
@@ -58,6 +64,7 @@
 
                     // display the new info and transition it in after previous animation is complete
                     c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                        console.log("Fade out complete, starting fade in");
 
                         // show attendee info
                         var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
@@ -68,6 +75,7 @@
                         c_photo.animateCss(wp_display_in_anim);
                         c_name.animateCss(wp_display_in_anim);
                         c_photo.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                            console.log("Fade in complete, continuing cycle");
 
                             // continue the cycle
                             ShowInfo();
@@ -77,6 +85,8 @@
                 }
                 else
                 {
+                    //console.log("And the response shows same attendee");
+
                     // if same attendee, then try again in 250ms
                     setTimeout("ShowInfo()", 250);
                 }

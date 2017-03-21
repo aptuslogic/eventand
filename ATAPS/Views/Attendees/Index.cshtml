@@ -37,12 +37,21 @@
                         var att = data.Attendees[i];
                         att.Filename = (att.Filename == null) ? "" : att.Filename;
                         var img = "<img src=\"" + att.Filename + "\" alt=\"None\" style=\"height:50px\" />";
-                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.WinnerQueueOrder+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
+                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td>";
+                        if (att.WinnerQueueOrder == null)
+                        {
+                            newRow += "<td>Not in Queue</td>";
+                        }
+                        else
+                        {
+                            newRow += "<td>"+att.WinnerQueueOrder+"</td>";
+                        }
+                        newRow += "<td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += "<td></td>";
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
-                        newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';//ega this is linking to delete for now and so is link below
+                        newRow += '<a href="../Attendees/Queue/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
@@ -74,6 +83,9 @@
 </p>
 <p>
     @Html.ActionLink("Upload XLS", "Upload", new { filter = ViewBag.FilterID })
+</p>
+<p>
+    @Html.ActionLink("Reset Queue Order", "ResetOrder", new { filter = ViewBag.FilterID })
 </p>
 
 @using (Html.BeginForm())
@@ -137,13 +149,20 @@
                     <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WinnerQueueOrder)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.ParticipantID)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrimaryID)
+                </td>
+                <td>
+                    @if (item.WinnerQueueOrder != null)
+                    {
+                        <text>@item.WinnerQueueOrder</text>
+                    }
+                    else
+                    {
+                        <text>Not in Queue</text>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ParticipantType)
@@ -164,7 +183,7 @@
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
-                    @Html.ActionLink("Queue", "Delete", new { id = item.ID, filter = ViewBag.FilterID })
+                    @Html.ActionLink("Queue", "Queue", new { id = item.ID, filter = ViewBag.FilterID })
                 </td>
             </tr>
         }
