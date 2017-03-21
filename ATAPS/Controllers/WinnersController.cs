@@ -143,6 +143,7 @@ namespace ATAPS.Controllers
                 // grab a record from the database
                 List<Attendee> attendees = new List<Attendee>();
                 attendees = db.Attendees.Where(x => x.WinnerQueueOrder >= currQueuePos).OrderBy(x => x.WinnerQueueOrder).ToList();
+                int? wqo = attendees[0].WinnerQueueOrder;
 
                 // store it in a result array
                 if (attendees.Count >= 1)
@@ -169,7 +170,7 @@ namespace ATAPS.Controllers
                 data["can_click_next"] = (currQueuePos >= attendees[attendees.Count - 1].WinnerQueueOrder) ? "false" : "true";
 
                 // return current queue position
-                data["curr_queue_pos"] = currQueuePos.ToString();
+                data["curr_queue_pos"] = wqo.ToString();
 
                 // return success
                 data["status"] = "success";
