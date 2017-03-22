@@ -82,7 +82,10 @@
                         var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
                         var imgref = "<img class=\"img-thumbnail\" src=\"" + img + "\">";
                         c_photo.html(imgref);
-                        c_name.html(data["curr_preferred"]);
+                        var str = data["curr_preferred"];
+                        str += "<div class=\"AttendeeTitle\">" + data["curr_title"] + "</div>";
+                        str += "<div class=\"AttendeeDept\">" + data["curr_dept"] + "</div>";
+                        c_name.html(str);
 
                         c_photo.animateCss(wp_display_in_anim);
                         c_name.animateCss(wp_display_in_anim);

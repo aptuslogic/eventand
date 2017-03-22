@@ -153,6 +153,8 @@ namespace ATAPS.Controllers
                     data["curr_phonetic"] = attendees[0].PhoneticFirst + " " + attendees[0].PhoneticLast;
                     data["curr_preferred"] = attendees[0].PreferredFirst + " " + attendees[0].PreferredLast;
                     data["curr_picture"] = attendees[0].Filename;
+                    data["curr_title"] = attendees[0].Title;
+                    data["curr_dept"] = attendees[0].Department;
                     if (attendees.Count >= 2)
                     {
                         data["next_id"] = attendees[1].ID.ToString();
@@ -160,6 +162,8 @@ namespace ATAPS.Controllers
                         data["next_phonetic"] = attendees[1].PhoneticFirst + " " + attendees[1].PhoneticLast;
                         data["next_preferred"] = attendees[1].PreferredFirst + " " + attendees[1].PreferredLast;
                         data["next_picture"] = attendees[1].Filename;
+                        data["next_title"] = attendees[1].Title;
+                        data["next_dept"] = attendees[1].Department;
                     }
                 }
 

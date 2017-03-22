@@ -70,6 +70,7 @@
                     str += "Name: " + data["curr_name"] + "<br>";
                     str += "Preferred name: " + data["curr_preferred"] + "<br>";
                     str += "Phonetic: " + data["curr_phonetic"] + "<br>";
+                    str += "Title/Dept: " + data["curr_title"] + " / " + data["curr_dept"] + "<br>";
                     var img = (data["curr_picture"] != null) ? data["curr_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
                     str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
                     if ("next_name" in data)
@@ -79,19 +80,20 @@
                         str += "Name: " + data["next_name"] + "<br>";
                         str += "Preferred name: " + data["next_preferred"] + "<br>";
                         str += "Phonetic: " + data["next_phonetic"] + "<br>";
+                        str += "Title/Dept: " + data["next_title"] + " / " + data["next_dept"] + "<br>";
                         var img = (data["next_picture"] != null) ? data["next_picture"] : "/Content/attendee_photos/generic_conference_photo.png";
                         str += "<img src=\"" + img + "\" style=\"height:50px\"><br>";
                     }
                     else
                     {
-                        str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
+                        str += "<br><br><br><br><br><br><img style=\"height:50px\"><br>";
                     }
                 }
                 else
                 {
-                    str += "<br><br><br><br><img style=\"height:50px\"><br>";
+                    str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
                     str += "<strong>The parade has ended.</strong><br>";
-                    str += "<br><br><br><br><img style=\"height:50px\"><br>";
+                    str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
                 }
                 $("#AttendeeInfo").html(str);
 
