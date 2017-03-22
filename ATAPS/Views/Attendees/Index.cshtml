@@ -51,7 +51,7 @@
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
-                        newRow += '<a href="../Attendees/Queue/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';
+                        newRow += "<a href=\"javascript:DoQueue(" + att.ID + "," + att.EventID + ",'" + (att.WinnerQueueOrder==null ? "":att.WinnerQueueOrder) + "')\">Queue</a></td></tr>";
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
@@ -167,7 +167,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ParticipantType)
                 </td>
-                <td>
+                <td>wqo
                     @Html.DisplayFor(modelItem => item.RSVPStatus)
                 </td>
                 <td>
@@ -183,7 +183,7 @@
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
-                    @Html.ActionLink("Queue", "Queue", new { id = item.ID, filter = ViewBag.FilterID })
+                    <a href="javascript:DoQueue(@item.ID,@ViewBag.FilterID,'@item.WinnerQueueOrder')">Queue</a>
                 </td>
             </tr>
         }
@@ -208,3 +208,21 @@
     ..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
 </div>
 
+<script language="Javascript">
+    function DoQueue (id, filter, wqo)
+    {
+        // check existing queue order
+        if (wqo != "")
+        {
+            // if already in queue, make sure they intend to re-queue them
+            if (!confirm ("Are you sure you want to re-queue this person?"))
+            {
+                return;
+            }
+        }
+
+        // issue queue request
+        var url = "/Attendees/Queue/" + id + "?filter=" + filter;
+        window.location = url;
+    }
+</script>
