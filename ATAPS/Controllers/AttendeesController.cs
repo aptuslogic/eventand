@@ -22,7 +22,6 @@ namespace ATAPS.Controllers
         // GET: Attendees/Scan
         public ActionResult Scan(int? filter, string sortOrder, string searchString, int? pageNum)
         {
-
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
 
@@ -51,18 +50,26 @@ namespace ATAPS.Controllers
             // if only one result, queue it
             if (attendees.Count == 1)
             {
-                int id = attendees[0].ID;
-                
                 // read this attendee
+                int id = attendees[0].ID;
                 Attendee attendee = db.Attendees.Where(o => o.ID == id).FirstOrDefault();
 
-                // set queue order and save changes
-                attendee.WinnerQueueOrder = next_queue_position;
-                db.SaveChanges();
+                // see if the attendee is already queued
+                string conf;
+                if (attendee.WinnerQueueOrder == null || Request["Confirmed"] == "yes")
+                {
+                    // set queue order and save changes
+                    attendee.WinnerQueueOrder = next_queue_position;
+                    db.SaveChanges();
+                    conf = attendees[0].FirstName + " " + attendees[0].LastName + " is now queued at position " + next_queue_position + ".";
+                }
+                else
+                {
+                    conf = "conf," + filter + "," + searchString + "," + attendee.Filename;
+                }
 
                 // show form again
-                string conf = attendees[0].FirstName + " " + attendees[0].LastName + " is now queued at position " + next_queue_position + ".";
-                return RedirectToAction("Scan", new { filter = filter, sortOrder = conf });//ega can i use something besides re-purposing sortOrder?
+                return RedirectToAction("Scan", new { filter = filter, sortOrder = conf });
             }
 
             if (pageNum == null)
@@ -70,7 +77,6 @@ namespace ATAPS.Controllers
                 pageNum = 1;
             }
             decimal pages = 1 + (attendees.Count() / pageSize);
-            int temp = 0;
             if (pageNum * pageSize > attendees.Count())
             {
                 int modCheck = attendees.Count() % pageSize; // get remainder

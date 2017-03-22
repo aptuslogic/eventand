@@ -4,9 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
-}
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 
 <h2>Scan Attendees</h2>
 
@@ -20,9 +18,7 @@
 
 @if (ViewBag.LastSort != "" && ViewBag.LastSort != null)
 {
-    <div class="alert alert-success">
-        <strong>Success!</strong> @ViewBag.LastSort
-    </div>
+    <div id="ScanConf" class="alert alert-success"></div>
 }
 
 @using (Html.BeginForm())
@@ -96,11 +92,63 @@
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
                 <td>
-                    @Html.ActionLink("Queue", "QuickQueue", new { id = item.ID, filter = ViewBag.FilterID })
+                    <a href="javascript:DoQueue(@item.ID,@ViewBag.FilterID,'@item.WinnerQueueOrder')">Queue</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+<script language="Javascript">
+    function DoQueue (id, filter, wqo)
+    {
+        // check existing queue order
+        if (wqo != "")
+        {
+            // if already in queue, make sure they intend to re-queue them
+            if (!confirm ("Are you sure you want to re-queue this person?"))
+            {
+                return;
+            }
+        }
+
+        // issue queue request
+        var url = "/Attendees/QuickQueue/" + id + "?filter=" + filter;
+        window.location = url;
+    }
+</script>
+
 }
+
+<script language="Javascript">
+    $(document).ready(function () {
+        var str = "@ViewBag.LastSort";
+
+        // if it is a confirmation request because the attendee is being re-queued
+        if (str.indexOf("conf,") == 0)
+        {
+            // init
+            var vals = str.split(",");
+            var imgref = "<img src=\"" + vals[3] + "\" style=\"height:50px\">";
+            var url = "javascript:ConfirmRequeue()";
+
+            // create a hiden form
+            var form = "<form id=\"ConfirmForm\" action=\"/Attendees/Scan?filter=" + vals[1] + "\" method=\"post\">";
+            form += "<input name=\"SearchString\" type=\"hidden\" value=\"" + vals[2] + "\" />";
+            form += "<input name=\"Confirmed\" value=\"yes\" type=\"hidden\" />";            form += "</form>";            $(form).insertAfter("#ScanConf"); 
+            // make the alert box red and show the request
+            $("#ScanConf").removeClass("alert-success").addClass("alert-danger");
+            $("#ScanConf").html("<strong>Confirm:</strong> <a href=\"" + url + "\">Click here if you are sure you want to re-queue this person:</a> " + imgref);
+        }
+        else
+        {
+            // simply show confirmation message
+            $("#ScanConf").html("<strong>Success!</strong> " + str);
+        }
+    });
+
+    function ConfirmRequeue ()
+    {
+        $("#ConfirmForm").submit();
+    }
+</script>
