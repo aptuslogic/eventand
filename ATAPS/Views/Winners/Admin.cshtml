@@ -37,7 +37,7 @@
 </button>
 
 <button id="NextBtn" onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
-    Next Attendee
+    <span class="BtnLabel">Next Attendee</span>
     <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
 </button>
 
@@ -111,11 +111,11 @@
                 if (data["can_click_next"] == "true")
                 {
                     $("#NextBtn").removeClass("disabled");
-                    $("#NextBtn").html("Next Attendee");
+                    $("#NextBtn .BtnLabel").html("Next Attendee");
                 }
                 else
                 {
-                    $("#NextBtn").html("End Parade");
+                    $("#NextBtn .BtnLabel").html("End Parade");
                 }
 
             }
