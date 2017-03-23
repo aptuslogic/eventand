@@ -554,9 +554,19 @@ namespace ATAPS.Controllers
             // set queue order and save changes
             attendee.WinnerQueueOrder = next_queue_position;
             db.SaveChanges();
- 
-            // return to index view
-            return RedirectToAction("Index", new { filter = filter });
+
+            // grab sort order
+            string sortOrder = Request["sortOrder"] ?? null;
+            if (sortOrder == null)
+            {
+                // return to index view
+                return RedirectToAction("Index", new { filter = filter });
+            }
+            else
+            {
+                // return to index view
+                return RedirectToAction("Index", new { filter = filter, sortOrder = sortOrder });
+            }
         }
 
         public ActionResult Upload(int? filter)

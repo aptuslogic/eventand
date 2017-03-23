@@ -221,8 +221,15 @@
             }
         }
 
+        // get sort order so we can persist it
+        var sort_order = (location.search.split('sortOrder=')[1]||'').split('&')[0];
+
         // issue queue request
         var url = "/Attendees/Queue/" + id + "?filter=" + filter;
+        if (sort_order != "")
+        {
+            url += "&sortOrder=" + sort_order;
+        }
         window.location = url;
     }
 </script>
