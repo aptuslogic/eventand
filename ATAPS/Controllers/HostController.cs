@@ -8,6 +8,10 @@ using ATAPS.Models.DisplayObject;
 using ATAPS.Helpers;
 using ATAPS.Models;
 
+using System.Drawing;//ega
+using System.Text;//ega
+//using SuperSignature;//ega
+
 namespace ATAPS.Controllers
 {
     public class HostController : Controller
@@ -359,6 +363,42 @@ namespace ATAPS.Controllers
             return View(retVal);
         }
 
+        [HttpGet]
+        public ActionResult Sig()//ega
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Sig(FormCollection form)//ega
+        {
+            string signData = Request["ctlSignature_data"];
+            string signDataSmooth = Request["ctlSignature_data_smooth"];
+
+            //MouseSignature ctlSignature = new MouseSignature();//ega
+
+            byte[] arrayOfBytes = Convert.FromBase64String(signData);
+            signData = Encoding.UTF8.GetString(arrayOfBytes);
+
+            byte[] arrayOfBytesSmooth = Convert.FromBase64String(signDataSmooth);
+            signDataSmooth = Encoding.UTF8.GetString(arrayOfBytesSmooth);
+
+            //ctlSignature.SignDataSmooth = signDataSmooth;//ega
+
+            //Bitmap bmpSign = ctlSignature.GenerateSignature(signData, "");//ega
+
+            //ViewBag.Sign = bmpSign;//ega
+
+            FileContentResult result;
+
+            using (var memStream = new System.IO.MemoryStream())
+            {
+                //bmpSign.Save(memStream, System.Drawing.Imaging.ImageFormat.Png);//ega
+                result = this.File(memStream.GetBuffer(), "image/png");
+            }
+
+            return result;
+        }
 
     }
 }

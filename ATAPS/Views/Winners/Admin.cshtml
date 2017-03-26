@@ -21,7 +21,6 @@
 }
 
 .has-spinner.btn.active .spinner {
-}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
@@ -31,22 +30,26 @@
 
 <div id="AttendeeInfo"></div><br /><br />
 
-<button id="PrevBtn" onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
-    Previous Attendee
-    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+<div class="col-md-6">
+    <button id="PrevBtn" onclick="PrevAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+        Previous Attendee
+        <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+    </button>
+    <button id="NextBtn" onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
+        <span class="BtnLabel">Next Attendee</span>
+        <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+    </button>
+</div>
+<div class="col-md-6">
+    <button id="PauseResumeBtn" onclick="PauseResume()" class="btn btn-danger has-spinner" style="width:200px">
+        <span class="BtnLabel">Pause Parade</span>
+        <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
 </button>
-
-<button id="NextBtn" onclick="NextAttendee()" class="btn btn-primary has-spinner" style="width:200px">
-    <span class="BtnLabel">Next Attendee</span>
-    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
-</button>
-
-<br /><br />
-
-<button id="ResetBtn" onclick="ResetAttendee()" class="btn btn-danger has-spinner" style="width:200px">
-    Reset to First Attendee
-    <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
-</button>
+    <button id="ResetBtn" onclick="ResetAttendee()" class="btn btn-danger has-spinner" style="width:200px">
+        Reset to First Attendee
+        <span class="spinner"><i class="icon-spin icon-refresh"></i></span>
+    </button>
+</div>
 
 <script language="Javascript">
 
@@ -89,16 +92,25 @@
                         str += "<br><br><br><br><br><br><img style=\"height:50px\"><br>";
                     }
                 }
-                else
+
+                if (data["parade_status"] == "false")
                 {
                     str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
-                    str += "<strong>The parade has ended.</strong><br>";
+                    str += "<strong>The parade is paused.</strong><br>";
                     str += "<br><br><br><br><br><img style=\"height:50px\"><br>";
                     $("#NextBtn").addClass("disabled");
                 }
                 $("#AttendeeInfo").html(str);
 
                 // enable/disable buttons
+                if (data["parade_status"] == "true")
+                {
+                    $("#PauseResumeBtn .BtnLabel").html("Pause Parade");
+                }
+                else
+                {
+                    $("#PauseResumeBtn .BtnLabel").html("Resume Parade");
+                }
                 if (data["can_click_reset"] == "true") {
                     $("#ResetBtn").removeClass("disabled");
                 }
@@ -114,11 +126,10 @@
                 if (data["can_click_next"] == "true")
                 {
                     $("#NextBtn").removeClass("disabled");
-                    $("#NextBtn .BtnLabel").html("Next Attendee");
                 }
                 else
                 {
-                    $("#NextBtn .BtnLabel").html("End Parade");
+                    $("#NextBtn").addClass("disabled");
                 }
 
             }
@@ -128,6 +139,9 @@
 
     function PrevAttendee()
     {
+        if ($("#PrevBtn").hasClass("disabled")) {
+            return;
+        }
         $("#PrevBtn").addClass('active');
         $.ajax({
             dataType: "json",
@@ -141,6 +155,9 @@
 
     function NextAttendee ()
     {
+        if ($("#NextBtn").hasClass("disabled")) {
+            return;
+        }
         $("#NextBtn").addClass('active');
         $.ajax({
             dataType: "json",
@@ -166,6 +183,19 @@
                 }
             });
         }
+    }
+
+    function PauseResume ()
+    {
+        $("#PauseResumeBtn").addClass('active');
+        $.ajax({
+            dataType: "json",
+            url: "/Winners/PauseResume",
+            success: function (data) {
+                $("#PauseResumeBtn").removeClass('active');
+                ShowInfo();
+            }
+        });
     }
 
 </script>

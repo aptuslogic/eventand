@@ -124,6 +124,54 @@ namespace ATAPS.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        // Get the current parade status (true = parade is running, false = parade is paused)
+        private bool GetParadeStatus ()
+        {
+            List<Parm> parms = new List<Parm>();
+            parms = db.Parms.Where(x => x.ParmName == "ParadePaused").ToList();
+            if (parms.Count == 0 || parms[0].ParmValue == "false")
+            {
+                return (true);
+            }
+            else
+            {
+                return (false);
+            }
+        }
+
+        // Set the current parade status (true = parade is running, false = parade is paused)
+        private void SetParadeStatus (bool status)
+        {
+            List<Parm> parms = new List<Parm>();
+            parms = db.Parms.Where(x => x.ParmName == "ParadePaused").ToList();
+            if (parms.Count > 0)
+            {
+                parms[0].ParmValue = status ? "false" : "true";
+                db.SaveChanges();
+            }
+            else
+            {
+                Parm parm = new Parm ();
+                parm.ParmName = "ParadePaused";
+                parm.ParmValue = status ? "false" : "true";
+                db.Parms.Add(parm);
+                db.SaveChanges();
+            }
+        }
+
+        // GET: Winners/PauseResume
+        public ActionResult PauseResume()
+        {
+            // toggle the parade status
+            bool status = this.GetParadeStatus();
+            this.SetParadeStatus(!status);
+
+            // return success
+            IDictionary<string, string> data = new Dictionary<string, string>();
+            data["status"] = "success";
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: Winners/WinnersUpdate
         public ActionResult WinnersUpdate()
         {
@@ -131,12 +179,13 @@ namespace ATAPS.Controllers
             Parm parm = db.Parms.Where(x => x.ParmName == "CurrWinnerQueuePos").First();
             int currQueuePos = int.Parse (parm.ParmValue);
             IDictionary<string, string> data = new Dictionary<string, string>();
-            if (currQueuePos == 9999)
+            if (!(this.GetParadeStatus()) || currQueuePos == 9999)
             {
                 data["can_click_prev"] = "false";
                 data["can_click_next"] = "false";
                 data["can_click_reset"] = "true";
                 data["status"] = "failure";
+                data["parade_status"] = this.GetParadeStatus() ? "true" : "false";
             }
             else
             {
@@ -178,6 +227,9 @@ namespace ATAPS.Controllers
 
                 // return success
                 data["status"] = "success";
+
+                // return parade status
+                data["parade_status"] = this.GetParadeStatus() ? "true" : "false";
             }
 
             // json encode and return it
