@@ -164,7 +164,7 @@ namespace ATAPS.Controllers
                 string local_path = Server.MapPath("~") + "\\Content\\activity_waivers\\";
                 string web_path = "/Content/activity_waivers/";
                 string prefix = string.Format(@"{0}", DateTime.Now.Ticks);
-                string suffix = ".pdf";//ega grab suffix from uploaded filename
+                string suffix = Request.Files["Document"].FileName.Substring(Request.Files["Document"].FileName.LastIndexOf('.'));
                 string local_fname = local_path + prefix + suffix;
                 string url = web_path + prefix + suffix;
 
