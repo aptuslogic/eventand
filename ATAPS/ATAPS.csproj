@@ -554,6 +554,9 @@
     <Content Include="Views\Attendees\Scan.cshtml" />
     <Content Include="Views\Attendees\Index.cshtml" />
     <Content Include="Views\Host\Sig.cshtml" />
+    <Content Include="Views\Registration\IndivCheckin.cshtml" />
+    <Content Include="Views\Activities\Waivers.cshtml" />
+    <Content Include="Views\Activities\UploadWaiver.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -617,6 +620,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\activity_waivers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

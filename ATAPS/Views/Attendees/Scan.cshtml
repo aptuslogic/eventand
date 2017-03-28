@@ -135,7 +135,10 @@
             // create a hiden form
             var form = "<form id=\"ConfirmForm\" action=\"/Attendees/Scan?filter=" + vals[1] + "\" method=\"post\">";
             form += "<input name=\"SearchString\" type=\"hidden\" value=\"" + vals[2] + "\" />";
-            form += "<input name=\"Confirmed\" value=\"yes\" type=\"hidden\" />";            form += "</form>";            $(form).insertAfter("#ScanConf"); 
+            form += "<input name=\"Confirmed\" value=\"yes\" type=\"hidden\" />";
+            form += "</form>";
+            $(form).insertAfter("#ScanConf");
+ 
             // make the alert box red and show the request
             $("#ScanConf").removeClass("alert-success").addClass("alert-danger");
             $("#ScanConf").html("<strong>Confirm:</strong> <a href=\"" + url + "\">Click here if you are sure you want to re-queue this person:</a> " + imgref);
