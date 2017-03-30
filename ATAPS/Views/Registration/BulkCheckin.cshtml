@@ -64,17 +64,10 @@
                         @Html.DisplayFor(modelItem => item.Mobile)
                     </td>
                     <td>
-                        <a href="javascript:DoCheckin(@item.ID)">Register</a>
+                        <a href="/Registration/IndivCheckin?id=@item.ID">Register</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <script language="Javascript">
-        function DoCheckin (id)
-        {
-            alert("you are checking in attendee #" + id);
-        }
-    </script>
 }

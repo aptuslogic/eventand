@@ -1,17 +1,91 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "IndivCheckin";
 }
 
-<h2>IndivCheckin</h2>
+<h2>Individual Checkin for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName</h2>
 
-<p>attendee name</p>
+<p>
+    <a href="/Registration/BulkCheckin">Back to Bulk Checkin</a>
+</p>
 
-<p>activity name list</p>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="btn-group pull-right">
+            <a style="position:relative; top:-4px" href="" class="btn btn-default btn-sm">Add New</a>
+        </div>
+        <strong>Gift Cards Issued</strong>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Signature</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.giftcards.Count == 0)
+                {
+                    <tr>
+                        <td>You have not issued any gift cards for this attendee.</td>
+                        <td></td>
+                    </tr>
+                }
+                @foreach (var card in ViewBag.giftcards)
+                {
+                    <tr>
+                        <td>
+                            <a href="">Name of the thing</a>
+                        </td>
+                        <td>
+                            <a href="">View the sig</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<p>add gift card button (supersig for each)</p>
-<p>text input for card # (obtained by swipe), ss canvas, submit and clear</p>
-
-<p>waiver list (each item has a supersig link)</p>
-show waiver with ss box
-popup to display the waiver, tap to sign, checkbox to show they have signed it...
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Activity Waivers</strong>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Waiver Document</th>
+                    <th>Signature</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.waivers.Count == 0)
+                {
+                    <tr>
+                        <td>There are no applicable waivers for this attendee.</td>
+                        <td></td>
+                    </tr>
+                }
+                @foreach (var waiver in ViewBag.waivers)
+                {
+                    <tr>
+                        <td>
+                            <a target="_new" href="@waiver.waiver_url">@waiver.waiver_name</a>
+                        </td>
+                        <td>
+                            @if (waiver.signature_url == null)
+                            {
+                                <a href="/Registration/SignWaiver?attendee=@ViewBag.attendee.ID&waiver=@waiver.id">Sign Waiver</a>
+                            }
+                            else
+                            {
+                                <a target="_new" href="@waiver.signature_url">View Signature</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

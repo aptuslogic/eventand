@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -101,22 +102,71 @@ namespace ATAPS.Controllers
             return View(attendees);
         }
 
-        public ActionResult IndivCheckin(int attendeeId)
+        // GET:  Registration/SignWaiver
+        public ActionResult SignWaiver()
         {
-            //ega pass in attendee id
+            // load in the waiver
+            int waiver_id = Int32.Parse(Request["waiver"]);
+            Parm parm = db.Parms.Where(x => x.ID == waiver_id).FirstOrDefault();
+            int commaPos = parm.ParmValue.IndexOf(',');
+            string url = parm.ParmValue.Substring(0, commaPos);
+            string name = parm.ParmValue.Substring(commaPos + 1);
+            ViewBag.waiver = new Waiver(parm.ID, url, name, null);
+
+            // load in the attendee
+            int id = Int32.Parse(Request["attendee"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+            ViewBag.attendee = attendee;
+
+            // show the view
             return (View());
         }
 
-        [HttpPost]
-        public ActionResult IndivCheckin()
+        public ActionResult IndivCheckin(int id)
         {
-            //ega create a "checkin" as if attendee had just checked in to an activity
-            return (View());//ega send them back to bulk checkin
+            // pass the attendee to the view
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+            ViewBag.attendee = attendee;
+
+            // pass list of registered gift cards
+            ViewBag.giftcards = new List<GiftCard>();
+//ega define the data format in Parms table and read it all here
+            GiftCard giftcard = new GiftCard();
+            ViewBag.giftcards.Add(giftcard);
+            //ega
+
+            // pass a list of waivers
+            List<Parm> parms = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
+            ViewBag.waivers = new List<Waiver>();
+            foreach (Parm parm in parms)
+            {
+                // get the activity id
+                int activityId = Int32.Parse(parm.ParmName.Substring(parm.ParmName.IndexOf('-') + 1));
+
+                // parse out the url and name
+                int commaPos = parm.ParmValue.IndexOf(',');
+                string url = parm.ParmValue.Substring(0, commaPos);
+                string name = parm.ParmValue.Substring(commaPos + 1);
+
+                // check for existing signature
+                string name_encoded = new string (name.Where(Char.IsLetter).ToArray());
+                string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-Sig-" + name_encoded + ".png";
+                string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-Sig-" + name_encoded + ".png";
+                if (!System.IO.File.Exists (sig_fname))
+                {
+                    sig_url = null;
+                }
+
+                // store this waiver in the list
+                ViewBag.waivers.Add(new Waiver(parm.ID, url, name, sig_url));
+            }
+
+            // display the view
+            return (View());
         }
 
         public ActionResult BulkRfid (int busID)
         {
-            //ega populate list of attendees in order of check in
             return (View());
         }
 
@@ -150,6 +200,29 @@ namespace ATAPS.Controllers
             }
 
             return View(activity);
+        }
+    }
+
+    public class Waiver
+    {
+        public int id;
+        public string waiver_url;
+        public string waiver_name;
+        public string signature_url;
+
+        public Waiver (int id_param, string waiver_url_param, string waiver_name_param, string signature_url_param)
+        {
+            id = id_param;
+            waiver_url = waiver_url_param;
+            waiver_name = waiver_name_param;
+            signature_url = signature_url_param;
+        }
+    }
+
+    public class GiftCard
+    {
+        public GiftCard ()
+        {
         }
     }
 }
