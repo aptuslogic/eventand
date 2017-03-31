@@ -1,11 +1,73 @@
-﻿
+﻿@model IEnumerable<ATAPS.Models.Attendee>
+
 @{
     ViewBag.Title = "BulkCheckin";
 }
 
-<h2>BulkCheckin</h2>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+
+<h2>Bulk Checkin</h2>
 
 <p>
     <a href="../Registration/Busses">Back to Bus Master</a>
 </p>
 
+@using (Html.BeginForm())
+{
+    <p>
+        Queue by name or RFID number: @Html.TextBox("SearchString", "")
+        <input type="submit" value="Queue" id="submit-queue" />
+    </p>
+}
+
+@if (Request["SearchString"] != "" && Request["SearchString"] != null)
+{
+
+    <table class="table" id="attendee-table">
+        <thead>
+            <tr>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    First Name
+                </th>
+
+                <th>Thumbnail</th>
+
+                <th>
+                    RFID
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Mobile)
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="attendee-table-body">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td style="text-align:center">
+                        <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RfID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mobile)
+                    </td>
+                    <td>
+                        <a href="/Registration/IndivCheckin?id=@item.ID">Register</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

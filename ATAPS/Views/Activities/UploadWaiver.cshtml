@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "UploadWaiver";
+}
+
+<h2>Upload Waiver for @ViewBag.ActivityName</h2>
+
+<p>
+    <a href="/Activities/Waivers/@ViewBag.ActivityID">Back to Waivers</a>
+</p>
+
+<form action="/Activities/UploadWaiver/" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="id" value="@ViewBag.ActivityID" />
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Label</label>
+        <div class="col-md-10">
+            <input class="form-control" type="text" name="Label" />
+        </div>
+    </div><br /><br />
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Document</label>
+        <div class="col-md-10">
+            <input class="form-control file-upload" name="Document" type="file" />
+        </div>
+    </div><br /><br />
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Upload" class="btn btn-default" />
+        </div>
+    </div>
+
+</form>

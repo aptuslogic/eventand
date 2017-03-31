@@ -37,12 +37,21 @@
                         var att = data.Attendees[i];
                         att.Filename = (att.Filename == null) ? "" : att.Filename;
                         var img = "<img src=\"" + att.Filename + "\" alt=\"None\" style=\"height:50px\" />";
-                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.WinnerQueueOrder+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
+                        var newRow = "<tr><td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td style=\"text-align:center\">" + img + "</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td>";
+                        if (att.WinnerQueueOrder == null)
+                        {
+                            newRow += "<td>Not in Queue</td>";
+                        }
+                        else
+                        {
+                            newRow += "<td>"+att.WinnerQueueOrder+"</td>";
+                        }
+                        newRow += "<td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += "<td></td>";
                         newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
                         newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
-                        newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Queue</a></td></tr>';//ega this is linking to delete for now and so is link below
+                        newRow += "<a href=\"javascript:DoQueue(" + att.ID + "," + att.EventID + ",'" + (att.WinnerQueueOrder==null ? "":att.WinnerQueueOrder) + "')\">Queue</a></td></tr>";
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
@@ -74,6 +83,9 @@
 </p>
 <p>
     @Html.ActionLink("Upload XLS", "Upload", new { filter = ViewBag.FilterID })
+</p>
+<p>
+    @Html.ActionLink("Reset Queue Order", "ResetOrder", new { filter = ViewBag.FilterID })
 </p>
 
 @using (Html.BeginForm())
@@ -137,18 +149,25 @@
                     <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.WinnerQueueOrder)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.ParticipantID)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrimaryID)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ParticipantType)
+                    @if (item.WinnerQueueOrder != null)
+                    {
+                        <text>@item.WinnerQueueOrder</text>
+                    }
+                    else
+                    {
+                        <text>Not in Queue</text>
+                    }
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.ParticipantType)
+                </td>
+                <td>wqo
                     @Html.DisplayFor(modelItem => item.RSVPStatus)
                 </td>
                 <td>
@@ -164,7 +183,7 @@
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) | 
                     @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
-                    @Html.ActionLink("Queue", "Delete", new { id = item.ID, filter = ViewBag.FilterID })
+                    <a href="javascript:DoQueue(@item.ID,@ViewBag.FilterID,'@item.WinnerQueueOrder')">Queue</a>
                 </td>
             </tr>
         }
@@ -189,3 +208,28 @@
     ..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
 </div>
 
+<script language="Javascript">
+    function DoQueue (id, filter, wqo)
+    {
+        // check existing queue order
+        if (wqo != "")
+        {
+            // if already in queue, make sure they intend to re-queue them
+            if (!confirm ("Are you sure you want to re-queue this person?"))
+            {
+                return;
+            }
+        }
+
+        // get sort order so we can persist it
+        var sort_order = (location.search.split('sortOrder=')[1]||'').split('&')[0];
+
+        // issue queue request
+        var url = "/Attendees/Queue/" + id + "?filter=" + filter;
+        if (sort_order != "")
+        {
+            url += "&sortOrder=" + sort_order;
+        }
+        window.location = url;
+    }
+</script>
