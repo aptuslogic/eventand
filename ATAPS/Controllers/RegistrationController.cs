@@ -287,6 +287,32 @@ namespace ATAPS.Controllers
                 bmpSign.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
             }
         }
+
+        // GET: /Registration/Monitor
+        public ActionResult Monitor()
+        {
+            // get all attendees
+            List<Attendee> attendees = db.Attendees.ToList();
+
+            // convert to monitor items
+            List<MonitorItem> items = new List<MonitorItem>();
+            foreach (Attendee attendee in attendees)
+            {
+                MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, "msg goes here");//ega msg
+                items.Add(item);
+            }
+            ViewBag.MonitorItems = items;
+
+            //ega show actual thumbnail, not filename
+            //ega gift cards: show each, with card number and link to signature
+            //ega waiver: show each, with name, link to doc, and link to sig
+            //ega show waivers not signed
+            //ega have a refresh link, make datatable preserve its settings
+            //ega is there anything else they want to show here?
+            //ega have form to add rfid
+
+            return (View());
+        }
     }
 
     public class Waiver
@@ -335,6 +361,26 @@ namespace ATAPS.Controllers
 
             // return the list
             return (results);
+        }
+    }
+
+    public class MonitorItem
+    {
+        public string name;
+        public string rfid;
+        public string thumbnail;
+        public string mobile;
+        public string activity_list;
+        public string msg;
+
+        public MonitorItem (string name_param, string rfid_param, string thumbnail_param, string mobile_param, string activity_list_param, string msg_param)
+        {
+            name = name_param;
+            rfid = rfid_param;
+            thumbnail = thumbnail_param;
+            mobile = mobile_param;
+            activity_list = activity_list_param;
+            msg = msg_param;
         }
     }
 }
