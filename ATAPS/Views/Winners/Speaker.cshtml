@@ -40,6 +40,15 @@
             },
             success: function (data) {
 
+                // see if it's the end of the parade
+                if (data["status"] == "failure") {
+                    // transition the old info out
+                    c.animateCss(wp_speaker_out_anim);
+                    c.one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                        c.html("");
+                    });
+                }
+
                 // see if the incoming attendee is different from what we already displaying
                 if ("curr_id" in data && c.data("id") != data["curr_id"])
                 {

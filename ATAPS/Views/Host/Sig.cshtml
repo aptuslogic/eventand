@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MVC Sign</title>
+    <script language="javascript" type="text/javascript" src="../../Scripts/jquery-1.9.1.min.js"></script>
+    <script language="javascript" type="text/javascript" src="../../Scripts/ss.js"></script>
+    <!-- // IMPORTANT: DO NOT USE THIS ss.js IN PRODUCTION, EMAIL US TO GET PRODUCTION VERSION ONCE YOU PUCHASE IT -->
+</head>
+<body>
+    <form method="post" action="/Host/Sig/">
+        <div id='ctlSignature_Container' style='width: 450px; height: 300px; margin: 10px; position: relative;'>
+            <script language="javascript" type="text/javascript">
+            var ieVer = getInternetExplorerVersion();
+            if (isIE) {
+                if (ieVer >= 9.0)
+                    isIE = false;
+            }
+
+            if (isIE) {
+                document.write("<div ID='ctlSignature' style='width:450px;height:300px;'></div>");
+            }
+            else {
+                document.write("<canvas id='ctlSignature' width='450' height='300' style='left: 0px; top: 0px; position: absolute;'></canvas>");
+            }
+            </script>
+        </div>
+        <div id='ctlSignature_toolbar' style='display: block; left: 10px; height: 20px; width: 450px;
+        position: relative; background-color: transparent'>
+            <input type="button" id='ctlSignature_resetbutton' value="Reset" style='cursor: pointer;
+            float: right;' /><div id='ctlSignature_status' style='color: blue; font-family: verdana;
+                font-size: 12px; float: right; margin-right: 5px;'>
+            </div>
+        </div>
+        <input type='hidden' id='ctlSignature_data' name='ctlSignature_data' value='' /><input type='hidden' id='ctlSignature_data_smooth' name='ctlSignature_data_smooth' value='' />
+        <input type="submit" value="Save" />
+        <script type="text/javascript">
+
+        var objctlSignature;
+        $(document).ready(function () { objctlSignature = new SuperSignature({ SignObject: "ctlSignature", SignWidth: "450", SignHeight: "300", ImageScaleFactor: "1", Enabled: "true", SmoothSign: true, TransparentSign: true, BackColor: "#ffffff", Visible: "true", RequiredPoints: 50, SuccessMessage: "Signature OK.", StartMessage: "Please sign.", ErrorMessage: "Please continue your signature.", BorderColor: "#DCDCDC", BorderStyle: "dashed", BorderWidth: "2px", PenColor: "#D24747", PenSize: 3,jQueryEvent: false, forceMouseEvent: true }); try { objctlSignature.Init(); } catch (ex) { alert(ex.description); } });
+
+        // PenCursor : "pen.cur"  // choose path relative to ss.js and provide your file
+
+        </script>
+    </form>
+</body>
+</html>

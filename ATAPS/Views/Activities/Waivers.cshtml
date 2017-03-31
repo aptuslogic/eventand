@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ATAPS.Models.Parm>
+
+@{
+    ViewBag.Title = "Waivers";
+}
+
+<h2>Waivers for @ViewBag.ActivityName</h2>
+
+<p>
+    <a href="/Activities/Edit/@ViewBag.ActivityID?filter=4">Back to Edit Activity</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Waiver Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td>You have not yet uploaded any waivers for this activity.</td>
+                <td></td>
+            </tr>
+        }
+        @foreach (var waiver in Model)
+        {
+            <tr>
+                <td>
+                    <a target="_new" href="@waiver.ParmValue.Substring(0,waiver.ParmValue.IndexOf(','))">
+                        @waiver.ParmValue.Substring(waiver.ParmValue.IndexOf(',')+1)
+                    </a>
+                </td>
+                <td><a href="javascript:DeleteWaiver(@waiver.ID,@ViewBag.ActivityID)">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button onclick="UploadWaiver(@ViewBag.ActivityID)" class="btn btn-success">Upload a Waiver</button>
+
+<script language="Javascript">
+    function DeleteWaiver (id, activity)
+    {
+        if (confirm ("Are you sure you want to delete this waiver?"))
+        {
+            window.location = "/Activities/DeleteWaiver/" + id + "?activity=" + activity;
+        }
+    }
+    function UploadWaiver (id)
+    {
+        window.location = "/Activities/UploadWaiver/" + id;
+    }
+</script>
