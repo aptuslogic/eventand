@@ -8,6 +8,9 @@ using ATAPS.Models.DisplayObject;
 using ATAPS.Models;
 using ATAPS.Helpers;
 using System.Configuration;
+using System.Drawing;
+using System.Text;
+using SuperSignature;
 
 namespace ATAPS.Controllers
 {
@@ -102,7 +105,8 @@ namespace ATAPS.Controllers
             return View(attendees);
         }
 
-        // GET:  Registration/SignWaiver
+        // GET: /Registration/SignWaiver
+        [HttpGet]
         public ActionResult SignWaiver()
         {
             // load in the waiver
@@ -122,6 +126,69 @@ namespace ATAPS.Controllers
             return (View());
         }
 
+        // POST: /Registration/ReceiveGiftCard
+        [HttpPost]
+        public ActionResult ReceiveGiftCard()
+        {
+            // get attendee info
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+
+            // get card number
+            string cardNum = Request["CardNumber"];
+
+            // store the card in the database
+            Parm parm = new Parm();
+            parm.ParmName = "GiftCard-" + attendee.ID;
+            parm.ParmValue = cardNum;
+            db.Parms.Add(parm);
+            db.SaveChanges();
+
+            // store the signature
+            string sig_fname = Server.MapPath("~") + "\\Content\\gift_card_signatures\\" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+            SaveSig(sig_fname);
+
+            // show the view
+            return RedirectToAction("IndivCheckin", new { id = id });
+        }
+
+        // GET: /Registration/AddGiftCard
+        public ActionResult AddGiftCard ()
+        {
+            // get attendee info
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+            ViewBag.attendee = attendee;
+
+            // show the view
+            return (View());
+        }
+
+        // POST: /Registration/SignWaiver
+        [HttpPost]
+        public ActionResult ReceiveSignedWaiver ()
+        {
+            // get attendee
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+
+            // get waiver
+            int waiver_id = Int32.Parse(Request["waiver"]);
+            Parm parm = db.Parms.Where(x => x.ID == waiver_id).FirstOrDefault();
+            int commaPos = parm.ParmValue.IndexOf(',');
+            string url = parm.ParmValue.Substring(0, commaPos);
+            string name = parm.ParmValue.Substring(commaPos + 1);
+
+            // save signature
+            string name_encoded = new string(name.Where(Char.IsLetter).ToArray());
+            string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + name_encoded + ".png";
+            SaveSig(sig_fname);
+
+            // redirect back to waivers
+            return RedirectToAction("IndivCheckin", new { id = id });
+        }
+
+        // GET: /Registration/IndivCheckin
         public ActionResult IndivCheckin(int id)
         {
             // pass the attendee to the view
@@ -129,11 +196,7 @@ namespace ATAPS.Controllers
             ViewBag.attendee = attendee;
 
             // pass list of registered gift cards
-            ViewBag.giftcards = new List<GiftCard>();
-//ega define the data format in Parms table and read it all here
-            GiftCard giftcard = new GiftCard();
-            ViewBag.giftcards.Add(giftcard);
-            //ega
+            ViewBag.giftcards = GiftCard.GetIssued(db, attendee);
 
             // pass a list of waivers
             List<Parm> parms = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
@@ -150,8 +213,8 @@ namespace ATAPS.Controllers
 
                 // check for existing signature
                 string name_encoded = new string (name.Where(Char.IsLetter).ToArray());
-                string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-Sig-" + name_encoded + ".png";
-                string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-Sig-" + name_encoded + ".png";
+                string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + name_encoded + ".png";
+                string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + name_encoded + ".png";
                 if (!System.IO.File.Exists (sig_fname))
                 {
                     sig_url = null;
@@ -201,6 +264,29 @@ namespace ATAPS.Controllers
 
             return View(activity);
         }
+
+        // this function saves a Super Signature sig file
+        void SaveSig (string fname)
+        {
+            // receive and convert incoming data
+            string signData = Request["ctlSignature_data"];
+            string signDataSmooth = Request["ctlSignature_data_smooth"];
+            MouseSignature ctlSignature = new MouseSignature();
+            byte[] arrayOfBytes = Convert.FromBase64String(signData);
+            signData = Encoding.UTF8.GetString(arrayOfBytes);
+            byte[] arrayOfBytesSmooth = Convert.FromBase64String(signDataSmooth);
+            signDataSmooth = Encoding.UTF8.GetString(arrayOfBytesSmooth);
+            ctlSignature.SignDataSmooth = signDataSmooth;
+
+            // generate bitmap
+            Bitmap bmpSign = ctlSignature.GenerateSignature(signData, "");
+
+            // save a file
+            using (FileStream fs = System.IO.File.Create(fname))
+            {
+                bmpSign.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
+            }
+        }
     }
 
     public class Waiver
@@ -221,8 +307,34 @@ namespace ATAPS.Controllers
 
     public class GiftCard
     {
-        public GiftCard ()
+        public string signature_url;
+        public string card_number;
+
+        public GiftCard (string signature_url_param, string card_number_param)
         {
+            signature_url = signature_url_param;
+            card_number = card_number_param;
+        }
+
+        public static List<GiftCard> GetIssued (RFIDDBEntities db, Attendee attendee)
+        {
+            // start an empty list
+            List<GiftCard> results = new List<GiftCard>();
+
+            // get all the parms
+            string name = "GiftCard-" + attendee.ID;
+            List<Parm> parms = db.Parms.Where(x => x.ParmName == name).ToList();
+
+            // convert the parms to GiftCard objects
+            foreach (Parm parm in parms)
+            {
+                string number = parm.ParmValue;
+                string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + number + ".png";
+                results.Add(new GiftCard(sig_url, number));
+            }
+
+            // return the list
+            return (results);
         }
     }
 }

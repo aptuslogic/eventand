@@ -110,6 +110,10 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SuperSignature, Version=1.5.0.2, Culture=neutral, PublicKeyToken=6fef500d0eeb8668, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\SuperSignature.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
@@ -558,6 +562,7 @@
     <Content Include="Views\Activities\Waivers.cshtml" />
     <Content Include="Views\Activities\UploadWaiver.cshtml" />
     <Content Include="Views\Registration\SignWaiver.cshtml" />
+    <Content Include="Views\Registration\AddGiftCard.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -622,6 +627,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\activity_waivers\" />
+    <Folder Include="Content\gift_card_signatures\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

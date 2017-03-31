@@ -8,10 +8,10 @@
     <a href="/Registration/BulkCheckin">Back to Bulk Checkin</a>
 </p>
 
-<div class="panel panel-default">
+<div class="panel panel-success">
     <div class="panel-heading">
         <div class="btn-group pull-right">
-            <a style="position:relative; top:-4px" href="" class="btn btn-default btn-sm">Add New</a>
+            <a style="position:relative; top:-4px" href="/Registration/AddGiftCard?id=@ViewBag.attendee.ID" class="btn btn-default btn-sm">Add New</a>
         </div>
         <strong>Gift Cards Issued</strong>
     </div>
@@ -19,7 +19,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Card Number</th>
                     <th>Signature</th>
                 </tr>
             </thead>
@@ -35,10 +35,10 @@
                 {
                     <tr>
                         <td>
-                            <a href="">Name of the thing</a>
+                            @card.card_number
                         </td>
                         <td>
-                            <a href="">View the sig</a>
+                            <a target="_new" href="@card.signature_url">View Signature</a>
                         </td>
                     </tr>
                 }
@@ -47,7 +47,7 @@
     </div>
 </div>
 
-<div class="panel panel-default">
+<div class="panel panel-success">
     <div class="panel-heading">
         <strong>Activity Waivers</strong>
     </div>
