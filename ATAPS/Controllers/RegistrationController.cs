@@ -301,8 +301,8 @@ namespace ATAPS.Controllers
             {
                 //ega get all checkins for activityid=filter
                 attendees = db.Attendees.ToList();//ega this query has to change
+                //ega use filter to query specific bus, or if null then all busses
             }
-            //ega use filter to query specific bus, or if null then all busses
 
             // get list of all waivers
             List<Parm> waivers = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
