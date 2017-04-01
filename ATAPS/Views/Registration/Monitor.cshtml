@@ -33,18 +33,16 @@
              <tr>
                 <td>@item.name</td>
                 <td>@item.rfid</td>
-                <td>@item.thumbnail</td>
+                <td><img src="@item.thumbnail" height="50px" /></td>
                 <td>@item.mobile</td>
                 <td>@item.activity_list</td>
-                <td>@item.msg</td>
+                <td>@Html.Raw(item.msg)</td>
             </tr>
         }
     </tbody>
 </table>
 
 <script language="Javascript">
-
-    //ega is there a better way to know when the scripts have finished loading?  check for jquery, then include datatables and then check for when that finishes loading
 
     setTimeout(function () {
         jQuery("body").append ("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" /><" + "script src=\"http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></" + "script>");

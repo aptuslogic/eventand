@@ -228,7 +228,7 @@ namespace ATAPS.Controllers
             return (View());
         }
 
-        public ActionResult BulkRfid (int busID)
+        public ActionResult BulkRfid (int filter)
         {
             return (View());
         }
@@ -289,26 +289,72 @@ namespace ATAPS.Controllers
         }
 
         // GET: /Registration/Monitor
-        public ActionResult Monitor()
+        public ActionResult Monitor(int? filter)
         {
             // get all attendees
-            List<Attendee> attendees = db.Attendees.ToList();
+            List<Attendee> attendees;
+            if (filter == null)
+            {
+                attendees = db.Attendees.ToList();
+            }
+            else
+            {
+                //ega get all checkins for activityid=filter
+                attendees = db.Attendees.ToList();//ega this query has to change
+            }
+            //ega use filter to query specific bus, or if null then all busses
+
+            // get list of all waivers
+            List<Parm> waivers = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
 
             // convert to monitor items
             List<MonitorItem> items = new List<MonitorItem>();
             foreach (Attendee attendee in attendees)
             {
-                MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, "msg goes here");//ega msg
-                items.Add(item);
+                // show gift cards given to this attendee
+                List<Parm> parms = db.Parms.Where(x => x.ParmName == "GiftCard-" + attendee.ID).ToList();
+                foreach (Parm parm in parms)
+                {
+                    string cardNum = parm.ParmValue;
+                    string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+                    string msg = "Assigned gift card #" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                    MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
+
+                // show waivers signed by this attendee
+                foreach (Parm waiver in waivers)
+                {
+                    // get filename and description of this waiver
+                    int commaPos = waiver.ParmValue.IndexOf(',');
+                    string waiver_url = waiver.ParmValue.Substring(0, commaPos);
+                    string waiver_name = waiver.ParmValue.Substring(commaPos + 1);
+
+                    // determine sig_fname and sig_url
+                    string waiver_name_encoded = new string(waiver_name.Where(Char.IsLetter).ToArray());
+                    string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+                    string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+
+                    // see if he signed it
+                    string msg;
+                    if (System.IO.File.Exists (sig_fname))
+                    {
+                        msg = "Signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a> | <a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                    }
+                    else
+                    {
+                        msg = "Has not signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a>)";
+                    }
+                    MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
+
+                //ega show actual checkin
             }
             ViewBag.MonitorItems = items;
 
-            //ega show actual thumbnail, not filename
-            //ega gift cards: show each, with card number and link to signature
-            //ega waiver: show each, with name, link to doc, and link to sig
-            //ega show waivers not signed
+            //ega improve on the timing for calling datatable()
             //ega have a refresh link, make datatable preserve its settings
-            //ega is there anything else they want to show here?
             //ega have form to add rfid
 
             return (View());
