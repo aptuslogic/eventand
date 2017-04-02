@@ -288,6 +288,34 @@ namespace ATAPS.Controllers
             }
         }
 
+        // GET: /Registration/AssignRfid
+        public ActionResult AssignRfid()
+        {
+            // get the attendee
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+            ViewBag.attendee = attendee;
+
+            // show the view
+            return (View());
+        }
+
+        // POST: /Registration/ReceiveRfid
+        [HttpPost]
+        public ActionResult ReceiveRfid()
+        {
+            // get the attendee
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+
+            // assign the rfid and save
+            attendee.RfID = Request["rfid"];
+            db.SaveChanges();
+
+            // redirect back to registration monitor
+            return RedirectToAction("Monitor");
+        }
+
         // GET: /Registration/Monitor
         public ActionResult Monitor(int? filter)
         {
@@ -318,7 +346,7 @@ namespace ATAPS.Controllers
                     string cardNum = parm.ParmValue;
                     string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
                     string msg = "Assigned gift card #" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
-                    MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                     items.Add(item);
                 }
 
@@ -345,7 +373,7 @@ namespace ATAPS.Controllers
                     {
                         msg = "Has not signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a>)";
                     }
-                    MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                     items.Add(item);
                 }
 
@@ -355,7 +383,6 @@ namespace ATAPS.Controllers
 
             //ega improve on the timing for calling datatable()
             //ega have a refresh link, make datatable preserve its settings
-            //ega have form to add rfid
 
             return (View());
         }
@@ -412,6 +439,7 @@ namespace ATAPS.Controllers
 
     public class MonitorItem
     {
+        public int id;
         public string name;
         public string rfid;
         public string thumbnail;
@@ -419,8 +447,9 @@ namespace ATAPS.Controllers
         public string activity_list;
         public string msg;
 
-        public MonitorItem (string name_param, string rfid_param, string thumbnail_param, string mobile_param, string activity_list_param, string msg_param)
+        public MonitorItem (int id_param, string name_param, string rfid_param, string thumbnail_param, string mobile_param, string activity_list_param, string msg_param)
         {
+            id = id_param;
             name = name_param;
             rfid = rfid_param;
             thumbnail = thumbnail_param;

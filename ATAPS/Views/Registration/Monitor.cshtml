@@ -14,7 +14,7 @@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
-            <th>Action</th>
+            <th>Message</th>
         </tr>
     </thead>
     <tfoot>
@@ -24,7 +24,7 @@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
-            <th>Action</th>
+            <th>Message</th>
         </tr>
     </tfoot>
     <tbody>
@@ -32,7 +32,16 @@
         {
              <tr>
                 <td>@item.name</td>
-                <td>@item.rfid</td>
+                <td>
+                    @if (item.rfid == null || item.rfid == "")
+                    {
+                        <a href="/Registration/AssignRfid?id=@item.id">Assign RfID</a>
+                    }
+                    else
+                    {
+                        <text>@item.rfid</text>
+                    }
+                </td>
                 <td><img src="@item.thumbnail" height="50px" /></td>
                 <td>@item.mobile</td>
                 <td>@item.activity_list</td>
