@@ -6,7 +6,9 @@
 
 <p><a href="/">Back to Home</a></p>
 
-<table id="MonitorItems" style="width:100%">
+<p><a href="/Registration/Monitor/">Refresh</a></p>
+
+<table id="MonitorItems" class="display" style="width:100%; display:none">
     <thead>
         <tr>
             <th>Name</th>
@@ -30,7 +32,7 @@
     <tbody>
         @foreach (var item in ViewBag.MonitorItems)
         {
-             <tr>
+            <tr>
                 <td>@item.name</td>
                 <td>
                     @if (item.rfid == null || item.rfid == "")
@@ -42,7 +44,12 @@
                         <text>@item.rfid</text>
                     }
                 </td>
-                <td><img src="@item.thumbnail" height="50px" /></td>
+                <td>
+                    @if (item.thumbnail != null && item.thumbnail != "")
+                    {
+                        <text><img src="@item.thumbnail" height="50px" /></text>
+                    }
+                </td>
                 <td>@item.mobile</td>
                 <td>@item.activity_list</td>
                 <td>@Html.Raw(item.msg)</td>
@@ -54,9 +61,12 @@
 <script language="Javascript">
 
     setTimeout(function () {
-        jQuery("body").append ("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" /><" + "script src=\"http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></" + "script>");
+        jQuery("body").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" /><" + "script src=\"http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></" + "script>");
         setTimeout(function () {
-            jQuery('#MonitorItems').DataTable();
+            jQuery('#MonitorItems').DataTable({
+                stateSave: true
+            });
+            jQuery('#MonitorItems').show();
         }, 1000);
     }, 1000);
 

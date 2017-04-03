@@ -376,13 +376,8 @@ namespace ATAPS.Controllers
                     MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                     items.Add(item);
                 }
-
-                //ega show actual checkin
             }
             ViewBag.MonitorItems = items;
-
-            //ega improve on the timing for calling datatable()
-            //ega have a refresh link, make datatable preserve its settings
 
             return (View());
         }
