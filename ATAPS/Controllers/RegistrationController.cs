@@ -136,6 +136,7 @@ namespace ATAPS.Controllers
 
             // get card number
             string cardNum = Request["CardNumber"];
+            cardNum = cardNum.Last(4);
 
             // store the card in the database
             Parm parm = new Parm();
@@ -360,7 +361,7 @@ namespace ATAPS.Controllers
                 {
                     string cardNum = parm.ParmValue;
                     string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
-                    string msg = "Assigned gift card #" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                    string msg = "Assigned gift card #****" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
                     MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                     items.Add(item);
                 }
@@ -467,5 +468,15 @@ namespace ATAPS.Controllers
             activity_list = activity_list_param;
             msg = msg_param;
         }
+    }
+}
+
+public static class StringExtension
+{
+    public static string Last(this string source, int tail_length)
+    {
+        if (tail_length >= source.Length)
+            return source;
+        return source.Substring(source.Length - tail_length);
     }
 }
