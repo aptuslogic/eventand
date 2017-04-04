@@ -196,6 +196,11 @@ namespace ATAPS.Controllers
             Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
             ViewBag.attendee = attendee;
 
+            // show attendee type
+            int participant_type = Int32.Parse(attendee.ParticipantType);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(x => x.ID == participant_type).FirstOrDefault();
+            ViewBag.attendeeType = attendeeType;
+
             // pass list of registered gift cards
             ViewBag.giftcards = GiftCard.GetIssued(db, attendee);
 
@@ -220,6 +225,7 @@ namespace ATAPS.Controllers
                 {
                     sig_url = null;
                 }
+
 
                 // store this waiver in the list
                 ViewBag.waivers.Add(new Waiver(parm.ID, url, name, sig_url));

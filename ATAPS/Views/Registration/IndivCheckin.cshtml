@@ -2,7 +2,16 @@
     ViewBag.Title = "IndivCheckin";
 }
 
-<h2>Individual Checkin for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName</h2>
+<h2>Individual Checkin for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName (Type: @ViewBag.attendeeType.Name)</h2>
+Activites: 
+@if (ViewBag.attendee.ActivityListNames == null)
+{
+    <text>None</text><br /><br />
+}
+else
+{
+    @ViewBag.attendee.ActivityListNames<br /><br />
+}
 
 <p>
     <a href="/Registration/BulkCheckin">Back to Bulk Checkin</a>
