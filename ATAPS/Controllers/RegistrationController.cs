@@ -319,17 +319,32 @@ namespace ATAPS.Controllers
         // GET: /Registration/Monitor
         public ActionResult Monitor(int? filter)
         {
+            // get a list of busses
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int agendaID = Int32.Parse(checkinParm.ParmValue);
+            List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
+            ViewBag.activities = activities;
+            string bus = null;
+            if (Request.Cookies["BusSelect"] != null)
+            {
+                bus = Request.Cookies["BusSelect"].Value;
+            }
+
             // get all attendees
             List<Attendee> attendees;
-            if (filter == null)
+            if (bus == null || bus == "-1")
             {
                 attendees = db.Attendees.ToList();
             }
             else
             {
-                //ega get all checkins for activityid=filter
-                attendees = db.Attendees.ToList();//ega this query has to change
-                //ega use filter to query specific bus, or if null then all busses
+                int busid = Int32.Parse(bus);
+                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == busid).ToList();
+                attendees = new List<Attendee>();
+                foreach (AttendeeLastCheck checkin in checkins)
+                {
+                    attendees.Add(db.Attendees.Where(x => x.ID == checkin.AttendeeID).FirstOrDefault());
+                }
             }
 
             // get list of all waivers
