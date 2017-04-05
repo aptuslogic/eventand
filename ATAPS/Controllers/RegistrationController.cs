@@ -196,6 +196,13 @@ namespace ATAPS.Controllers
             Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
             ViewBag.attendee = attendee;
 
+            // get ids for the activity and agenda
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int agendaID = Int32.Parse(checkinParm.ParmValue);
+            ViewBag.agendaId = agendaID;
+            List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
+            ViewBag.activityId = activities[0].ID;
+
             // show attendee type
             int participant_type = Int32.Parse(attendee.ParticipantType);
             AttendeeType attendeeType = db.AttendeeTypes.Where(x => x.ID == participant_type).FirstOrDefault();

@@ -14,6 +14,10 @@ else
 }
 
 <p>
+    <button class="btn btn-danger" id="CheckinBtn" onclick="CheckinNow('@ViewBag.attendee.RfID','@ViewBag.agendaId','@ViewBag.ActivityId')">Check in this attendee now</button>
+</p>
+
+<p>
     <a href="/Registration/BulkCheckin">Back to Bulk Checkin</a>
 </p>
 
@@ -101,3 +105,23 @@ else
         </table>
     </div>
 </div>
+
+<script language="Javascript">
+    function CheckinNow (rfid, agenda, activity)
+    {
+        //ega what if user is already checked in?
+        $("#CheckinBtn").html("Please wait...").addClass("disabled");
+        $.getJSON("/api/Call/TagAttendeeInByID",
+            {
+                rfid: rfid,
+                agendaID: agenda,
+                activityID: activity,
+                dir: "In"
+            },
+            function (data)
+            {
+                $("#CheckinBtn").replaceWith("<div class=\"alert alert-info\"><strong>The attendee is now checked in.</strong></div>");
+            }
+        );
+    }
+</script>
