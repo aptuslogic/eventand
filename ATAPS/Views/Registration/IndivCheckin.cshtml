@@ -109,7 +109,6 @@ else
 <script language="Javascript">
     function CheckinNow (rfid, agenda, activity)
     {
-        //ega what if user is already checked in?
         $("#CheckinBtn").html("Please wait...").addClass("disabled");
         $.getJSON("/api/Call/TagAttendeeInByID",
             {
