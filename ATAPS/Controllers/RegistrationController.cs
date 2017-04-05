@@ -245,20 +245,19 @@ namespace ATAPS.Controllers
             return View();
         }
 
-        public ActionResult CreateBus(int filter)
+        public ActionResult CreateBus()
         {
-
-            ViewBag.FilterID = -1;
+            ViewBag.FilterID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateBus([Bind(Include = "ID,ActivityName,AgendaID")] Activity activity, int? filter)
+        public ActionResult CreateBus([Bind(Include = "ID,ActivityName,AgendaID")] Activity activity)
         {
-            if (filter == null) { return HttpNotFound(); }
-            ViewBag.FilterID = filter;
-            activity.AgendaID = filter ?? default(int);
+            //if (filter == null) { return HttpNotFound(); }
+            //ViewBag.FilterID = filter;
+            //activity.AgendaID = filter ?? default(int);
             Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
             activity.AgendaID = int.Parse(checkinParm.ParmValue);
             activity.ActivityTypeID = 1;

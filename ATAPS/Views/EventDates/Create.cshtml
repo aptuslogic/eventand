@@ -31,7 +31,9 @@
                     @Html.ValidationMessageFor(model => model.EventRecordsID, "", new { @class = "text-danger" })
                 </div>*@
 
-            @Html.LabelFor(model => model.Event.EventName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="control-label col-md-2">
+                Event Name: 
+            </div>
             <div class="col-md-10">
                 @ViewBag.Event.Event.EventName
                 @*@Html.DropDownListFor(x => x.EventRecordsID,*@
