@@ -345,6 +345,7 @@ namespace ATAPS.Controllers
 
             // get all attendees
             List<Attendee> attendees;
+            IDictionary<int, string> checkinTimes = new Dictionary<int, string>();
             if (bus == null || bus == "-1")
             {
                 attendees = db.Attendees.ToList();
@@ -352,12 +353,14 @@ namespace ATAPS.Controllers
             else
             {
                 int busid = Int32.Parse(bus);
-                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == busid).ToList();
                 attendees = new List<Attendee>();
+                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == busid).ToList();
                 foreach (AttendeeLastCheck checkin in checkins)
                 {
+                    checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
                     attendees.Add(db.Attendees.Where(x => x.ID == checkin.AttendeeID).FirstOrDefault());
                 }
+                ViewBag.checkinTimes = checkinTimes;
             }
 
             // get list of all waivers
@@ -367,6 +370,14 @@ namespace ATAPS.Controllers
             List<MonitorItem> items = new List<MonitorItem>();
             foreach (Attendee attendee in attendees)
             {
+                // show checkin time for this attendee
+                if (checkinTimes[attendee.ID] != null)
+                {
+                    string msg = "Checked in on " + checkinTimes[attendee.ID];
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
+
                 // show gift cards given to this attendee
                 List<Parm> parms = db.Parms.Where(x => x.ParmName == "GiftCard-" + attendee.ID).ToList();
                 foreach (Parm parm in parms)
