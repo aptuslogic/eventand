@@ -19,6 +19,7 @@
     </select>
 </p>
 
+<div id="MonitorItemsContainer">
 <table id="MonitorItems" class="display" style="width:100%; display:none">
     <thead>
         <tr>
@@ -68,6 +69,7 @@
         }
     </tbody>
 </table>
+</div>
 
 <script language="Javascript">
 
@@ -84,8 +86,28 @@
             jQuery('#MonitorItems').show();
         }, 1000);
 
-        // pre-populate the bus selector
+        // refresh every 10 sec
+        function DoRefresh ()
+        {
+            jQuery.ajax("/Registration/Monitor").done(function (data) {
+                data = data.substr(data.indexOf("<table"));
+                data = data.substr(0, data.indexOf("</table>") + 8);
+                jQuery("#MonitorItemsContainer").empty();
+                jQuery("#MonitorItemsContainer").html(data);
+                jQuery('#MonitorItems').DataTable({
+                    stateSave: true
+                });
+                jQuery('#MonitorItems').show();
+                setTimeout(DoRefresh, 10000);
+            });
+        }
         var bus = readCookie("BusSelect");
+        if (bus != null && bus != "-1" && bus != "")
+        {
+            setTimeout(DoRefresh, 10000);
+        }
+
+        // pre-populate the bus selector
         if (bus != null && bus != "-1" && bus != "")
         {
             jQuery("#BusSelect option[value='" + bus + "']").prop("selected", true);
