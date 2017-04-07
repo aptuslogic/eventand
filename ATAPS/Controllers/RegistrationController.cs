@@ -136,6 +136,7 @@ namespace ATAPS.Controllers
 
             // get card number
             string cardNum = Request["CardNumber"];
+            cardNum = cardNum.Last(4);
 
             // store the card in the database
             Parm parm = new Parm();
@@ -195,6 +196,18 @@ namespace ATAPS.Controllers
             Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
             ViewBag.attendee = attendee;
 
+            // get ids for the activity and agenda
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int agendaID = Int32.Parse(checkinParm.ParmValue);
+            ViewBag.agendaId = agendaID;
+            List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
+            ViewBag.activityId = activities[0].ID;
+
+            // show attendee type
+            int participant_type = Int32.Parse(attendee.ParticipantType);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(x => x.ID == participant_type).FirstOrDefault();
+            ViewBag.attendeeType = attendeeType;
+
             // pass list of registered gift cards
             ViewBag.giftcards = GiftCard.GetIssued(db, attendee);
 
@@ -220,6 +233,7 @@ namespace ATAPS.Controllers
                     sig_url = null;
                 }
 
+
                 // store this waiver in the list
                 ViewBag.waivers.Add(new Waiver(parm.ID, url, name, sig_url));
             }
@@ -228,7 +242,7 @@ namespace ATAPS.Controllers
             return (View());
         }
 
-        public ActionResult BulkRfid (int busID)
+        public ActionResult BulkRfid (int filter)
         {
             return (View());
         }
@@ -238,20 +252,19 @@ namespace ATAPS.Controllers
             return View();
         }
 
-        public ActionResult CreateBus(int filter)
+        public ActionResult CreateBus()
         {
-
-            ViewBag.FilterID = -1;
+            ViewBag.FilterID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateBus([Bind(Include = "ID,ActivityName,AgendaID")] Activity activity, int? filter)
+        public ActionResult CreateBus([Bind(Include = "ID,ActivityName,AgendaID")] Activity activity)
         {
-            if (filter == null) { return HttpNotFound(); }
-            ViewBag.FilterID = filter;
-            activity.AgendaID = filter ?? default(int);
+            //if (filter == null) { return HttpNotFound(); }
+            //ViewBag.FilterID = filter;
+            //activity.AgendaID = filter ?? default(int);
             Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
             activity.AgendaID = int.Parse(checkinParm.ParmValue);
             activity.ActivityTypeID = 1;
@@ -288,28 +301,122 @@ namespace ATAPS.Controllers
             }
         }
 
-        // GET: /Registration/Monitor
-        public ActionResult Monitor()
+        // GET: /Registration/AssignRfid
+        public ActionResult AssignRfid()
         {
+            // get the attendee
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+            ViewBag.attendee = attendee;
+
+            // show the view
+            return (View());
+        }
+
+        // POST: /Registration/ReceiveRfid
+        [HttpPost]
+        public ActionResult ReceiveRfid()
+        {
+            // get the attendee
+            int id = Int32.Parse(Request["id"]);
+            Attendee attendee = db.Attendees.Where(x => x.ID == id).FirstOrDefault();
+
+            // assign the rfid and save
+            attendee.RfID = Request["rfid"];
+            db.SaveChanges();
+
+            // redirect back to registration monitor
+            return RedirectToAction("Monitor");
+        }
+
+        // GET: /Registration/Monitor
+        public ActionResult Monitor(int? filter)
+        {
+            // get a list of busses
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int agendaID = Int32.Parse(checkinParm.ParmValue);
+            List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
+            ViewBag.activities = activities;
+            string bus = null;
+            if (Request.Cookies["BusSelect"] != null)
+            {
+                bus = Request.Cookies["BusSelect"].Value;
+            }
+
             // get all attendees
-            List<Attendee> attendees = db.Attendees.ToList();
+            List<Attendee> attendees;
+            IDictionary<int, string> checkinTimes = new Dictionary<int, string>();
+            if (bus == null || bus == "-1")
+            {
+                attendees = db.Attendees.ToList();
+            }
+            else
+            {
+                int busid = Int32.Parse(bus);
+                attendees = new List<Attendee>();
+                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == busid).ToList();
+                foreach (AttendeeLastCheck checkin in checkins)
+                {
+                    checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
+                    attendees.Add(db.Attendees.Where(x => x.ID == checkin.AttendeeID).FirstOrDefault());
+                }
+                ViewBag.checkinTimes = checkinTimes;
+            }
+
+            // get list of all waivers
+            List<Parm> waivers = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
 
             // convert to monitor items
             List<MonitorItem> items = new List<MonitorItem>();
             foreach (Attendee attendee in attendees)
             {
-                MonitorItem item = new MonitorItem(attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, "msg goes here");//ega msg
-                items.Add(item);
+                // show checkin time for this attendee
+                if (checkinTimes[attendee.ID] != null)
+                {
+                    string msg = "Checked in on " + checkinTimes[attendee.ID];
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
+
+                // show gift cards given to this attendee
+                List<Parm> parms = db.Parms.Where(x => x.ParmName == "GiftCard-" + attendee.ID).ToList();
+                foreach (Parm parm in parms)
+                {
+                    string cardNum = parm.ParmValue;
+                    string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+                    string msg = "Assigned gift card #****" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
+
+                // show waivers signed by this attendee
+                foreach (Parm waiver in waivers)
+                {
+                    // get filename and description of this waiver
+                    int commaPos = waiver.ParmValue.IndexOf(',');
+                    string waiver_url = waiver.ParmValue.Substring(0, commaPos);
+                    string waiver_name = waiver.ParmValue.Substring(commaPos + 1);
+
+                    // determine sig_fname and sig_url
+                    string waiver_name_encoded = new string(waiver_name.Where(Char.IsLetter).ToArray());
+                    string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+                    string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+
+                    // see if he signed it
+                    string msg;
+                    if (System.IO.File.Exists (sig_fname))
+                    {
+                        msg = "Signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a> | <a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                    }
+                    else
+                    {
+                        msg = "Has not signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a>)";
+                    }
+                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                    items.Add(item);
+                }
             }
             ViewBag.MonitorItems = items;
-
-            //ega show actual thumbnail, not filename
-            //ega gift cards: show each, with card number and link to signature
-            //ega waiver: show each, with name, link to doc, and link to sig
-            //ega show waivers not signed
-            //ega have a refresh link, make datatable preserve its settings
-            //ega is there anything else they want to show here?
-            //ega have form to add rfid
 
             return (View());
         }
@@ -366,6 +473,7 @@ namespace ATAPS.Controllers
 
     public class MonitorItem
     {
+        public int id;
         public string name;
         public string rfid;
         public string thumbnail;
@@ -373,8 +481,9 @@ namespace ATAPS.Controllers
         public string activity_list;
         public string msg;
 
-        public MonitorItem (string name_param, string rfid_param, string thumbnail_param, string mobile_param, string activity_list_param, string msg_param)
+        public MonitorItem (int id_param, string name_param, string rfid_param, string thumbnail_param, string mobile_param, string activity_list_param, string msg_param)
         {
+            id = id_param;
             name = name_param;
             rfid = rfid_param;
             thumbnail = thumbnail_param;
@@ -382,5 +491,15 @@ namespace ATAPS.Controllers
             activity_list = activity_list_param;
             msg = msg_param;
         }
+    }
+}
+
+public static class StringExtension
+{
+    public static string Last(this string source, int tail_length)
+    {
+        if (tail_length >= source.Length)
+            return source;
+        return source.Substring(source.Length - tail_length);
     }
 }

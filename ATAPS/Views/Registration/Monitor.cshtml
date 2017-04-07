@@ -6,7 +6,21 @@
 
 <p><a href="/">Back to Home</a></p>
 
-<table id="MonitorItems" style="width:100%">
+<p><a href="/Registration/Monitor/">Refresh</a></p>
+
+<p>
+    <strong>Show attendees for bus:</strong> 
+    <select id="BusSelect" name="BusSelect">
+        <option value="-1">All buses</option>
+        @foreach (var activity in ViewBag.activities)
+        {
+            <option value="@activity.ID">@activity.ActivityName</option>
+        }
+    </select>
+</p>
+
+<div id="MonitorItemsContainer">
+<table id="MonitorItems" class="display" style="width:100%; display:none">
     <thead>
         <tr>
             <th>Name</th>
@@ -14,7 +28,7 @@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
-            <th>Action</th>
+            <th>Message</th>
         </tr>
     </thead>
     <tfoot>
@@ -24,33 +38,117 @@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
-            <th>Action</th>
+            <th>Message</th>
         </tr>
     </tfoot>
     <tbody>
         @foreach (var item in ViewBag.MonitorItems)
         {
-             <tr>
+            <tr>
                 <td>@item.name</td>
-                <td>@item.rfid</td>
-                <td>@item.thumbnail</td>
+                <td>
+                    @if (item.rfid == null || item.rfid == "")
+                    {
+                        <a href="/Registration/AssignRfid?id=@item.id">Assign RfID</a>
+                    }
+                    else
+                    {
+                        <text>@item.rfid</text>
+                    }
+                </td>
+                <td>
+                    @if (item.thumbnail != null && item.thumbnail != "")
+                    {
+                        <text><img src="@item.thumbnail" height="50" /></text>
+                    }
+                </td>
                 <td>@item.mobile</td>
                 <td>@item.activity_list</td>
-                <td>@item.msg</td>
+                <td>@Html.Raw(item.msg)</td>
             </tr>
         }
     </tbody>
 </table>
+</div>
 
 <script language="Javascript">
 
-    //ega is there a better way to know when the scripts have finished loading?  check for jquery, then include datatables and then check for when that finishes loading
-
     setTimeout(function () {
-        jQuery("body").append ("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" /><" + "script src=\"http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></" + "script>");
+
+        // include datatables
+        jQuery("body").append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css\" /><" + "script src=\"http://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js\"></" + "script>");
+
+        // turn the table into a datatable
         setTimeout(function () {
-            jQuery('#MonitorItems').DataTable();
+            jQuery('#MonitorItems').DataTable({
+                stateSave: true
+            });
+            jQuery('#MonitorItems').show();
         }, 1000);
+
+        // refresh every 10 sec
+        function DoRefresh ()
+        {
+            jQuery.ajax("/Registration/Monitor").done(function (data) {
+                data = data.substr(data.indexOf("<table"));
+                data = data.substr(0, data.indexOf("</table>") + 8);
+                jQuery("#MonitorItemsContainer").empty();
+                jQuery("#MonitorItemsContainer").html(data);
+                jQuery('#MonitorItems').DataTable({
+                    stateSave: true
+                });
+                jQuery('#MonitorItems').show();
+                setTimeout(DoRefresh, 10000);
+            });
+        }
+        var bus = readCookie("BusSelect");
+        if (bus != null && bus != "-1" && bus != "")
+        {
+            setTimeout(DoRefresh, 10000);
+        }
+
+        // pre-populate the bus selector
+        if (bus != null && bus != "-1" && bus != "")
+        {
+            jQuery("#BusSelect option[value='" + bus + "']").prop("selected", true);
+        }
+
+        // code for when the bus selector option changes
+        jQuery("#BusSelect").on("change", function () {
+            var bus = jQuery("select[name=BusSelect]").val();
+            createCookie("BusSelect", bus, 7);
+            jQuery("#BusSelect").after(" Refreshing, please wait...");
+            window.location = "/Registration/Monitor";
+        });
+
     }, 1000);
+
+    function createCookie(name, value, days)
+    {
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var expires = "; expires=" + date.toGMTString();
+        }
+        else var expires = "";
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function readCookie(name)
+    {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name)
+    {
+        createCookie(name, "", -1);
+    }
 
 </script>

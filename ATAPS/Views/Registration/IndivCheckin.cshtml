@@ -2,50 +2,66 @@
     ViewBag.Title = "IndivCheckin";
 }
 
-<h2>Individual Checkin for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName</h2>
+<h2>Individual Checkin for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName (Type: @ViewBag.attendeeType.Name)</h2>
+Activites: 
+@if (ViewBag.attendee.ActivityListNames == null)
+{
+    <text>None</text><br /><br />
+}
+else
+{
+    @ViewBag.attendee.ActivityListNames<br /><br />
+}
+
+<p>
+    <button class="btn btn-danger" id="CheckinBtn" onclick="CheckinNow('@ViewBag.attendee.RfID','@ViewBag.agendaId','@ViewBag.ActivityId')">Check in this attendee now</button>
+</p>
 
 <p>
     <a href="/Registration/BulkCheckin">Back to Bulk Checkin</a>
 </p>
 
-<div class="panel panel-success">
-    <div class="panel-heading">
-        <div class="btn-group pull-right">
-            <a style="position:relative; top:-4px" href="/Registration/AddGiftCard?id=@ViewBag.attendee.ID" class="btn btn-default btn-sm">Add New</a>
+@if (ViewBag.attendee.ParticipantType != "5")
+{
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <div class="btn-group pull-right">
+                <a style="position:relative; top:-4px" href="/Registration/AddGiftCard?id=@ViewBag.attendee.ID" class="btn btn-default btn-sm">Add New</a>
+            </div>
+            <strong>Gift Cards Issued</strong>
         </div>
-        <strong>Gift Cards Issued</strong>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Card Number</th>
-                    <th>Signature</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (ViewBag.giftcards.Count == 0)
-                {
+        <div class="panel-body">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>You have not issued any gift cards for this attendee.</td>
-                        <td></td>
+                        <th>Card Number</th>
+                        <th>Signature</th>
                     </tr>
-                }
-                @foreach (var card in ViewBag.giftcards)
-                {
-                    <tr>
-                        <td>
-                            @card.card_number
-                        </td>
-                        <td>
-                            <a target="_new" href="@card.signature_url">View Signature</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @if (ViewBag.giftcards.Count == 0)
+                    {
+                        <tr>
+                            <td>You have not issued any gift cards for this attendee.</td>
+                            <td></td>
+                        </tr>
+                    }
+                    @foreach (var card in ViewBag.giftcards)
+                    {
+                        <tr>
+                            <td>
+                                ****@card.card_number
+                            </td>
+                            <td>
+                                <a target="_new" href="@card.signature_url">View Signature</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+}
 
 <div class="panel panel-success">
     <div class="panel-heading">
@@ -89,3 +105,22 @@
         </table>
     </div>
 </div>
+
+<script language="Javascript">
+    function CheckinNow (rfid, agenda, activity)
+    {
+        $("#CheckinBtn").html("Please wait...").addClass("disabled");
+        $.getJSON("/api/Call/TagAttendeeInByID",
+            {
+                rfid: rfid,
+                agendaID: agenda,
+                activityID: activity,
+                dir: "In"
+            },
+            function (data)
+            {
+                $("#CheckinBtn").replaceWith("<div class=\"alert alert-info\"><strong>The attendee is now checked in.</strong></div>");
+            }
+        );
+    }
+</script>

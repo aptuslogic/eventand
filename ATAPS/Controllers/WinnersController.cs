@@ -228,9 +228,18 @@ namespace ATAPS.Controllers
 
                     // see if are at the start or end of the list
                     attendees = db.Attendees.Where(x => x.WinnerQueueOrder != null).OrderBy(x => x.WinnerQueueOrder).ToList();
-                    data["can_click_reset"] = (currQueuePos <= attendees[0].WinnerQueueOrder) ? "false" : "true";
-                    data["can_click_prev"] = (currQueuePos <= attendees[0].WinnerQueueOrder) ? "false" : "true";
-                    data["can_click_next"] = (currQueuePos >= attendees[attendees.Count - 1].WinnerQueueOrder) ? "false" : "true";
+                    if (attendees.Count > 0)
+                    {
+                        data["can_click_reset"] = (currQueuePos <= attendees[0].WinnerQueueOrder) ? "false" : "true";
+                        data["can_click_prev"] = (currQueuePos <= attendees[0].WinnerQueueOrder) ? "false" : "true";
+                        data["can_click_next"] = (currQueuePos >= attendees[attendees.Count - 1].WinnerQueueOrder) ? "false" : "true";
+                    }
+                    else
+                    {
+                        data["can_click_reset"] = "false";
+                        data["can_click_prev"] = "false";
+                        data["can_click_next"] = "false";
+                    }
 
                     // return current queue position
                     data["curr_queue_pos"] = wqo.ToString();

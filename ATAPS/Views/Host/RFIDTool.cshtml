@@ -127,7 +127,7 @@
                                     });
                             });
                             $("#submit-search").click(function () {
-                                var search = this.value;
+                                var search = $('#SearchString')[0].value;
                                 var aID = $('#agendaSelect').val();;
                                 var cID = $('#activitySelect').val();
                                 if(cID <= 0){cID = -1;}

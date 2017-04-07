@@ -46,7 +46,7 @@ namespace ATAPS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,EventID,AttendeeType1,IsGeneral")] AttendeeType attendeeType)
+        public ActionResult Create([Bind(Include = "ID,EventID,AttendeeType1,Name,IsGeneral")] AttendeeType attendeeType)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace ATAPS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,EventID,AttendeeType1,IsGeneral")] AttendeeType attendeeType)
+        public ActionResult Edit([Bind(Include = "ID,EventID,AttendeeType1,Name,IsGeneral")] AttendeeType attendeeType)
         {
             if (ModelState.IsValid)
             {
