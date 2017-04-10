@@ -114,7 +114,7 @@ namespace ATAPS.Helpers
                 {
                     //var query = db.Clients.ToList();
                     var query = from b in db.EventDates
-                                orderby b.ID descending
+                                orderby b.EventDate1 ascending
                                 where b.EventRecordsID == filter
                                 select b;
 

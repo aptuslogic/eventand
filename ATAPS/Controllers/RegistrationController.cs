@@ -371,49 +371,53 @@ namespace ATAPS.Controllers
             foreach (Attendee attendee in attendees)
             {
                 // show checkin time for this attendee
-                if (checkinTimes[attendee.ID] != null)
+                if (checkinTimes.ContainsKey (attendee.ID) && checkinTimes[attendee.ID] != null)
                 {
                     string msg = "Checked in on " + checkinTimes[attendee.ID];
                     MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                     items.Add(item);
                 }
 
-                // show gift cards given to this attendee
-                List<Parm> parms = db.Parms.Where(x => x.ParmName == "GiftCard-" + attendee.ID).ToList();
-                foreach (Parm parm in parms)
+                // don't show gift cards and waivers if viewing a specific bus
+                if (bus == null || bus == "-1")
                 {
-                    string cardNum = parm.ParmValue;
-                    string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
-                    string msg = "Assigned gift card #****" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
-                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
-                    items.Add(item);
-                }
-
-                // show waivers signed by this attendee
-                foreach (Parm waiver in waivers)
-                {
-                    // get filename and description of this waiver
-                    int commaPos = waiver.ParmValue.IndexOf(',');
-                    string waiver_url = waiver.ParmValue.Substring(0, commaPos);
-                    string waiver_name = waiver.ParmValue.Substring(commaPos + 1);
-
-                    // determine sig_fname and sig_url
-                    string waiver_name_encoded = new string(waiver_name.Where(Char.IsLetter).ToArray());
-                    string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
-                    string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
-
-                    // see if he signed it
-                    string msg;
-                    if (System.IO.File.Exists (sig_fname))
+                    // show gift cards given to this attendee
+                    List<Parm> parms = db.Parms.Where(x => x.ParmName == "GiftCard-" + attendee.ID).ToList();
+                    foreach (Parm parm in parms)
                     {
-                        msg = "Signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a> | <a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                        string cardNum = parm.ParmValue;
+                        string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+                        string msg = "Assigned gift card #****" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                        MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                        items.Add(item);
                     }
-                    else
+
+                    // show waivers signed by this attendee
+                    foreach (Parm waiver in waivers)
                     {
-                        msg = "Has not signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a>)";
+                        // get filename and description of this waiver
+                        int commaPos = waiver.ParmValue.IndexOf(',');
+                        string waiver_url = waiver.ParmValue.Substring(0, commaPos);
+                        string waiver_name = waiver.ParmValue.Substring(commaPos + 1);
+
+                        // determine sig_fname and sig_url
+                        string waiver_name_encoded = new string(waiver_name.Where(Char.IsLetter).ToArray());
+                        string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+                        string sig_url = "/Content/activity_waivers/" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + waiver_name_encoded + ".png";
+
+                        // see if he signed it
+                        string msg;
+                        if (System.IO.File.Exists(sig_fname))
+                        {
+                            msg = "Signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a> | <a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
+                        }
+                        else
+                        {
+                            msg = "Has not signed waiver - '" + waiver_name + "' (<a target=\"_new\" href=\"" + waiver_url + "\">waiver</a>)";
+                        }
+                        MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
+                        items.Add(item);
                     }
-                    MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
-                    items.Add(item);
                 }
             }
             ViewBag.MonitorItems = items;
