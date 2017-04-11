@@ -161,7 +161,7 @@ namespace ATAPS.Controllers
 
             ViewBag.FilterID = filter;
 
-            return View(edDO);
+            return View(edDO.EventDate);
 
             //if (id == null || filter == null)
             //{
