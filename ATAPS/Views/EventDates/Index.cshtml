@@ -5,8 +5,8 @@
 }
 
 <h2>All EventDates for: @ViewBag.EventName</h2>
-<h4><a href="../Attendees?filter=@ViewBag.EventID">Attendees For this event:  @ViewBag.AttendeeCount</a></h4>
-<h4><a href="../AttendeeTypes?filter=@ViewBag.EventID">Attendee Types for this event</a></h4>
+<h4><a href="/Attendees?filter=@ViewBag.EventID">Attendees For this event:  @ViewBag.AttendeeCount</a></h4>
+<h4><a href="/AttendeeTypes?filter=@ViewBag.EventID">Attendee Types for this event</a></h4>
 
 <p>
     @Html.ActionLink("Create New", "Create", new { filter = ViewBag.FilterID })
@@ -29,7 +29,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            <a href="../EventRecords/Details/@item.EventDate.EventRecordsID?filter=@item.Event.ID">@item.Event.EventName</a>
+            <a href="/EventRecords/Details/@item.EventDate.EventRecordsID?filter=@item.Event.ID">@item.Event.EventName</a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.EventDate.EventDate1)
@@ -38,13 +38,13 @@
             @foreach (var agenda in item.Agendas)
             {
                 <p>
-                    <a href="../Agenda/Details/@agenda.ID?filter=@agenda.EventDateID">
+                    <a href="/Agenda/Details/@agenda.ID?filter=@agenda.EventDateID">
                         @Html.DisplayFor(dateMod => agenda.AgendaName)
                     </a>
                 </p>
             }
 
-            <p><a href="../Agenda/?filter=@item.EventDate.ID">See All Agendas</a></p>
+            <p><a href="/Agenda/?filter=@item.EventDate.ID">See All Agendas</a></p>
 
         </td>
         <td>
@@ -63,6 +63,6 @@
 </table>
 <div>
     <p>
-        <a href="../EventRecords?filter=@ViewBag.FilterID">Back to Events List</a>
+        <a href="/EventRecords?filter=@ViewBag.FilterID">Back to Events List</a>
     </p>
 </div>

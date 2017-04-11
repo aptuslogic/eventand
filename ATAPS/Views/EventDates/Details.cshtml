@@ -34,7 +34,7 @@
             @foreach(var item in Model.Agendas)
             {
                 <p>
-                    <a href="../../Agenda/Details/@item.ID?filter=@ViewBag.FilterID">
+                    <a href="/Agenda/Details/@item.ID?filter=@ViewBag.FilterID">
                         @Html.DisplayFor(modelItem => item.AgendaName)
                     </a>
                 </p>
@@ -44,6 +44,6 @@
     </dl>
 </div>
 <p>
-    <a href="../Edit/@Model.EventDate.ID?filter=@ViewBag.FilterID">Edit</a> | 
-    <a href="..?filter=@ViewBag.FilterID">Back to List</a>
+    <a href="/EventDates/Edit/@Model.EventDate.ID?filter=@ViewBag.FilterID">Edit</a> | 
+    <a href="/EventDates/?filter=@ViewBag.FilterID">Back to List</a>
 </p>

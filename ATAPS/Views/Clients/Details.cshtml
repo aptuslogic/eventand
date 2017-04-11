@@ -48,9 +48,9 @@
         <dd>
             @foreach (var modelItem in Model.Events)
             {
-                <p><a href="../../EventRecords/Details/@modelItem.ID?filter=@modelItem.ClientID">@modelItem.EventName</a></p>
+                <p><a href="/EventRecords/Details/@modelItem.ID?filter=@modelItem.ClientID">@modelItem.EventName</a></p>
             }
-            <p><a href="../../EventRecords/?filter=@Model.Client.ID">See All Events</a></p>
+            <p><a href="/EventRecords/?filter=@Model.Client.ID">See All Events</a></p>
         </dd>
     </dl>
 </div>

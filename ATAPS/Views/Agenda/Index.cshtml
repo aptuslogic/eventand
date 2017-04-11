@@ -44,21 +44,21 @@
             @foreach(var activity in item.ActivityList)
             {
                 <p>
-                    <a href="../Activities/Details/@activity.ID?filter=@activity.AgendaID">
+                    <a href="/Activities/Details/@activity.ID?filter=@activity.AgendaID">
                         @Html.DisplayFor(dateMod => activity.ActivityName)
                     </a>
                 </p>
             }
 
-            <p><a href="../Activities/?filter=@item.Agenda.ID">See All Activities</a></p>
+            <p><a href="/Activities/?filter=@item.Agenda.ID">See All Activities</a></p>
         </td>
         <td>
 
-            <a href="../Agenda/Edit/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Edit</a> |
+            <a href="/Agenda/Edit/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Edit</a> |
 
-            <a href="../Agenda/Details/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Details</a> |
+            <a href="/Agenda/Details/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Details</a> |
 
-            <a href="../Agenda/Delete/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Delete</a>
+            <a href="/Agenda/Delete/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Delete</a>
 
             @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
             @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

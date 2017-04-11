@@ -545,6 +545,7 @@
     <Content Include="Views\Registration\AddGiftCard.cshtml" />
     <Content Include="Views\Registration\Monitor.cshtml" />
     <Content Include="Views\Registration\AssignRfid.cshtml" />
+    <Content Include="Views\Host\Checkins.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
