@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ATAPS.Models.DisplayObject.EventDateDisplayObject>
+@model IEnumerable<ATAPS.Models.DisplayObject.EventDateDisplayObject>
 
 @{
     ViewBag.Title = "Index";
@@ -7,7 +7,6 @@
 <h2>All EventDates for: @ViewBag.EventName</h2>
 <h4><a href="../Attendees?filter=@ViewBag.EventID">Attendees For this event:  @ViewBag.AttendeeCount</a></h4>
 <h4><a href="../AttendeeTypes?filter=@ViewBag.EventID">Attendee Types for this event</a></h4>
-<h4><a href="../AgendaElements?filter=@ViewBag.EventID">Agenda Elements for this event</a></h4>
 
 <p>
     @Html.ActionLink("Create New", "Create", new { filter = ViewBag.FilterID })
