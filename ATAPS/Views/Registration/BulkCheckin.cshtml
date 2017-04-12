@@ -20,50 +20,53 @@
     </p>
 }
 
-<table class="table" id="attendee-table">
-    <thead>
-        <tr>
-            <th>
-                Last Name
-            </th>
-            <th>
-                First Name
-            </th>
-
-            <th>Thumbnail</th>
-
-            <th>
-                RFID
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Mobile)
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="attendee-table-body">
-        @foreach (var item in Model)
-        {
+@if (ViewBag.searchString != null)
+{
+    <table class="table" id="attendee-table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td style="text-align:center">
-                    <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RfID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Mobile)
-                </td>
-                <td>
-                    <a href="/Registration/IndivCheckin?id=@item.ID">Register</a>
-                </td>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    First Name
+                </th>
+
+                <th>Thumbnail</th>
+
+                <th>
+                    RFID
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Mobile)
+                </th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody id="attendee-table-body">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td style="text-align:center">
+                        <img src="@Html.DisplayFor(modelItem => item.Filename)" alt="None" style="height:50px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RfID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mobile)
+                    </td>
+                    <td>
+                        <a href="/Registration/IndivCheckin?id=@item.ID">Register</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

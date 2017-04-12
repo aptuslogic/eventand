@@ -70,6 +70,7 @@ namespace ATAPS.Controllers
             // get attendees matching the search string
             int eventId = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             attendees = ATAPS_Pile.GetSortedAttendeesWithFilter(eventId, sortOrder, searchString, pageNum);
+            ViewBag.searchString = searchString;
 
             if (pageNum == null)
             {
