@@ -87,6 +87,7 @@
         // turn the table into a datatable
         setTimeout(function () {
             jQuery('#MonitorItems').DataTable({
+                "order": [[4, "asc"]],
                 stateSave: true
             });
             jQuery('#MonitorItems').show();
@@ -101,6 +102,7 @@
                 jQuery("#MonitorItemsContainer").empty();
                 jQuery("#MonitorItemsContainer").html(data);
                 jQuery('#MonitorItems').DataTable({
+                    "order": [[ 4, "asc" ]],
                     stateSave: true
                 });
                 jQuery('#MonitorItems').show();
