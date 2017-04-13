@@ -93,7 +93,7 @@ namespace ATAPS.Controllers
 
         [Route("api/Call/TagAttendeeInByID")]
         [HttpGet]
-        public IHttpActionResult TagAttendeeInByID(int rfid, int agendaID, int? activityID, string dir)
+        public IHttpActionResult TagAttendeeInByID(string rfid, int agendaID, int? activityID, string dir)
         {
             Attendee retVal = new Attendee();
             retVal.LastName = "None Found";

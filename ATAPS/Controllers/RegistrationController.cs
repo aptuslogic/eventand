@@ -32,7 +32,7 @@ namespace ATAPS.Controllers
         public ActionResult Busses()
         {
             Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
-            if(checkinParm == null)
+            if (checkinParm == null)
             {
                 bool good = ATAPS_Pile.CreateRegistrationAgenda();
             }
