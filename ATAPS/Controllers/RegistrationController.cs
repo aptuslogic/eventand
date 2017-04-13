@@ -350,10 +350,13 @@ namespace ATAPS.Controllers
             if (bus == null || bus == "-1")
             {
                 attendees = db.Attendees.ToList();
-                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == activities[0].ID).ToList();
+                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.ToList();
                 foreach (AttendeeLastCheck checkin in checkins)
                 {
-                    checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
+                    if (checkin.LastActivity == activities[0].ID)
+                    {
+                        checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
+                    }
                 }
                 ViewBag.checkinTimes = checkinTimes;
             }
