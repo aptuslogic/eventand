@@ -350,7 +350,7 @@ namespace ATAPS.Controllers
             if (bus == null || bus == "-1")
             {
                 attendees = db.Attendees.ToList();
-                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == activities[0].ID).ToList();//ega filter activty here, LastActivity
+                List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == activities[0].ID).ToList();
                 foreach (AttendeeLastCheck checkin in checkins)
                 {
                     checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
