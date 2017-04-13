@@ -588,7 +588,6 @@ namespace ATAPS.Controllers
             {
 
                 List<Attendee> attendeeList = ATAPS_Pile.ParseAttendeeXLS(file, filter ?? default(int));
-                /*
                 // save the names
                 foreach (Attendee item in attendeeList)
                 {
@@ -630,7 +629,6 @@ namespace ATAPS.Controllers
                     }
 
                 }
-                */
                 db.SaveChanges();
             }
 
