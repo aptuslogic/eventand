@@ -336,6 +336,7 @@ namespace ATAPS.Controllers
                 {
                     toAdd.CheckedInCount = toAdd.CurrentCheckins.Count();
                 }
+                toAdd.Agenda = retVal.Agenda;
                 retVal.ActivityFullList.Add(toAdd);
             }
             

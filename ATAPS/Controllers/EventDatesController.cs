@@ -52,6 +52,7 @@ namespace ATAPS.Controllers
             EventDateDisplayObject edDO = new EventDateDisplayObject();
             edDO.Agendas = db.Agendas.Where(o => o.EventDateID == id).ToList();
             edDO.EventDate = eventDateList;
+            edDO.Event = DBHelper.GetEventWithDataByID(eventDateList.EventRecordsID).Event;
 
             ViewBag.FilterID = filter;
 
@@ -160,7 +161,7 @@ namespace ATAPS.Controllers
 
             ViewBag.FilterID = filter;
 
-            return View(edDO);
+            return View(edDO.EventDate);
 
             //if (id == null || filter == null)
             //{

@@ -37,15 +37,15 @@
             <th>Attendee Count</th>
             <th></th>
         </tr>
-        @foreach(var atItem in Model.ActivityFullList)
+        @foreach (var atItem in Model.ActivityFullList)
         {
             <tr>
                 <td>@atItem.Activity.ActivityName</td>
                 <td>@atItem.CheckedInCount</td>
                 <td>
-                    <a href="../Host/ActivityDetails/@atItem.Activity.ID?filter=@atItem.Agenda.ID">Activity Details</a>
+                    <a href="/Host/ActivityDetails/@atItem.Activity.ID?filter=@atItem.Agenda.ID">Activity Details</a>
                 </td>
             </tr>
         }
-        </table>
+       </table>
 </div>

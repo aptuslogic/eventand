@@ -44,21 +44,21 @@
                             }
                             newRow += "<td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td><td>"+att.ActivityListNames+"</td>";
                             newRow += '<td>';
-                            newRow += '<a href="../Host/AttendeesDetails/'+att.ID+'?filter='+att.EventID+'">AttendeesDetails</a>';
+                            newRow += '<a href="/Host/AttendeesDetails/'+att.ID+'?filter='+att.EventID+'">AttendeesDetails</a>';
                             newRow += '</td></tr>';
                             $("#attendee-table-body").append(newRow);
                         }
                         // now populate page nav
-                        $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
+                        $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
 
                         for (var i=0;i<data.Pages.length;i++){
                             var page = data.Pages[i];
                             if(page == data.CurPage){$("#page-list-nav").append('<span style="margin: 1em"><stong>'+page+'</stong></span>');
                             } else {
-                                $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
+                                $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
                             }
                         }
-                        $("#page-list-nav").append('..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
+                        $("#page-list-nav").append('..<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
 
 
                     });
@@ -159,7 +159,7 @@
 
 <div id="page-list-nav">
 
-    <a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
+    <a href="/Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
     @foreach (int page in ViewBag.PageList)
     {
         if (page == ViewBag.CurPage)
@@ -168,11 +168,11 @@
         }
         else
         {
-            <a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
+            <a href="/Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
         }
 
     }
-    ..<a href="../Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
+    ..<a href="/Host/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
 </div>
 
 

@@ -40,18 +40,18 @@
             @Html.DisplayFor(modelItem => item.Event.EventDesc)
         </td>
         <td>
-            <a href="../Clients/Details/@item.Event.ClientID">@item.Client.ClientName</a>
+            <a href="/Clients/Details/@item.Event.ClientID">@item.Client.ClientName</a>
         </td>
         <td>
             @foreach (var dateItem in item.EventDates)
             {
                 <p>
-                    <a href="../EventDates/Details/@dateItem.ID?filter=@dateItem.EventRecordsID">
+                    <a href="/EventDates/Details/@dateItem.ID?filter=@dateItem.EventRecordsID">
                         @Html.DisplayFor(dateMod => dateItem.EventDate1)
                     </a>
                 </p>
             }
-            <p><a href="../EventDates/?filter=@item.Event.ID">See All EventDates</a></p>
+            <p><a href="/EventDates/?filter=@item.Event.ID">See All EventDates</a></p>
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Event.ID, filter=ViewBag.FilterID }) |

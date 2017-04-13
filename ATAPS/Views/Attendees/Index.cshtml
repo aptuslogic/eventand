@@ -48,23 +48,23 @@
                         }
                         newRow += "<td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += "<td></td>";
-                        newRow += '<td><a href="../Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
-                        newRow += '<a href="../Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
-                        newRow += '<a href="../Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
+                        newRow += '<td><a href="/Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
+                        newRow += '<a href="/Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
+                        newRow += '<a href="/Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
                         newRow += "<a href=\"javascript:DoQueue(" + att.ID + "," + att.EventID + ",'" + (att.WinnerQueueOrder==null ? "":att.WinnerQueueOrder) + "')\">Queue</a></td></tr>";
                         $("#attendee-table-body").append(newRow);
                     }
                     // now populate page nav
-                    $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
+                    $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
 
                     for (var i=0;i<data.Pages.length;i++){
                         var page = data.Pages[i];
                         if(page == data.CurPage){$("#page-list-nav").append('<span style="margin: 1em"><stong>'+page+'</stong></span>');
                         } else {
-                            $("#page-list-nav").append('<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
+                            $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
                         }
                     }
-                    $("#page-list-nav").append('..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
+                    $("#page-list-nav").append('..<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
 
 
                 });
@@ -192,7 +192,7 @@
 
 <div id="page-list-nav">
 
-    <a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
+    <a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..
     @foreach (int page in ViewBag.PageList)
     {
         if (page == ViewBag.CurPage)
@@ -201,11 +201,11 @@
         }
         else
         {
-            <a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
+            <a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@page&searchString=@ViewBag.CurSearch" class="btn btn-default">@page</a>
         }
 
     }
-    ..<a href="../Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
+    ..<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>
 </div>
 
 <script language="Javascript">

@@ -143,7 +143,7 @@
     @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     @Html.ActionLink("Back to List", "Index")*@
 
-    <a href="../Edit/@Model.ID?filter=@ViewBag.FilterID">Edit</a> |
-    <a href="..?filter=@ViewBag.FilterID">Back to List</a>
+    <a href="/Attendees/Edit/@Model.ID?filter=@ViewBag.FilterID">Edit</a> |
+    <a href="/Attendees/?filter=@ViewBag.FilterID">Back to List</a>
 
 </p>

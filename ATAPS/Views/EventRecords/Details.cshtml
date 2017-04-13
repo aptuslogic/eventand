@@ -39,7 +39,7 @@
         </dt>
 
         <dd>
-            <a href="../../Clients/Details/@Model.Client.ID">@Model.Client.ClientName</a>
+            <a href="/Clients/Details/@Model.Client.ID">@Model.Client.ClientName</a>
         </dd>
         <dt><br /></dt>
         <dd><br /></dd>
@@ -48,10 +48,10 @@
             @foreach(var item in Model.EventDates)
             {
                 <p>
-                    <a href="../../EventDates/Details/@item.ID?filter=@item.EventRecordsID">@Html.DisplayFor(dateMod => item.EventDate1)</a>
+                    <a href="/EventDates/Details/@item.ID?filter=@item.EventRecordsID">@Html.DisplayFor(dateMod => item.EventDate1)</a>
                 </p>
             }
-            <p><a href="../../EventDates?filter=@Model.Event.ID">See All EventDates</a></p>
+            <p><a href="/EventDates?filter=@Model.Event.ID">See All EventDates</a></p>
         </dd>
     </dl>
 </div>
