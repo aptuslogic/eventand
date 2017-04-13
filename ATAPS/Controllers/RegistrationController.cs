@@ -147,7 +147,7 @@ namespace ATAPS.Controllers
             db.SaveChanges();
 
             // store the signature
-            string sig_fname = Server.MapPath("~") + "\\Content\\gift_card_signatures\\" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+            string sig_fname = Server.MapPath("~") + "\\Content\\gift_card_signatures\\" + attendee.LastName + attendee.FirstName + "-" + attendee.ParticipantID + "-GiftCardSig-" + cardNum + ".png";
             SaveSig(sig_fname);
 
             // show the view
@@ -183,7 +183,7 @@ namespace ATAPS.Controllers
 
             // save signature
             string name_encoded = new string(name.Where(Char.IsLetter).ToArray());
-            string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-WaiverSig-" + name_encoded + ".png";
+            string sig_fname = Server.MapPath("~") + "Content\\activity_waivers\\" + attendee.LastName + attendee.FirstName + "-" + attendee.ParticipantID + "-WaiverSig-" + name_encoded + ".png";
             SaveSig(sig_fname);
 
             // redirect back to waivers

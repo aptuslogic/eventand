@@ -86,9 +86,16 @@
 
         // turn the table into a datatable
         setTimeout(function () {
+            var bus = readCookie("BusSelect");
+            var order = [[4, "asc"]];
+            var stateSave = false;
+            if (bus == null || bus == "-1" || bus == "") {
+                order = [[0, "asc"]];
+                stateSave = true;
+            }
             jQuery('#MonitorItems').DataTable({
-                "order": [[4, "asc"]],
-                stateSave: true
+                order: order,
+                stateSave: stateSave
             });
             jQuery('#MonitorItems').show();
         }, 1000);
@@ -101,9 +108,16 @@
                 data = data.substr(0, data.indexOf("</table>") + 8);
                 jQuery("#MonitorItemsContainer").empty();
                 jQuery("#MonitorItemsContainer").html(data);
+                var bus = readCookie("BusSelect");
+                var order = [[4, "asc"]];
+                var stateSave = false;
+                if (bus == null || bus == "-1" || bus == "") {
+                    order = [[0, "asc"]];
+                    stateSave = true;
+                }
                 jQuery('#MonitorItems').DataTable({
-                    "order": [[ 4, "asc" ]],
-                    stateSave: true
+                    order: order,
+                    stateSave: stateSave
                 });
                 jQuery('#MonitorItems').show();
                 setTimeout(DoRefresh, 10000);
