@@ -24,7 +24,9 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>RFID</th>
+            @*
+                <th>RFID</th>
+            *@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
@@ -34,7 +36,9 @@
     <tfoot>
         <tr>
             <th>Name</th>
-            <th>RFID</th>
+            @*
+                <th>RFID</th>
+            *@
             <th>Thumbnail</th>
             <th>Mobile</th>
             <th>Activity List</th>
@@ -46,16 +50,18 @@
         {
             <tr>
                 <td>@item.name</td>
-                <td>
-                    @if (item.rfid == null || item.rfid == "")
-                    {
-                        <a href="/Registration/AssignRfid?id=@item.id">Assign RfID</a>
-                    }
-                    else
-                    {
-                        <text>@item.rfid</text>
-                    }
-                </td>
+                @*
+                    <td>
+                        @if (item.rfid == null || item.rfid == "")
+                        {
+                            <a href="/Registration/AssignRfid?id=@item.id">Assign RfID</a>
+                        }
+                        else
+                        {
+                            <text>@item.rfid</text>
+                        }
+                    </td>
+                *@
                 <td>
                     @if (item.thumbnail != null && item.thumbnail != "")
                     {
