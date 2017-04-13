@@ -427,6 +427,10 @@ namespace ATAPS.Controllers
                     }
                 }
             }
+            if (bus != null && bus != "-1")
+            {
+                items = items.OrderBy(x => x.msg).ToList();
+            }
             ViewBag.MonitorItems = items;
 
             return (View());
