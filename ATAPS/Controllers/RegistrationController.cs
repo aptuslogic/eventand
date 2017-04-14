@@ -396,7 +396,7 @@ namespace ATAPS.Controllers
                     foreach (Parm parm in parms)
                     {
                         string cardNum = parm.ParmValue;
-                        string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + cardNum + ".png";
+                        string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-" + attendee.ParticipantID + "-GiftCardSig-" + cardNum + ".png";
                         string msg = "Assigned gift card #****" + cardNum + " (<a target=\"_new\" href=\"" + sig_url + "\">signature</a>)";
                         MonitorItem item = new MonitorItem(attendee.ID, attendee.FirstName + " " + attendee.LastName, attendee.RfID, attendee.Filename, attendee.Mobile, attendee.ActivityListNames, msg);
                         items.Add(item);
@@ -480,7 +480,7 @@ namespace ATAPS.Controllers
             foreach (Parm parm in parms)
             {
                 string number = parm.ParmValue;
-                string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-GiftCardSig-" + number + ".png";
+                string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-" + attendee.ParticipantID + "-GiftCardSig-" + number + ".png";
                 results.Add(new GiftCard(sig_url, number));
             }
 
