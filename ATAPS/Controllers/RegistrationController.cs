@@ -52,6 +52,11 @@ namespace ATAPS.Controllers
             // here we pull the query based on the sort order and direction
             List<Attendee> attendees = new List<Attendee>();
 
+            // pull the bus name and pass to view
+            int busID = Int32.Parse(Request["id"]);
+            Activity bus = db.Activities.Where(x => x.ID == busID).FirstOrDefault();
+            ViewBag.BusName = bus.ActivityName;
+
             string sortOrder = "name";
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.QueueSortParm = sortOrder == "WinnerQueueOrder" ? "wqo_desc" : "WinnerQueueOrder";

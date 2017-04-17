@@ -12,8 +12,9 @@
 @foreach(var bus in Model.ActivityList)
 {
     <p>
-        <a href="/Registration/BulkCheckin?id=@bus.ID">@bus.ActivityName</a> | 
+        <a href="/Registration/BulkCheckin?id=@bus.ID">@bus.ActivityName</a>
         @*
+            |
             <a href="/Registration/Monitor?filter=@bus.ID">Assign RFIDs</a>
         *@
     </p>
