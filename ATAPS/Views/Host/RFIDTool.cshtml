@@ -80,8 +80,9 @@
                     });
             });
 
-            $("form").submit(function() {// replaced the click handler below with this submit handler because the card readers weren't simulating a button click
+            $("form").submit(function(event) {// replaced the click handler below with this submit handler because the card readers weren't simulating a button click
                 //$("#submit-search").click(function () {
+                event.preventDefault();
                 var search = $('#SearchString')[0].value;
                 var aID = $('#agendaSelect').val();
                 var cID = $('#activitySelect').val();
