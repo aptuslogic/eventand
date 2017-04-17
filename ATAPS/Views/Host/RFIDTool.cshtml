@@ -79,7 +79,9 @@
 
                     });
             });
-            $("#submit-search").click(function () {
+
+            $("form").submit(function() {// replaced the click handler below with this submit handler because the card readers weren't simulating a button click
+                //$("#submit-search").click(function () {
                 var search = $('#SearchString')[0].value;
                 var aID = $('#agendaSelect').val();
                 var cID = $('#activitySelect').val();
@@ -246,7 +248,7 @@
     {
     <p>
         RFID: @Html.TextBox("SearchString", "")
-        <input type="button" id="submit-search" value="Search"/>
+        <input type="submit" id="submit-search" value="Search"/>
     </p>
     }
     </p>
