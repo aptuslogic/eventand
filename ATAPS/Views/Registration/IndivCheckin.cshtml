@@ -14,7 +14,7 @@ else
 }
 
 <p>
-    <button class="btn btn-danger" id="CheckinBtn" onclick="CheckinNow('@ViewBag.attendee.RfID','@ViewBag.agendaId','@ViewBag.ActivityId')">Check in this attendee now</button>
+    <button class="btn btn-danger" id="CheckinBtn" onclick="CheckinNow('@ViewBag.attendee.RfID','@ViewBag.agendaId','@Request["bus"]')">Register this attendee now</button>
 </p>
 
 <p>

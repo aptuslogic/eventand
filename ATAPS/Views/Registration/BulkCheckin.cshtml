@@ -63,7 +63,7 @@
                         @Html.DisplayFor(modelItem => item.Mobile)
                     </td>
                     <td>
-                        <a href="/Registration/IndivCheckin?id=@item.ID">Register</a>
+                        <a href="/Registration/IndivCheckin?id=@item.ID&bus=@Request["id"]">Register</a>
                     </td>
                 </tr>
             }
