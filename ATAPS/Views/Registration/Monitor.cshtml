@@ -94,6 +94,7 @@
                 stateSave = true;
             }
             jQuery('#MonitorItems').DataTable({
+                pageLength: 100,
                 order: order,
                 stateSave: stateSave
             });
@@ -116,6 +117,7 @@
                     stateSave = true;
                 }
                 jQuery('#MonitorItems').DataTable({
+                    pageLength: 100,
                     order: order,
                     stateSave: stateSave
                 });
