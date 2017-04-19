@@ -120,7 +120,7 @@ namespace ATAPS.Controllers
             }
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
-            Activity activity = db.Activities.Find(id);
+            Activity activity = db.Activities.Where(o => o.ID == id).FirstOrDefault();
             if (activity == null)
             {
                 return HttpNotFound();
