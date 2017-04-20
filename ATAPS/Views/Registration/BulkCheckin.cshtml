@@ -15,8 +15,8 @@
 @using (Html.BeginForm())
 {
     <p>
-        Search by name or RFID number: @Html.TextBox("SearchString", "")
-        <input type="submit" value="Search" />
+        Search by name or RFID number: @Html.TextBox("SearchString", "", new {style="width:300px; height:50px; font-size:18pt"})
+        <input type="submit" value="Search" / style="width:100px; height:50px">
     </p>
 }
 
@@ -63,7 +63,7 @@
                         @Html.DisplayFor(modelItem => item.Mobile)
                     </td>
                     <td>
-                        <a href="/Registration/IndivCheckin?id=@item.ID&bus=@Request["id"]">Register</a>
+                        <a href="/Registration/IndivCheckin?id=@item.ID&bus=@Request["id"]"><button>Register</button></a>
                     </td>
                 </tr>
             }
