@@ -27,7 +27,7 @@ namespace ATAPS.Helpers
                         EventDisplayObject toAdd = new EventDisplayObject();
 
                         toAdd.Event = item;
-                        toAdd.Client = db.Clients.Find(item.ClientID);
+                        toAdd.Client = db.Clients.Where(o => o.ID == item.ClientID).First();
                         var datesQuery = from b in db.EventDates
                                          where b.EventRecordsID == item.ID
                                          select b;
@@ -60,7 +60,7 @@ namespace ATAPS.Helpers
                         EventDisplayObject toAdd = new EventDisplayObject();
 
                         toAdd.Event = item;
-                        toAdd.Client = db.Clients.Find(item.ClientID);
+                        toAdd.Client = db.Clients.Where(o => o.ID == item.ClientID).First();
                         var datesQuery = from b in db.EventDates
                                          where b.EventRecordsID == item.ID
                                          select b;
@@ -123,8 +123,8 @@ namespace ATAPS.Helpers
                         EventDateDisplayObject toAdd = new EventDateDisplayObject();
 
                         toAdd.EventDate = item;
-                        toAdd.Event = db.EventRecords.Find(item.EventRecordsID);
-                        toAdd.Client = db.Clients.Find(toAdd.Event.ClientID);
+                        toAdd.Event = db.EventRecords.Where(o => o.ID == item.EventRecordsID).First();
+                        toAdd.Client = db.Clients.Where(o => o.ID == toAdd.Event.ClientID).First();
                         var agQuery = from b in db.Agendas
                                       where b.EventDateID == item.ID
                                       select b;
@@ -155,8 +155,8 @@ namespace ATAPS.Helpers
                         EventDateDisplayObject toAdd = new EventDateDisplayObject();
 
                         toAdd.EventDate = item;
-                        toAdd.Event = db.EventRecords.Find(item.EventRecordsID);
-                        toAdd.Client = db.Clients.Find(toAdd.Event.ClientID);
+                        toAdd.Event = db.EventRecords.Where(o => o.ID == item.EventRecordsID).First();
+                        toAdd.Client = db.Clients.Where(o => o.ID == toAdd.Event.ClientID).First();
                         var agQuery = from b in db.Agendas
                                          where b.EventDateID == item.ID
                                          select b;
@@ -189,7 +189,7 @@ namespace ATAPS.Helpers
                             EventDisplayObject toAdd = new EventDisplayObject();
 
                             toAdd.Event = item;
-                            toAdd.Client = db.Clients.Find(item.ClientID);
+                            toAdd.Client = db.Clients.Where(o => o.ID == item.ClientID).First();
                             var datesQuery = from b in db.EventDates
                                              where b.EventRecordsID == item.ID
                                              select b;

@@ -27,7 +27,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AttendeeType attendeeType = db.AttendeeTypes.Find(id);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(o => o.ID == id).First();
             if (attendeeType == null)
             {
                 return HttpNotFound();
@@ -65,7 +65,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AttendeeType attendeeType = db.AttendeeTypes.Find(id);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(o => o.ID == id).First();
             if (attendeeType == null)
             {
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AttendeeType attendeeType = db.AttendeeTypes.Find(id);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(o => o.ID == id).First();
             if (attendeeType == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            AttendeeType attendeeType = db.AttendeeTypes.Find(id);
+            AttendeeType attendeeType = db.AttendeeTypes.Where(o => o.ID == id).First();
             db.AttendeeTypes.Remove(attendeeType);
             db.SaveChanges();
             return RedirectToAction("Index");

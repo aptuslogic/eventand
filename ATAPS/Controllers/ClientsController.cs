@@ -38,7 +38,7 @@ namespace ATAPS.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             ClientDisplayObject client = new ClientDisplayObject();
-            client.Client = db.Clients.Find(id);
+            client.Client = db.Clients.Where(o => o.ID == id).First();
             client.Events = db.EventRecords.Where(o => o.ClientID == id).ToList();
 
             if (client == null)
@@ -78,7 +78,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Client client = db.Clients.Find(id);
+            Client client = db.Clients.Where(o => o.ID == id).First();
             if (client == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Client client = db.Clients.Find(id);
+            Client client = db.Clients.Where(o => o.ID == id).First();
             if (client == null)
             {
                 return HttpNotFound();
@@ -122,7 +122,7 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Client client = db.Clients.Find(id);
+            Client client = db.Clients.Where(o => o.ID == id).First();
             db.Clients.Remove(client);
             db.SaveChanges();
             return RedirectToAction("Index");

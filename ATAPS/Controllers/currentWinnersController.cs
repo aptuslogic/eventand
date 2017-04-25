@@ -27,7 +27,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            currentWinner currentWinner = db.currentWinners.Find(id);
+            currentWinner currentWinner = db.currentWinners.Where(o => o.winnerID == id).First();
             if (currentWinner == null)
             {
                 return HttpNotFound();
@@ -65,7 +65,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            currentWinner currentWinner = db.currentWinners.Find(id);
+            currentWinner currentWinner = db.currentWinners.Where(o => o.winnerID == id).First();
             if (currentWinner == null)
             {
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            currentWinner currentWinner = db.currentWinners.Find(id);
+            currentWinner currentWinner = db.currentWinners.Where(o => o.winnerID == id).First();
             if (currentWinner == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            currentWinner currentWinner = db.currentWinners.Find(id);
+            currentWinner currentWinner = db.currentWinners.Where(o => o.winnerID == id).First();
             db.currentWinners.Remove(currentWinner);
             db.SaveChanges();
             return RedirectToAction("Index");

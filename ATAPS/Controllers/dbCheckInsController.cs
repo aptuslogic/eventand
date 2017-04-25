@@ -27,7 +27,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            dbCheckIn dbCheckIn = db.dbCheckIns.Find(id);
+            dbCheckIn dbCheckIn = db.dbCheckIns.Where(o => o.rideID == id).First();
             if (dbCheckIn == null)
             {
                 return HttpNotFound();
@@ -65,7 +65,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            dbCheckIn dbCheckIn = db.dbCheckIns.Find(id);
+            dbCheckIn dbCheckIn = db.dbCheckIns.Where(o => o.ID == id).First();
             if (dbCheckIn == null)
             {
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            dbCheckIn dbCheckIn = db.dbCheckIns.Find(id);
+            dbCheckIn dbCheckIn = db.dbCheckIns.Where(o => o.partID == id).First();
             if (dbCheckIn == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            dbCheckIn dbCheckIn = db.dbCheckIns.Find(id);
+            dbCheckIn dbCheckIn = db.dbCheckIns.Where(o => o.ID == id).First();
             db.dbCheckIns.Remove(dbCheckIn);
             db.SaveChanges();
             return RedirectToAction("Index");

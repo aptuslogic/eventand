@@ -32,7 +32,7 @@ namespace ATAPS.Controllers
                 datesDO = DBHelper.GetAllEventDatesByEventID(filter);
             }
             ViewBag.AttendeeCount = db.Attendees.Where(o => o.EventID == filter).Count();
-            EventRecord eventRec = db.EventRecords.Find(filter);
+            EventRecord eventRec = db.EventRecords.Where(o => o.ID == filter).First();
             ViewBag.EventName = eventRec.EventName;
             ViewBag.EventID = eventRec.ID;
             return View(datesDO);
@@ -47,7 +47,6 @@ namespace ATAPS.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             EventDate eventDateList = db.EventDates.Where(o => o.ID == id).FirstOrDefault();
-            //EventDate eventDate = db.EventDates.Find(id);
            
             EventDateDisplayObject edDO = new EventDateDisplayObject();
             edDO.Agendas = db.Agendas.Where(o => o.EventDateID == id).ToList();
@@ -111,7 +110,6 @@ namespace ATAPS.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
                 eventDateList = db.EventDates.Where(o => o.ID == id).ToList();
-                //EventDate eventDate = db.EventDates.Find(id);
                 if (eventDateList.Count() == 0)
                 {
                     return HttpNotFound();
@@ -153,7 +151,6 @@ namespace ATAPS.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             EventDate eventDateList = db.EventDates.Where(o => o.ID == id).FirstOrDefault();
-            //EventDate eventDate = db.EventDates.Find(id);
 
             EventDateDisplayObject edDO = new EventDateDisplayObject();
             edDO.Agendas = db.Agendas.Where(o => o.EventDateID == id).ToList();
@@ -168,7 +165,7 @@ namespace ATAPS.Controllers
             //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             //}
             //int getID = id ?? default(int);
-            //EventDate eventDate = db.EventDates.Find(getID);
+            //EventDate eventDate = db.EventDates.Where(o => o.ID == getID).First();
             //if (eventDate == null)
             //{
             //    return HttpNotFound();

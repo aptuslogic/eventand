@@ -25,7 +25,7 @@ namespace ATAPS.Controllers
             List<EventDisplayObject> vList = new List<EventDisplayObject>();
 
             vList = DBHelper.GetAllEventsWithDataByClientID(filter);
-            Client client = db.Clients.Find(filter);
+            Client client = db.Clients.Where(o => o.ID == filter).First();
             ViewBag.ClientName = client.ClientName;
             
             return View(vList);
@@ -40,7 +40,6 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //EventRecord eventRecord = db.EventRecords.Find(id);
             EventDisplayObject eventDO = new EventDisplayObject();
             eventDO.Event = db.EventRecords.Where(o => o.ID == id).FirstOrDefault();
             eventDO.EventDates = db.EventDates.Where(o => o.EventRecordsID == id).ToList();
@@ -99,7 +98,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EventRecord eventRecord = db.EventRecords.Find(id);
+            EventRecord eventRecord = db.EventRecords.Where(o => o.ID == id).First();
             ViewBag.PossibleClients = db.Clients;
             if (eventRecord == null)
             {
@@ -136,7 +135,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EventRecord eventRecord = db.EventRecords.Find(id);
+            EventRecord eventRecord = db.EventRecords.Where(o => o.ID == id).First();
             if (eventRecord == null)
             {
                 return HttpNotFound();
@@ -151,7 +150,7 @@ namespace ATAPS.Controllers
         {
             if (filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
-            EventRecord eventRecord = db.EventRecords.Find(id);
+            EventRecord eventRecord = db.EventRecords.Where(o => o.ID == id).First();
             db.EventRecords.Remove(eventRecord);
             db.SaveChanges();
             return RedirectToAction("Index");
