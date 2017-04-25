@@ -27,7 +27,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AgendaTemplate agendaTemplate = db.AgendaTemplates.Find(id);
+            AgendaTemplate agendaTemplate = db.AgendaTemplates.Where(o => o.ID == id).First();
             if (agendaTemplate == null)
             {
                 return HttpNotFound();
@@ -65,7 +65,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AgendaTemplate agendaTemplate = db.AgendaTemplates.Find(id);
+            AgendaTemplate agendaTemplate = db.AgendaTemplates.Where(o => o.ID == id).First();
             if (agendaTemplate == null)
             {
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace ATAPS.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AgendaTemplate agendaTemplate = db.AgendaTemplates.Find(id);
+            AgendaTemplate agendaTemplate = db.AgendaTemplates.Where(o => o.ID == id).First();
             if (agendaTemplate == null)
             {
                 return HttpNotFound();
@@ -109,7 +109,7 @@ namespace ATAPS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            AgendaTemplate agendaTemplate = db.AgendaTemplates.Find(id);
+            AgendaTemplate agendaTemplate = db.AgendaTemplates.Where(o => o.ID == id).First();
             db.AgendaTemplates.Remove(agendaTemplate);
             db.SaveChanges();
             return RedirectToAction("Index");

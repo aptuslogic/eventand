@@ -129,7 +129,7 @@ namespace ATAPS.Controllers
 
             ViewBag.PageList = pageList;
 
-            EventRecord eRec = db.EventRecords.Find(accessEventID);
+            EventRecord eRec = db.EventRecords.Where(o => o.ID == accessEventID).First();
             ViewBag.EventName = eRec.EventName;
             return View(attendees);
             
@@ -252,7 +252,7 @@ namespace ATAPS.Controllers
 
             ViewBag.PageList = pageList;
 
-            EventRecord eRec = db.EventRecords.Find(accessEventID);
+            EventRecord eRec = db.EventRecords.Where(o => o.ID == accessEventID).First();
             ViewBag.EventName = eRec.EventName;
             return View(attendees);
         }
@@ -310,7 +310,7 @@ namespace ATAPS.Controllers
             }
 
             ViewBag.AttendeeCount = db.Attendees.Where(o => o.EventID == filter).Count();
-            EventRecord eventRec = db.EventRecords.Find(filter);
+            EventRecord eventRec = db.EventRecords.Where(o => o.ID == filter).First();
             ViewBag.EventName = eventRec.EventName;
             ViewBag.EventID = eventRec.ID;
             return View(datesDO);

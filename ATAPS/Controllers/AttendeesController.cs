@@ -104,7 +104,7 @@ namespace ATAPS.Controllers
 
             ViewBag.PageList = pageList;
 
-            EventRecord eRec = db.EventRecords.Find(filter);
+            EventRecord eRec = db.EventRecords.Where(o => o.ID == filter).First();
             ViewBag.EventName = eRec.EventName;
             //ModelState.Clear();
             return View(attendees);
@@ -229,7 +229,7 @@ namespace ATAPS.Controllers
             
             ViewBag.PageList = pageList;
 
-            EventRecord eRec = db.EventRecords.Find(filter);
+            EventRecord eRec = db.EventRecords.Where(o => o.ID == filter).First();
             ViewBag.EventName = eRec.EventName;
             //ModelState.Clear();
             return View(attendees);
