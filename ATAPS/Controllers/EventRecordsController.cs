@@ -121,7 +121,7 @@ namespace ATAPS.Controllers
             {
                 db.Entry(eventRecord).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { filter = filter });
             }
             return View(eventRecord);
         }
@@ -153,7 +153,7 @@ namespace ATAPS.Controllers
             EventRecord eventRecord = db.EventRecords.Where(o => o.ID == id).First();
             db.EventRecords.Remove(eventRecord);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { filter = filter });
         }
 
         protected override void Dispose(bool disposing)
