@@ -35,6 +35,7 @@ namespace ATAPS.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             if (filter == null) { return HttpNotFound(); }
+            ViewBag.ID = id;
             ViewBag.FilterID = filter;
             Activity activity = db.Activities.Where(o => o.ID == id).FirstOrDefault();
             if (activity == null)
