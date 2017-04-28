@@ -22,5 +22,5 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { filter = ViewBag.FilterID }) |
-    @Html.ActionLink("Back to List", "Index", new { filter = ViewBag.FilterID })
+    <a href="javascript:window.history.back()">Back to List</a>
 </p>
