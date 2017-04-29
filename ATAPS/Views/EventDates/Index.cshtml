@@ -4,6 +4,13 @@
     ViewBag.Title = "Index";
 }
 
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+<script src="/Scripts/breadcrumbs.js"></script>
+<div id="breadcrumbs"></div>
+<script language="Javascript">
+    $("#breadcrumbs").breadcrumbs();
+</script>
+
 <h2>All EventDates for: @ViewBag.EventName</h2>
 <h4><a href="/Attendees?filter=@ViewBag.EventID">Attendees For this event:  @ViewBag.AttendeeCount</a></h4>
 <h4><a href="/AttendeeTypes?filter=@ViewBag.EventID">Attendee Types for this event</a></h4>

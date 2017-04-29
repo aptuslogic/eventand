@@ -6,11 +6,18 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>MVC Sign</title>
-    <script language="javascript" type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
     <script language="javascript" type="text/javascript" src="/Scripts/ss.js"></script>
     <!-- // IMPORTANT: DO NOT USE THIS ss.js IN PRODUCTION, EMAIL US TO GET PRODUCTION VERSION ONCE YOU PUCHASE IT -->
 </head>
 <body>
+
+<script src="/Scripts/breadcrumbs.js"></script>
+<div id="breadcrumbs"></div>
+<script language="Javascript">
+    $("#breadcrumbs").breadcrumbs();
+</script>
+
     <form method="post" action="/Host/Sig/">
         <div id='ctlSignature_Container' style='width: 450px; height: 300px; margin: 10px; position: relative;'>
             <script language="javascript" type="text/javascript">

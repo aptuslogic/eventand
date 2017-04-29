@@ -4,8 +4,14 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+<script src="/Scripts/breadcrumbs.js"></script>
+<div id="breadcrumbs"></div>
+<script language="Javascript">
+    $("#breadcrumbs").breadcrumbs();
+</script>
 
+<h2>Create</h2>
 
 @using (Html.BeginForm()) 
 {

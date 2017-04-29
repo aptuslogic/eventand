@@ -3,6 +3,13 @@
     ViewBag.Title = "RefreshTest";
 }
 
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
+<script src="/Scripts/breadcrumbs.js"></script>
+<div id="breadcrumbs"></div>
+<script language="Javascript">
+    $("#breadcrumbs").breadcrumbs();
+</script>
+
 <h2>RefreshTest</h2>
 <h4>Current Date Is: @Model</h4>
 <h4>Current Ticks: <span id="refreshme">@Model.Ticks</span></h4>
