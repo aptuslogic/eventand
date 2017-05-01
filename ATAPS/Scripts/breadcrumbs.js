@@ -29,8 +29,9 @@ $.fn.extend({
     breadcrumbs_manage: function () {
 
         // set current crumb
-        var title = document.title.replace (" - ATAP System", "");//ega this is ATAP-specific
-        var new_crumb = {url: window.location.href, name: title};
+        var title = document.title.replace(" - ATAP System", "");//ega this is ATAP-specific
+        var url = $(this).normalize_url(window.location.href);
+        var new_crumb = {url: url, name: title};
 
         // see if this crumb is in the list already
         var found = false;
@@ -72,6 +73,26 @@ $.fn.extend({
             separator = " &gt;&gt; ";
         });
         return (str);
+    },
+
+    normalize_url: function (url) {
+
+        // remove parameters
+        var i = url.indexOf("?");
+        if (i != -1)
+        {
+            url = url.substr(0, i);
+        }
+
+        // remove trailing slash
+        if (url.substr (-1) == "/")
+        {
+            url = url.substr(0, url.length - 1);
+        }
+
+        // return the normalized url
+        return (url);
+
     }
 
 });
