@@ -3,8 +3,6 @@
     ViewBag.Title = "RFIDTool";
 }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
-
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 <script src="/Scripts/breadcrumbs.js"></script>
 <div id="breadcrumbs"></div>
@@ -19,8 +17,8 @@
             // when this is called, call the PopulateActivity API
             var id = $('#agendaSelect').val();
 
-            // set a cookie to hold the newly selected value
-            Cookies.set ("agendaSelectValue", id);
+            // use session storage to hold the newly selected value
+            sessionStorage.setItem ("agendaSelectValue", id);
 
             $.getJSON("/api/Call/GetActivitiesByAgendaID",
                 {
@@ -35,7 +33,7 @@
                         $('#activitySelect').empty();
                         var defOptAct = $('<option />').val(0).text("--- Select Activity ---");
                         $("#activitySelect").append(defOptAct);
-                        var activitySelectValue = Cookies.get ("activitySelectValue");
+                        var activitySelectValue = sessionStorage.getItem ("activitySelectValue");
                         for(var i=0;i<data.length;i++){
                             var selected = (activitySelectValue == data[i].Activity.ID) ? "selected" : "";
                             var actOption = $('<option ' + selected + '/>').val(data[i].Activity.ID).text(data[i].Activity.ActivityName);
@@ -127,8 +125,8 @@
             // when this is called, call the PopulateActivity API
             var id = $('#activitySelect').val();
 
-            // set a cookie to hold the newly selected value
-            Cookies.set ("activitySelectValue", id);
+            // use session storage to hold the newly selected value
+            sessionStorage.setItem ("activitySelectValue", id);
 
             $.getJSON("/api/Call/GetActivityByID",
                 {
@@ -180,7 +178,7 @@
                 },
                     function (data) {
                         // map the Agenda list to the DDL
-                        var agendaSelectValue = Cookies.get ("agendaSelectValue");
+                        var agendaSelectValue = sessionStorage.getItem ("agendaSelectValue");
                         var defOpt = $('<option />').val(0).text("--- Select Agenda ---");
                         $("#agendaSelect").append(defOpt);
                         for(var i=0;i<data.length;i++){
