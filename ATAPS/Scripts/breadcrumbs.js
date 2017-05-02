@@ -31,7 +31,7 @@ $.fn.extend({
         // set current crumb
         var title = document.title.replace(" - ATAP System", "");//ega this is ATAP-specific
         var url = $(this).normalize_url(window.location.href);
-        var new_crumb = {url: url, name: title};
+        var new_crumb = {url: window.location.href, compareUrl: url, name: title};
 
         // see if this crumb is in the list already
         var found = false;
@@ -39,7 +39,7 @@ $.fn.extend({
         if (crumbs)
         {
             $.each(crumbs, function (index, crumb) {
-                if (!found && crumb.url == new_crumb.url)
+                if (!found && crumb.compareUrl == new_crumb.compareUrl)
                 {
                     crumbs.splice(index + 1);
                     sessionStorage.setObj("breadcrumbs", crumbs);
