@@ -372,8 +372,11 @@ namespace ATAPS.Controllers
                 List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(x => x.LastActivity == busid).ToList();
                 foreach (AttendeeLastCheck checkin in checkins)
                 {
-                    checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
-                    attendees.Add(db.Attendees.Where(x => x.ID == checkin.AttendeeID).FirstOrDefault());
+                    if (!checkinTimes.ContainsKey(checkin.AttendeeID))
+                    {
+                        checkinTimes[checkin.AttendeeID] = checkin.LastUpdate.ToString();
+                        attendees.Add(db.Attendees.Where(x => x.ID == checkin.AttendeeID).FirstOrDefault());
+                    }
                 }
                 ViewBag.checkinTimes = checkinTimes;
             }
