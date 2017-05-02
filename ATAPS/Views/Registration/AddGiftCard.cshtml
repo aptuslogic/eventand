@@ -12,11 +12,12 @@
 </script>
 
 <h2>Add Gift Card for @ViewBag.attendee.FirstName @ViewBag.attendee.LastName</h2>
-<a href="/Registration/IndivCheckin?id=@ViewBag.attendee.ID">Back to Individual Checkin</a><br /><br />
+<a href="javascript:window.history.back()">Back to Individual Checkin</a><br /><br />
 
 <form method="post" action="/Registration/ReceiveGiftCard/">
 
     <input type="hidden" name="id" value="@ViewBag.attendee.ID" />
+    <input type="hidden" name="bus" value="@Request["bus"]" />
 
     <div id='ctlSignature_Container' style='width: 800px; height: 300px; margin: 10px; position: relative;'>
         <script language="javascript" type="text/javascript">

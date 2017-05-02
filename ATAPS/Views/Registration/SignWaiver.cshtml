@@ -13,7 +13,7 @@
 
 <h2>Sign Waiver</h2>
 (@ViewBag.waiver.waiver_name being signed by @ViewBag.attendee.FirstName @ViewBag.attendee.LastName)<br />
-<a href="/Registration/IndivCheckin?id=@ViewBag.attendee.ID">Back to Individual Checkin</a><br /><br />
+<a href="javascript:window.history.back()">Back to Individual Checkin</a><br /><br />
 
 <iframe src="@ViewBag.waiver.waiver_url" style="width:100%; height:50vh">
 </iframe>
@@ -22,6 +22,7 @@
 
     <input type="hidden" name="id" value="@ViewBag.attendee.ID" />
     <input type="hidden" name="waiver" value="@ViewBag.waiver.id" />
+    <input type="hidden" name="bus" value="@Request["bus"]" />
 
     <div id='ctlSignature_Container' style='width: 800px; height: 300px; margin: 10px; position: relative;'>
         <script language="javascript" type="text/javascript">

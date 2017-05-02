@@ -156,7 +156,7 @@ namespace ATAPS.Controllers
             SaveSig(sig_fname);
 
             // show the view
-            return RedirectToAction("IndivCheckin", new { id = id });
+            return RedirectToAction("IndivCheckin", new { id = id, bus = Request["bus"] });
         }
 
         // GET: /Registration/AddGiftCard
@@ -192,7 +192,7 @@ namespace ATAPS.Controllers
             SaveSig(sig_fname);
 
             // redirect back to waivers
-            return RedirectToAction("IndivCheckin", new { id = id });
+            return RedirectToAction("IndivCheckin", new { id = id, bus = Request["bus"] });
         }
 
         // GET: /Registration/IndivCheckin
