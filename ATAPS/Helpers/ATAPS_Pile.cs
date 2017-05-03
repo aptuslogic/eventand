@@ -94,7 +94,7 @@ namespace ATAPS.Helpers
 
             List<EventDate> eDates = db.EventDates.Where(o => o.EventRecordsID == accessEventID).OrderBy(o => o.EventDate1).ToList();
 
-            checkinParm.ParmName = "RegistrationAgendaID";
+            checkinParm.ParmName = "RegistrationAgendaID" + accessEventID;
             Agenda regAg = new Agenda();
             regAg.AgendaName = "Registration";
             regAg.AgendaOrder = 0;

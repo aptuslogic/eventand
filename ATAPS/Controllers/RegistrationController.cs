@@ -30,13 +30,14 @@ namespace ATAPS.Controllers
         // GET:  Registration/Busses
         public ActionResult Busses()
         {
-            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
             if (checkinParm == null)
             {
                 bool good = ATAPS_Pile.CreateRegistrationAgenda();
             }
 
-            checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
             AgendaDisplayObject regAgenda = DBHelper.GetAgendaWithDataByID(int.Parse(checkinParm.ParmValue));
             return View(regAgenda);
         }
@@ -202,7 +203,8 @@ namespace ATAPS.Controllers
             ViewBag.attendee = attendee;
 
             // get ids for the activity and agenda
-            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
             int agendaID = Int32.Parse(checkinParm.ParmValue);
             ViewBag.agendaId = agendaID;
             List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
@@ -270,7 +272,8 @@ namespace ATAPS.Controllers
             //if (filter == null) { return HttpNotFound(); }
             //ViewBag.FilterID = filter;
             //activity.AgendaID = filter ?? default(int);
-            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
             activity.AgendaID = int.Parse(checkinParm.ParmValue);
             activity.ActivityTypeID = 1;
             if (ModelState.IsValid)
@@ -338,7 +341,8 @@ namespace ATAPS.Controllers
         public ActionResult Monitor(int? filter)
         {
             // get a list of busses
-            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID").FirstOrDefault();
+            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
             int agendaID = Int32.Parse(checkinParm.ParmValue);
             List<Activity> activities = db.Activities.Where(o => o.AgendaID == agendaID).ToList();
             ViewBag.activities = activities;
