@@ -6,7 +6,7 @@
     <edmx:StorageModels>
     <Schema Namespace="RFIDDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.Activity' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.Activity' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Activity">
           <Key>
             <PropertyRef Name="ID" />
@@ -18,7 +18,7 @@ warning 6002: The table/view 'RFIDDB.dbo.Activity' does not have a primary key d
           <Property Name="ActivityTypeID" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.ActivityDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.ActivityDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ActivityDetail">
           <Key>
             <PropertyRef Name="ID" />
@@ -39,7 +39,7 @@ warning 6002: The table/view 'RFIDDB.dbo.ActivityDetail' does not have a primary
           <Property Name="AttendeeLimit" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.Agendas' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.Agendas' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Agendas">
           <Key>
             <PropertyRef Name="ID" />
@@ -72,9 +72,10 @@ warning 6002: The table/view 'RFIDDB.dbo.Agendas' does not have a primary key de
           <Property Name="LastActivity" Type="int" />
           <Property Name="AttendeeID" Type="int" Nullable="false" />
           <Property Name="CheckDir" Type="nvarchar" MaxLength="10" />
+          <Property Name="BusNumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.Attendees' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.Attendees' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Attendees">
           <Key>
             <PropertyRef Name="ID" />
@@ -124,7 +125,7 @@ warning 6002: The table/view 'RFIDDB.dbo.Attendees' does not have a primary key 
           <Property Name="POCContact" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.currentWinner' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.currentWinner' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="currentWinner">
           <Key>
             <PropertyRef Name="winnerID" />
@@ -133,7 +134,7 @@ warning 6002: The table/view 'RFIDDB.dbo.currentWinner' does not have a primary 
           <Property Name="attendeeID" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.dbCheckIn' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.dbCheckIn' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="dbCheckIn">
           <Key>
             <PropertyRef Name="rideID" />
@@ -146,7 +147,7 @@ warning 6002: The table/view 'RFIDDB.dbo.dbCheckIn' does not have a primary key 
           <Property Name="stopNmbr" Type="tinyint" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.EventDates' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.EventDates' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EventDates">
           <Key>
             <PropertyRef Name="ID" />
@@ -157,7 +158,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventDates' does not have a primary key
           <Property Name="EventRecordsID" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EventRecords">
           <Key>
             <PropertyRef Name="ID" />
@@ -183,14 +184,88 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <EntitySet Name="AttendeeType" EntityType="Self.AttendeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Parms" EntityType="Self.Parms" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Activity" EntityType="Self.Activity" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="Attendees" EntityType="Self.Attendees" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="currentWinner" EntityType="Self.currentWinner" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="dbCheckIn" EntityType="Self.dbCheckIn" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" Schema="dbo"/>
-          <EntitySet Name="EventRecords" EntityType="Self.EventRecords" store:Type="Tables" Schema="dbo"/>
+          <EntitySet Name="Activity" EntityType="Self.Activity" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Activity].[ID] AS [ID], 
+    [Activity].[ActivityName] AS [ActivityName], 
+    [Activity].[AgendaID] AS [AgendaID], 
+    [Activity].[ActivityTypeID] AS [ActivityTypeID]
+    FROM [dbo].[Activity] AS [Activity]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ActivityDetail].[ID] AS [ID], 
+    [ActivityDetail].[ActivityID] AS [ActivityID], 
+    [ActivityDetail].[ActivityTime] AS [ActivityTime]
+    FROM [dbo].[ActivityDetail] AS [ActivityDetail]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Agendas].[ID] AS [ID], 
+    [Agendas].[EventDateID] AS [EventDateID], 
+    [Agendas].[AgendaName] AS [AgendaName], 
+    [Agendas].[AgendaOrder] AS [AgendaOrder], 
+    [Agendas].[AgendaType] AS [AgendaType]
+    FROM [dbo].[Agendas] AS [Agendas]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Attendees" EntityType="Self.Attendees" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Attendees].[ID] AS [ID], 
+    [Attendees].[ParticipantID] AS [ParticipantID], 
+    [Attendees].[PrimaryID] AS [PrimaryID], 
+    [Attendees].[LastName] AS [LastName], 
+    [Attendees].[FirstName] AS [FirstName], 
+    [Attendees].[Email] AS [Email], 
+    [Attendees].[ParticipantType] AS [ParticipantType], 
+    [Attendees].[RSVPStatus] AS [RSVPStatus], 
+    [Attendees].[IsPrimary] AS [IsPrimary], 
+    [Attendees].[AttPicture] AS [AttPicture], 
+    [Attendees].[Filename] AS [Filename], 
+    [Attendees].[RfID] AS [RfID], 
+    [Attendees].[PhoneticFirst] AS [PhoneticFirst], 
+    [Attendees].[PhoneticLast] AS [PhoneticLast], 
+    [Attendees].[PreferredFirst] AS [PreferredFirst], 
+    [Attendees].[PreferredLast] AS [PreferredLast], 
+    [Attendees].[Mobile] AS [Mobile], 
+    [Attendees].[EventID] AS [EventID], 
+    [Attendees].[ActivityListNames] AS [ActivityListNames], 
+    [Attendees].[WinnerQueueOrder] AS [WinnerQueueOrder], 
+    [Attendees].[Title] AS [Title], 
+    [Attendees].[Department] AS [Department]
+    FROM [dbo].[Attendees] AS [Attendees]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="currentWinner" EntityType="Self.currentWinner" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [currentWinner].[winnerID] AS [winnerID], 
+    [currentWinner].[attendeeID] AS [attendeeID]
+    FROM [dbo].[currentWinner] AS [currentWinner]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="dbCheckIn" EntityType="Self.dbCheckIn" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [dbCheckIn].[rideID] AS [rideID], 
+    [dbCheckIn].[activity] AS [activity], 
+    [dbCheckIn].[busNumber] AS [busNumber], 
+    [dbCheckIn].[partID] AS [partID], 
+    [dbCheckIn].[chrDirection] AS [chrDirection], 
+    [dbCheckIn].[stopNmbr] AS [stopNmbr]
+    FROM [dbo].[dbCheckIn] AS [dbCheckIn]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EventDates].[ID] AS [ID], 
+    [EventDates].[EventDate] AS [EventDate], 
+    [EventDates].[EventRecordsID] AS [EventRecordsID]
+    FROM [dbo].[EventDates] AS [EventDates]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EventRecords" EntityType="Self.EventRecords" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EventRecords].[ID] AS [ID], 
+    [EventRecords].[EventName] AS [EventName], 
+    [EventRecords].[EventCode] AS [EventCode], 
+    [EventRecords].[EventDesc] AS [EventDesc], 
+    [EventRecords].[ClientID] AS [ClientID]
+    FROM [dbo].[EventRecords] AS [EventRecords]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -358,6 +433,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <Property Name="LastActivity" Type="Int32" />
           <Property Name="AttendeeID" Type="Int32" Nullable="false" />
           <Property Name="CheckDir" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BusNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="Parm">
           <Key>
@@ -517,6 +593,7 @@ warning 6002: The table/view 'RFIDDB.dbo.EventRecords' does not have a primary k
           <EntitySetMapping Name="AttendeeLastChecks">
             <EntityTypeMapping TypeName="RFIDDBModel.AttendeeLastCheck">
               <MappingFragment StoreEntitySet="AttendeeLastCheck">
+                <ScalarProperty Name="BusNumber" ColumnName="BusNumber" />
                 <ScalarProperty Name="CheckDir" ColumnName="CheckDir" />
                 <ScalarProperty Name="AttendeeID" ColumnName="AttendeeID" />
                 <ScalarProperty Name="LastActivity" ColumnName="LastActivity" />

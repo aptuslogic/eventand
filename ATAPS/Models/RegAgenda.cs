@@ -12,15 +12,10 @@ namespace ATAPS.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AttendeeLastCheck
+    public partial class RegAgenda
     {
         public int ID { get; set; }
-        public Nullable<int> AgendaID { get; set; }
-        public Nullable<System.DateTime> LastUpdate { get; set; }
-        public Nullable<int> LastAgenda { get; set; }
-        public Nullable<int> LastActivity { get; set; }
-        public int AttendeeID { get; set; }
-        public string CheckDir { get; set; }
-        public Nullable<int> BusNumber { get; set; }
+        public int EventRecordID { get; set; }
+        public int AgendaID { get; set; }
     }
 }
