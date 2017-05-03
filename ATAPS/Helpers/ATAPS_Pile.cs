@@ -32,7 +32,7 @@ namespace ATAPS.Helpers
             RFIDDBEntities db = new RFIDDBEntities();
             List<Attendee> retVal = new List<Attendee>();
 
-            int pageSize = 25;
+            //int pageSize = 25;
             // here we pull the query based on the sort order and direction
             List<Attendee> attendees = new List<Attendee>();
             attendees = db.Attendees.Where(o => o.EventID == filter).ToList();
@@ -131,7 +131,6 @@ namespace ATAPS.Helpers
         public static List<AttendeeLastCheck> GetActivityAttendeeCurrentByActivityID(int actID, int agnID)
         {
             RFIDDBEntities db = new RFIDDBEntities();
-            int retVal = 0;
 
             // NOTE:  I know there's a cleaner way to pull this list without having to loop through it, but I'm coming up with blank.  We should take another look at this when
             // we have time to ponder the problem.  I know this is close, but should be possible to do without the loop.

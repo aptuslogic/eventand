@@ -21,6 +21,5 @@ namespace ATAPS.Models
         public Nullable<int> LastActivity { get; set; }
         public int AttendeeID { get; set; }
         public string CheckDir { get; set; }
-        public Nullable<int> BusNumber { get; set; }
     }
 }

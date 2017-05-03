@@ -294,7 +294,7 @@ namespace ATAPS.Controllers
 
         public ActionResult Agendas()
         {
-            int filter = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            int? filter = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
 
             ViewBag.FilterID = filter;
             List<EventDateDisplayObject> datesDO = new List<EventDateDisplayObject>();

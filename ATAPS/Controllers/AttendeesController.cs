@@ -201,7 +201,6 @@ namespace ATAPS.Controllers
                 pageNum = 1;
             }
             decimal pages = 1 + (attendees.Count() / pageSize);
-            int temp = 0;
             if (pageNum * pageSize > attendees.Count())
             {
                 int modCheck = attendees.Count() % pageSize; // get remainder
