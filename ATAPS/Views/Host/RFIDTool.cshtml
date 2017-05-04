@@ -71,9 +71,17 @@
                     }, function (data){
                         // check the return code
                         if (data.Attendee.ID == 0){
+                            $("body").css ("background-color", "red");
+                            setTimeout (function () {
+                                $("body").css ("background-color", "white");
+                            }, 1000);
                             // more than one found
                             $('#fullName').html('NO USER FOUND FOR THIS RFID');
                         } else{
+                            $("body").css ("background-color", "green");
+                            setTimeout (function () {
+                                $("body").css ("background-color", "white");
+                            }, 1000);
                             // only one found
                             $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
                             $('#attendeeCurrentCount').html(data.CheckedInCount);
@@ -201,7 +209,6 @@
 <p>
     <a href="/Host/RFIDByName?filter=@ViewBag.EventDateID">Check In / Out By Name</a>
 </p>
-<p>
     <div class="form-group">
         <span class="control-label col-md-2">Select Agenda Element: </span>
         <select id="agendaSelect" class="col-md-10 dropdown"></select>
@@ -257,4 +264,4 @@
         <input type="submit" id="submit-search" value="Search" />
     </p>
     }
-    </p>
+    

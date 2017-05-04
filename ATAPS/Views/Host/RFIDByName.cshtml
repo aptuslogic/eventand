@@ -165,9 +165,17 @@
                                         // check the return code
 
                                         if (data.Attendee.ID == 0){
+                                            $("body").css ("background-color", "red");
+                                            setTimeout (function () {
+                                                $("body").css ("background-color", "white");
+                                            }, 1000);
                                             // more than one found
                                             $('#fullName').html('NO USER FOUND FOR THIS RFID');
                                         } else{
+                                            $("body").css ("background-color", "green");
+                                            setTimeout (function () {
+                                                $("body").css ("background-color", "white");
+                                            }, 1000);
                                             // only one found
                                             $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
                                             $('#attendeeCurrentCount').html(data.CheckedInCount);
