@@ -216,7 +216,7 @@ namespace ATAPS.Controllers
             ViewBag.attendeeType = attendeeType;
 
             // pass list of registered gift cards
-            ViewBag.giftcards = GiftCard.GetIssued(db, attendee);
+            ViewBag.giftcards = GiftCardBase.GetIssued(db, attendee);
 
             // pass a list of waivers
             List<Parm> parms = db.Parms.Where(x => x.ParmName.StartsWith("ActivityWaiver-")).ToList();
@@ -467,21 +467,21 @@ namespace ATAPS.Controllers
         }
     }
 
-    public class GiftCard
+    public class GiftCardBase
     {
         public string signature_url;
         public string card_number;
 
-        public GiftCard (string signature_url_param, string card_number_param)
+        public GiftCardBase (string signature_url_param, string card_number_param)
         {
             signature_url = signature_url_param;
             card_number = card_number_param;
         }
 
-        public static List<GiftCard> GetIssued (RFIDDBEntities db, Attendee attendee)
+        public static List<GiftCardBase> GetIssued (RFIDDBEntities db, Attendee attendee)
         {
             // start an empty list
-            List<GiftCard> results = new List<GiftCard>();
+            List<GiftCardBase> results = new List<GiftCardBase>();
 
             // get all the parms
             string name = "GiftCard-" + attendee.ID;
@@ -492,7 +492,7 @@ namespace ATAPS.Controllers
             {
                 string number = parm.ParmValue;
                 string sig_url = "/Content/gift_card_signatures/" + attendee.LastName + attendee.FirstName + "-" + attendee.ParticipantID + "-GiftCardSig-" + number + ".png";
-                results.Add(new GiftCard(sig_url, number));
+                results.Add(new GiftCardBase(sig_url, number));
             }
 
             // return the list
