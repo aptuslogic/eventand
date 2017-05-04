@@ -52,6 +52,18 @@ namespace ATAPS.Controllers
             // here we pull the query based on the sort order and direction
             List<Attendee> attendees = new List<Attendee>();
 
+            // pull list of attendees already checked in to this activity
+            List<Attendee> checked_in_attendees = new List<Attendee>();
+            int busInt = Int32.Parse(Request["id"]);
+            List<AttendeeLastCheck> checkins = db.AttendeeLastChecks.Where(o => o.LastActivity == busInt && o.CheckDir == "In").ToList();
+            foreach (AttendeeLastCheck checkin in checkins)
+            {
+                Attendee checked_in_attendee = db.Attendees.Where(o => o.ID == checkin.AttendeeID).FirstOrDefault();
+                checked_in_attendees.Add(checked_in_attendee);
+            }
+            checked_in_attendees = checked_in_attendees.OrderBy(o => o.LastName).ThenBy(o => o.FirstName).ToList();
+            ViewBag.CheckedInAttendees = checked_in_attendees;
+
             // pull the bus name and pass to view
             int busID = Int32.Parse(Request["id"]);
             Activity bus = db.Activities.Where(x => x.ID == busID).FirstOrDefault();
