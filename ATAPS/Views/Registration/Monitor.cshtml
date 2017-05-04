@@ -114,6 +114,7 @@
             jQuery.ajax("/Registration/Monitor").done(function (data) {
                 data = data.substr(data.indexOf("<table"));
                 data = data.substr(0, data.indexOf("</table>") + 8);
+                var y = jQuery(window).scrollTop();
                 jQuery("#MonitorItemsContainer").empty();
                 jQuery("#MonitorItemsContainer").html(data);
                 var bus = readCookie("BusSelect");
@@ -130,6 +131,7 @@
                 });
                 jQuery('#MonitorItems').show();
                 setTimeout(DoRefresh, 10000);
+                jQuery(window).scrollTop(y);
             });
         }
         var bus = readCookie("BusSelect");
