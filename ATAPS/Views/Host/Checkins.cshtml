@@ -33,7 +33,7 @@
             {
                 <tr>
                     <td>
-                        <a href="/Host/RFIDTool?filter=@agendaItem.Agenda.EventDateID">@agendaItem.Agenda.AgendaName</a>
+                        <a href="javascript:ClickedAgenda(@agendaItem.Agenda.EventDateID,@agendaItem.Agenda.ID)">@agendaItem.Agenda.AgendaName</a>
                     </td>
                     <td>
                         @foreach (var activity in agendaItem.ActivityList)
@@ -49,6 +49,12 @@
         <br />
         <br />
         <br />
-    }
-    </p>
+    }    </p>
 
+<script language="Javascript">
+    function ClickedAgenda (eventDateID, agendaID)
+    {
+        sessionStorage.setItem("agendaSelectValue", agendaID);
+        window.location.href = "/Host/RFIDTool?filter=" + eventDateID;
+    }
+</script>
