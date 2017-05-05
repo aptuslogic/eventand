@@ -169,15 +169,6 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
           <Property Name="EventDesc" Type="varchar" MaxLength="1000" />
           <Property Name="ClientID" Type="int" />
         </EntityType>
-        <EntityType Name="GiftCards">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ParticipantID" Type="int" />
-          <Property Name="ccNumber" Type="char" MaxLength="4" />
-          <Property Name="signature" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="Parms">
           <Key>
             <PropertyRef Name="ID" />
@@ -192,16 +183,89 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
           <EntitySet Name="AttendeeLastCheck" EntityType="Self.AttendeeLastCheck" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttendeeType" EntityType="Self.AttendeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="GiftCards" EntityType="Self.GiftCards" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Parms" EntityType="Self.Parms" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Agendas" EntityType="Self.Agendas" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Attendees" EntityType="Self.Attendees" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="currentWinner" EntityType="Self.currentWinner" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="dbCheckIn" EntityType="Self.dbCheckIn" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EventDates" EntityType="Self.EventDates" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="EventRecords" EntityType="Self.EventRecords" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Activity" EntityType="Self.Activity" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Activity].[ID] AS [ID], 
+    [Activity].[ActivityName] AS [ActivityName], 
+    [Activity].[AgendaID] AS [AgendaID], 
+    [Activity].[ActivityTypeID] AS [ActivityTypeID]
+    FROM [dbo].[Activity] AS [Activity]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ActivityDetail" EntityType="Self.ActivityDetail" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ActivityDetail].[ID] AS [ID], 
+    [ActivityDetail].[ActivityID] AS [ActivityID], 
+    [ActivityDetail].[ActivityTime] AS [ActivityTime]
+    FROM [dbo].[ActivityDetail] AS [ActivityDetail]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Agendas].[ID] AS [ID], 
+    [Agendas].[EventDateID] AS [EventDateID], 
+    [Agendas].[AgendaName] AS [AgendaName], 
+    [Agendas].[AgendaOrder] AS [AgendaOrder], 
+    [Agendas].[AgendaType] AS [AgendaType]
+    FROM [dbo].[Agendas] AS [Agendas]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Attendees" EntityType="Self.Attendees" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Attendees].[ID] AS [ID], 
+    [Attendees].[ParticipantID] AS [ParticipantID], 
+    [Attendees].[PrimaryID] AS [PrimaryID], 
+    [Attendees].[LastName] AS [LastName], 
+    [Attendees].[FirstName] AS [FirstName], 
+    [Attendees].[Email] AS [Email], 
+    [Attendees].[ParticipantType] AS [ParticipantType], 
+    [Attendees].[RSVPStatus] AS [RSVPStatus], 
+    [Attendees].[IsPrimary] AS [IsPrimary], 
+    [Attendees].[AttPicture] AS [AttPicture], 
+    [Attendees].[Filename] AS [Filename], 
+    [Attendees].[RfID] AS [RfID], 
+    [Attendees].[PhoneticFirst] AS [PhoneticFirst], 
+    [Attendees].[PhoneticLast] AS [PhoneticLast], 
+    [Attendees].[PreferredFirst] AS [PreferredFirst], 
+    [Attendees].[PreferredLast] AS [PreferredLast], 
+    [Attendees].[Mobile] AS [Mobile], 
+    [Attendees].[EventID] AS [EventID], 
+    [Attendees].[ActivityListNames] AS [ActivityListNames], 
+    [Attendees].[WinnerQueueOrder] AS [WinnerQueueOrder], 
+    [Attendees].[Title] AS [Title], 
+    [Attendees].[Department] AS [Department]
+    FROM [dbo].[Attendees] AS [Attendees]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="currentWinner" EntityType="Self.currentWinner" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [currentWinner].[winnerID] AS [winnerID], 
+    [currentWinner].[attendeeID] AS [attendeeID]
+    FROM [dbo].[currentWinner] AS [currentWinner]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="dbCheckIn" EntityType="Self.dbCheckIn" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [dbCheckIn].[rideID] AS [rideID], 
+    [dbCheckIn].[activity] AS [activity], 
+    [dbCheckIn].[busNumber] AS [busNumber], 
+    [dbCheckIn].[partID] AS [partID], 
+    [dbCheckIn].[chrDirection] AS [chrDirection], 
+    [dbCheckIn].[stopNmbr] AS [stopNmbr]
+    FROM [dbo].[dbCheckIn] AS [dbCheckIn]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EventDates].[ID] AS [ID], 
+    [EventDates].[EventDate] AS [EventDate], 
+    [EventDates].[EventRecordsID] AS [EventRecordsID]
+    FROM [dbo].[EventDates] AS [EventDates]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EventRecords" EntityType="Self.EventRecords" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EventRecords].[ID] AS [ID], 
+    [EventRecords].[EventName] AS [EventName], 
+    [EventRecords].[EventCode] AS [EventCode], 
+    [EventRecords].[EventDesc] AS [EventDesc], 
+    [EventRecords].[ClientID] AS [ClientID]
+    FROM [dbo].[EventRecords] AS [EventRecords]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -338,7 +402,6 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
           <EntitySet Name="AgendaTemplates" EntityType="RFIDDBModel.AgendaTemplate" />
           <EntitySet Name="AttendeeLastChecks" EntityType="RFIDDBModel.AttendeeLastCheck" />
           <EntitySet Name="Parms" EntityType="RFIDDBModel.Parm" />
-          <EntitySet Name="GiftCards" EntityType="RFIDDBModel.GiftCard" />
         </EntityContainer>
         <EntityType Name="ActivityType">
           <Key>
@@ -379,15 +442,6 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ParmName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ParmValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="GiftCard">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ParticipantID" Type="Int32" />
-          <Property Name="ccNumber" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
-          <Property Name="signature" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -555,16 +609,6 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
               <MappingFragment StoreEntitySet="Parms">
                 <ScalarProperty Name="ParmValue" ColumnName="ParmValue" />
                 <ScalarProperty Name="ParmName" ColumnName="ParmName" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="GiftCards">
-            <EntityTypeMapping TypeName="RFIDDBModel.GiftCard">
-              <MappingFragment StoreEntitySet="GiftCards">
-                <ScalarProperty Name="signature" ColumnName="signature" />
-                <ScalarProperty Name="ccNumber" ColumnName="ccNumber" />
-                <ScalarProperty Name="ParticipantID" ColumnName="ParticipantID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

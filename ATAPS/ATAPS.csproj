@@ -215,6 +215,7 @@
     <Compile Include="Controllers\dbCheckInsController.cs" />
     <Compile Include="Controllers\EventDatesController.cs" />
     <Compile Include="Controllers\EventRecordsController.cs" />
+    <Compile Include="Controllers\GiftCardsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HostController.cs" />
     <Compile Include="Controllers\RegistrationController.cs" />
@@ -277,6 +278,9 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EventRecord.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GiftCard.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Parm.cs">
@@ -548,6 +552,11 @@
     <Content Include="Views\Registration\Monitor.cshtml" />
     <Content Include="Views\Registration\AssignRfid.cshtml" />
     <Content Include="Views\Host\Checkins.cshtml" />
+    <Content Include="Views\GiftCards\Create.cshtml" />
+    <Content Include="Views\GiftCards\Delete.cshtml" />
+    <Content Include="Views\GiftCards\Details.cshtml" />
+    <Content Include="Views\GiftCards\Edit.cshtml" />
+    <Content Include="Views\GiftCards\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

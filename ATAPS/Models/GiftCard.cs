@@ -12,10 +12,11 @@ namespace ATAPS.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class EventDate
+    public partial class GiftCard
     {
         public int ID { get; set; }
-        public Nullable<System.DateTime> EventDate1 { get; set; }
-        public int EventRecordsID { get; set; }
+        public Nullable<int> ParticipantID { get; set; }
+        public string ccNumber { get; set; }
+        public byte[] signature { get; set; }
     }
 }

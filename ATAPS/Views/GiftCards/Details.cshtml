@@ -1,0 +1,42 @@
+﻿@model ATAPS.Models.GiftCard
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>GiftCard</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ParticipantID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ParticipantID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ccNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ccNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.signature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.signature)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
