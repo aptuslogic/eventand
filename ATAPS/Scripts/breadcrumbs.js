@@ -1,7 +1,4 @@
-﻿//ega what if sessionStorage is not defined?  maybe just don't show breadcrumbs, what browser to test this with?
-//ega what should be options here?
-
-Storage.prototype.setObj = function (key, obj)
+﻿Storage.prototype.setObj = function (key, obj)
 {
     return (this.setItem(key, JSON.stringify(obj)));
 }
@@ -16,7 +13,7 @@ $.fn.extend({
     breadcrumbs: function () {
 
         // set styling
-        $(this).css("margin-top","10px").css("margin-bottom","10px").css("font-size","10pt");//ega maybe this should be in app code so they can style however they want
+        $(this).css("margin-top","10px").css("margin-bottom","10px").css("font-size","10pt");
 
         // manage the trail
         $(this).breadcrumbs_manage ();
@@ -29,7 +26,7 @@ $.fn.extend({
     breadcrumbs_manage: function () {
 
         // set current crumb
-        var title = document.title.replace(" - ATAP System", "");//ega this is ATAP-specific
+        var title = document.title.replace(" - ATAP System", "");
         var url = $(this).normalize_url(window.location.href);
         var new_crumb = {url: window.location.href, compareUrl: url, name: title};
 
