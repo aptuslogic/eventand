@@ -48,9 +48,10 @@
                         }
                         newRow += "<td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td>";
                         newRow += "<td></td>";
-                        newRow += '<td><a href="/Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
+                        newRow += '<td>';
+                        //newRow += '<a href="/Attendees/Edit/'+att.ID+'?filter='+att.EventID+'">Edit</a> | ';
                         newRow += '<a href="/Attendees/Details/'+att.ID+'?filter='+att.EventID+'">Details</a> | ';
-                        newRow += '<a href="/Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
+                        //newRow += '<a href="/Attendees/Delete/'+att.ID+'?filter='+att.EventID+'">Delete</a> | '
                         newRow += "<a href=\"javascript:DoQueue(" + att.ID + "," + att.EventID + ",'" + (att.WinnerQueueOrder==null ? "":att.WinnerQueueOrder) + "')\">Queue</a></td></tr>";
                         $("#attendee-table-body").append(newRow);
                     }
@@ -187,9 +188,13 @@
                     @Html.DisplayFor(modelItem => item.ActivityListNames)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) | 
+                    @*
+    @Html.ActionLink("Edit", "Edit", new { id = item.ID, filter = ViewBag.FilterID }) |
+                    *@
                     @Html.ActionLink("Details", "Details", new { id = item.ID, filter = ViewBag.FilterID }) | 
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
+                    @*
+    @Html.ActionLink("Delete", "Delete", new { id = item.ID, filter = ViewBag.FilterID }) |
+                    *@
                     <a href="javascript:DoQueue(@item.ID,@ViewBag.FilterID,'@item.WinnerQueueOrder')">Queue</a>
                 </td>
             </tr>

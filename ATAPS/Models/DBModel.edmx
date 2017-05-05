@@ -250,12 +250,7 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
     [dbCheckIn].[stopNmbr] AS [stopNmbr]
     FROM [dbo].[dbCheckIn] AS [dbCheckIn]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [EventDates].[ID] AS [ID], 
-    [EventDates].[EventDate] AS [EventDate], 
-    [EventDates].[EventRecordsID] AS [EventRecordsID]
-    FROM [dbo].[EventDates] AS [EventDates]</DefiningQuery>
+          <EntitySet Name="EventDates" EntityType="Self.EventDates" store:Type="Tables" Schema="dbo">
           </EntitySet>
           <EntitySet Name="EventRecords" EntityType="Self.EventRecords" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 

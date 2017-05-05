@@ -87,8 +87,29 @@ namespace ATAPS.Controllers
                 eventDate.EventRecordsID = filter ?? default(int);
                 if (ModelState.IsValid)
                 {
-                    db.EventDates.Add(eventDate);
+                    // get the start and end dates
+                    DateTime startDate = (DateTime)eventDate.EventDate1;
+                    DateTime endDate = DateTime.Parse(Request["EndDate"]);
+
+                    // loop from start to end
+                    DateTime currDate = startDate;
+                    while (currDate <= endDate)
+                    {
+                        // create a new EventDate for this date
+                        EventDate currEventDate = new EventDate();
+                        currEventDate.EventDate1 = currDate;
+                        currEventDate.EventRecordsID = (int) filter;
+
+                        // add it to the db
+                        db.EventDates.Add(currEventDate);
+
+                        // increment the date
+                        currDate = currDate.AddDays(1);
+                    }
+
+                    // push all the dates to the db
                     db.SaveChanges();
+
                     return RedirectToAction("Index", new { filter = filter });
                 }
             }
