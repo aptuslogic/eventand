@@ -63,9 +63,12 @@
 
             <a href="/Agenda/Edit/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Edit</a> |
 
-            <a href="/Agenda/Details/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Details</a> |
+            <a href="/Agenda/Details/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Details</a>
 
-            <a href="/Agenda/Delete/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Delete</a>
+            @if (item.Agenda.AgendaName != "Registration")
+            {
+                <text>| <a href="/Agenda/Delete/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Delete</a></text>
+            }
 
             @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
             @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

@@ -21,7 +21,7 @@
 {
     <p>
         Search by name or RFID number: @Html.TextBox("SearchString", "", new {style="width:300px; height:50px; font-size:18pt"})
-        <input type="submit" value="Search" / style="width:100px; height:50px">
+        <input type="submit" value="Search" style="width:100px; height:50px">
     </p>
 }
 
@@ -68,10 +68,17 @@
                         @Html.DisplayFor(modelItem => item.Mobile)
                     </td>
                     <td>
-                        <a href="/Registration/IndivCheckin?id=@item.ID&bus=@Request["id"]"><button>Register</button></a>
+                        <a href="/Registration/IndivCheckin?id=@item.ID&bus=@Request["id"]">Register</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+<h3>Attendees Already Checked in to this Activity:</h3>
+
+@foreach (var attendee in ViewBag.CheckedInAttendees)
+{
+    <text>@attendee.FirstName</text> <text>@attendee.LastName</text><br />
 }

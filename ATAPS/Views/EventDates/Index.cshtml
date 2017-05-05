@@ -42,11 +42,18 @@
             @Html.DisplayFor(modelItem => item.EventDate.EventDate1)
         </td>
         <td>
+            @{
+                ViewBag.showDelete = true;
+            }
             @foreach (var agenda in item.Agendas)
             {
                 <p>
                     <a href="/Agenda/Details/@agenda.ID?filter=@agenda.EventDateID">
                         @Html.DisplayFor(dateMod => agenda.AgendaName)
+                        @if (agenda.AgendaName == "Registration")
+                        {
+                            ViewBag.showDelete = false;
+                        }
                     </a>
                 </p>
             }
@@ -57,16 +64,19 @@
         <td>
                 <a href="/EventDates/Edit/@item.EventDate.ID?filter=@item.Event.ID">Edit</a> | 
             
-                <a href="/EventDates/Details/@item.EventDate.ID?filter=@item.Event.ID">Details</a> | 
-            
-                <a href="/EventDates/Delete/@item.EventDate.ID?filter=@item.Event.ID">Delete</a>
-            
+                <a href="/EventDates/Details/@item.EventDate.ID?filter=@item.Event.ID">Details</a>
+
+                @if (ViewBag.showDelete)
+                {
+                    <text>| <a href = "/EventDates/Delete/@item.EventDate.ID?filter=@item.Event.ID">Delete</a></text>
+                }
+
             @*@Html.ActionLink("Edit", "Edit", new { id=item.EventDate.ID }) |
             @Html.ActionLink("Details", "Details", new { id= item.EventDate.ID }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.EventDate.ID })*@
         </td>
     </tr>
-}
+                }
 </table>
 <div>
     <p>

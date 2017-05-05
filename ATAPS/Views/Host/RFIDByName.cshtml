@@ -5,191 +5,365 @@
 
 @section Scripts {
     <script language="javascript">
-        $(document).ready(function () {
+        function AgendaSelected() {
+            // when this is called, call the PopulateActivity API
+            var id = $('#agendaSelect').val();
+
+            // use session storage to hold the newly selected value
+            sessionStorage.setItem("agendaSelectValue", id);
+
+            $.getJSON("/api/Call/GetActivitiesByAgendaID", {
+                filter: id
+            },
+                function(data) {
+                    // got back the list
+                    if (data.length > 0) {
+                        // there are activities
+                        $('#agendaOnly').hide();
+                        $('#agendaWithActivities').show();
+                        $('#activitySelect').empty();
+                        var defOptAct = $('<option />').val(0).text("--- Select Activity ---");
+                        $("#activitySelect").append(defOptAct);
+                        var activitySelectValue = sessionStorage.getItem("activitySelectValue");
+                        for (var i = 0; i < data.length; i++) {
+                            var selected = (activitySelectValue == data[i].Activity.ID) ? "selected" : "";
+                            var actOption = $('<option ' + selected + '/>').val(data[i].Activity.ID).text(data[i].Activity.ActivityName);
+                            $("#activitySelect").append(actOption);
+                        }
+                        if (activitySelectValue != undefined) {
+                            ActivitySelected();
+                        }
+                    } else {
+                        // there are no activities
+                        $('#agendaOnly').show();
+                        $('#agendaWithActivities').hide();
+
+
+                    }
+                });
+            $("#activitySelect").change(ActivitySelected);
+            $('#SearchString').keyup(function() {
+                var search = this.value;
+                var aID = $('#agendaSelect').val();
+                var cID = $('#activitySelect').val();
+                if (cID <= 0) {
+                    cID = -1;
+                }
+                dStr = "";
+                if ($("input:radio[name='groupDir']:checked").val()) {
+                    dStr = $("input:radio[name='groupDir']:checked").val();
+                }
+                $.getJSON("/api/Call/TagAttendeeInByID", {
+                    // arguments
+                    rfid: search,
+                    agendaID: aID,
+                    activityID: cID,
+                    dir: dStr
+                }, function(data) {
+                    // check the return code
+                    if (data.Attendee.ID == 0) {
+                        $("body").css("background-color", "red");
+                        setTimeout(function() {
+                            $("body").css("background-color", "white");
+                        }, 1000);
+                        // more than one found
+                        $('#fullName').html('NO USER FOUND FOR THIS RFID');
+                    } else {
+                        $("body").css("background-color", "green");
+                        setTimeout(function() {
+                            $("body").css("background-color", "white");
+                        }, 1000);
+                        // only one found
+                        $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
+                        $('#attendeeCurrentCount').html(data.CheckedInCount);
+                    }
+                    if (data.DuplicateCheckin) {
+                        $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                    }
+
+                });
+            });
+
+            $("form").submit(function(event) { // replaced the click handler below with this submit handler because the card readers weren't simulating a button click
+                //$("#submit-search").click(function () {
+                event.preventDefault();
+                var search = $('#SearchString')[0].value;
+                var aID = $('#agendaSelect').val();
+                var cID = $('#activitySelect').val();
+                if (cID <= 0) {
+                    cID = -1;
+                }
+                dStr = "";
+                if ($("input:radio[name='groupDir']:checked").val()) {
+                    dStr = $("input:radio[name='groupDir']:checked").val();
+                }
+                $.getJSON("/api/Call/TagAttendeeInByID", {
+                    // arguments
+                    rfid: search,
+                    agendaID: aID,
+                    activityID: cID,
+                    dir: dStr
+                }, function(data) {
+                    // check the return code
+
+                    if (data.Attendee.ID == 0) {
+                        // more than one found
+                        $('#fullName').html('NO USER FOUND FOR THIS RFID');
+                    } else {
+                        // only one found
+                        $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
+                        $('#attendeeCurrentCount').html(data.CheckedInCount);
+                    }
+                    if (data.DuplicateCheckin) {
+                        $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                    }
+                });
+            });
+        }
+
+        function ActivitySelected() {
+            // when this is called, call the PopulateActivity API
+            var id = $('#activitySelect').val();
+
+            // use session storage to hold the newly selected value
+            sessionStorage.setItem("activitySelectValue", id);
+
+            $.getJSON("/api/Call/GetActivityByID", {
+                filter: id
+            },
+                function(data) {
+                    // got back the list
+                    $('#attendeeCurrentCount').html('');
+                    if (data.ActivityType != null) {
+                        $('#attendeeCurrentCount').html(data.CheckedInCount);
+                        // there is an activity by that ID
+                        // Enable / Disable CheckIn radio
+                        if (data.ActivityType.CheckIn == true) {
+                            $('#dirIn').attr('disabled', false);
+                        } else {
+                            $('#dirIn').attr('disabled', true);
+                        }
+
+                        // Enable / Disable CheckOut radio
+                        if (data.ActivityType.CheckOut == true) {
+                            $('#dirOut').attr('disabled', false);
+                        } else {
+                            $('#dirOut').attr('disabled', true);
+                        }
+
+                        // Enable / Disable AttendeeLimitInput radio
+                        if (data.ActivityType.AttendeeLimit == true) {
+                            $('#attendeeLimit').show();
+                            $('#attendeeCurrentCount').attr('disabled', false);
+                            $('#attendeeCurrentCount').html('');
+                            // display the current CheckedIn count, color the Span if beyond limit (and limit exists)
+                            if (data.CheckedInCount != null) {
+                                $('#attendeeCurrentCount').html(data.CheckedInCount);
+                            }
+                        } else {
+                            $('#attendeeLimit').hide();
+                            //$('#attendeeCurrentCount').attr('disabled', true);
+                            //$('#attendeeCurrentCount').html('');
+                        }
+                    }
+                });
+        }
+        $(document).ready(function() {
             $('#agendaOnly').hide();
             $('#agendaWithActivities').hide();
             $('#attendee-table-area').hide();
             $('#agendaSelect').empty();
             // call populate Agenda DDL
-            $.getJSON("/api/Call/GetAgendasByEventDateID",
-                {
-                    filter: @ViewBag.EventDateID
-                },
-                    function (data) {
-                        // map the Agenda list to the DDL
-                        var defOpt = $('<option />').val(0).text("--- Select Agenda ---");
-                        $("#agendaSelect").append(defOpt);
-                        for(var i=0;i<data.length;i++){
-                            var option = $('<option />').val(data[i].ID).text(data[i].AgendaName);
-                            $("#agendaSelect").append(option);
-                        }
+            $.getJSON("/api/Call/GetAgendasByEventDateID", {
+                filter: @ViewBag.EventDateID
+            },
+                function(data) {
+                    // map the Agenda list to the DDL
+                    var agendaSelectValue = sessionStorage.getItem("agendaSelectValue");
+                    var defOpt = $('<option />').val(0).text("--- Select Agenda ---");
+                    $("#agendaSelect").append(defOpt);
+                    for (var i = 0; i < data.length; i++) {
+                        var selected = (agendaSelectValue == data[i].ID) ? "selected" : "";
+                        var option = $('<option ' + selected + '/>').val(data[i].ID).text(data[i].AgendaName);
+                        $("#agendaSelect").append(option);
+                    }
+                    if (agendaSelectValue != undefined) {
+                        AgendaSelected();
+                    }
 
-                        // map the Agenda List onchanged function to re-fresh the Activities
-                        $( "#agendaSelect" ).change(function() {
+                    // map the Agenda List onchanged function to re-fresh the Activities
+                    $("#agendaSelect").change(AgendaSelected);
+/*
+                    $("#agendaSelect").change(function() {
+                        // when this is called, call the PopulateActivity API
+                        var id = $('#agendaSelect').val();
+                        $('#attendee-table-area').show();
+                        $.getJSON("/api/Call/GetActivitiesByAgendaID", {
+                            filter: id
+                        },
+                            function(data) {
+                                // got back the list
+                                if (data.length > 0) {
+                                    // there are activities
+                                    $('#agendaOnly').hide();
+                                    $('#agendaWithActivities').show();
+                                    $('#activitySelect').empty();
+                                    var defOptAct = $('<option />').val(0).text("--- Select Activity ---");
+                                    $("#activitySelect").append(defOptAct);
+                                    for (var i = 0; i < data.length; i++) {
+                                        var actOption = $('<option />').val(data[i].Activity.ID).text(data[i].Activity.ActivityName);
+                                        $("#activitySelect").append(actOption);
+                                    }
+
+                                } else {
+                                    // there are no activities
+                                    $('#agendaOnly').show();
+                                    $('#agendaWithActivities').hide();
+
+
+                                }
+                            });
+                        $("#activitySelect").change(function() {
                             // when this is called, call the PopulateActivity API
-                            var id = $('#agendaSelect').val();
-                            $('#attendee-table-area').show();
-                            $.getJSON("/api/Call/GetActivitiesByAgendaID",
-                                {
-                                    filter: id
-                                },
-                                function (data){
+                            var id = $('#activitySelect').val();
+                            $.getJSON("/api/Call/GetActivityByID", {
+                                filter: id
+                            },
+                                function(data) {
                                     // got back the list
-                                    if(data.length > 0){
-                                        // there are activities
-                                        $('#agendaOnly').hide();
-                                        $('#agendaWithActivities').show();
-                                        $('#activitySelect').empty();
-                                        var defOptAct = $('<option />').val(0).text("--- Select Activity ---");
-                                        $("#activitySelect").append(defOptAct);
-                                        for(var i=0;i<data.length;i++){
-                                            var actOption = $('<option />').val(data[i].Activity.ID).text(data[i].Activity.ActivityName);
-                                            $("#activitySelect").append(actOption);
+                                    $('#attendeeCurrentCount').html('');
+                                    if (data.ActivityType != null) {
+                                        $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                        // there is an activity by that ID
+                                        // Enable / Disable CheckIn radio
+                                        if (data.ActivityType.CheckIn == true) {
+                                            $('#dirIn').attr('disabled', false);
+                                        } else {
+                                            $('#dirIn').attr('disabled', true);
                                         }
 
-                                    } else {
-                                        // there are no activities
-                                        $('#agendaOnly').show();
-                                        $('#agendaWithActivities').hide();
+                                        // Enable / Disable CheckOut radio
+                                        if (data.ActivityType.CheckOut == true) {
+                                            $('#dirOut').attr('disabled', false);
+                                        } else {
+                                            $('#dirOut').attr('disabled', true);
+                                        }
 
-
+                                        // Enable / Disable AttendeeLimitInput radio
+                                        if (data.ActivityType.AttendeeLimit == true) {
+                                            $('#attendeeLimit').show();
+                                            $('#attendeeCurrentCount').attr('disabled', false);
+                                            $('#attendeeCurrentCount').html('');
+                                            // display the current CheckedIn count, color the Span if beyond limit (and limit exists)
+                                            if (data.CheckedInCount != null) {
+                                                $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                            }
+                                        } else {
+                                            $('#attendeeLimit').hide();
+                                            //$('#attendeeCurrentCount').attr('disabled', true);
+                                            //$('#attendeeCurrentCount').html('');
+                                        }
                                     }
                                 });
-                            $( "#activitySelect" ).change(function() {
-                                // when this is called, call the PopulateActivity API
-                                var id = $('#activitySelect').val();
-                                $.getJSON("/api/Call/GetActivityByID",
-                                    {
-                                        filter: id
-                                    },
-                                    function (data){
-                                        // got back the list
-                                        $('#attendeeCurrentCount').html('');
-                                        if(data.ActivityType != null){
-                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
-                                            // there is an activity by that ID
-                                            // Enable / Disable CheckIn radio
-                                            if(data.ActivityType.CheckIn == true){
-                                                $('#dirIn').attr('disabled', false);}
-                                            else{$('#dirIn').attr('disabled', true);}
-
-                                            // Enable / Disable CheckOut radio
-                                            if(data.ActivityType.CheckOut == true){
-                                                $('#dirOut').attr('disabled', false);}
-                                            else{$('#dirOut').attr('disabled', true);}
-
-                                            // Enable / Disable AttendeeLimitInput radio
-                                            if(data.ActivityType.AttendeeLimit == true){
-                                                $('#attendeeLimit').show();
-                                                $('#attendeeCurrentCount').attr('disabled', false);
-                                                $('#attendeeCurrentCount').html('');
-                                                // display the current CheckedIn count, color the Span if beyond limit (and limit exists)
-                                                if(data.CheckedInCount != null){
-                                                    $('#attendeeCurrentCount').html(data.CheckedInCount);
-                                                }
-                                            }
-                                            else{
-                                                $('#attendeeLimit').hide();
-                                                //$('#attendeeCurrentCount').attr('disabled', true);
-                                                //$('#attendeeCurrentCount').html('');
-                                            }
-                                        }
-                                    });
-                            });
-                            $('#SearchString').keyup(function () {
-                                var search = this.value;
-                                $.getJSON("/api/Call/GetAttendeesFiltered",
-                                    {
-                                        id: @ViewBag.EventID,
-                                        sortOrder: "@ViewBag.LastSort",
-                                        searchString: search,
-                                        pageNum: 1
-                                    },
-                                    function (data) {
-                                        // clear rows and pagenav
-                                        $("#attendee-table-body").empty();
-                                        $("#page-list-nav").empty();
-                                        // populate new rows
-                                        for (var i = 0; i < data.Attendees.length; i++) {
-                                            var att = data.Attendees[i];
-                                            if(att.ActivityListNames == null){att.ActivityListNames = "";}
-                                            var newRow = "";
-                                            if(att.RSVPStatus != 0){
-                                                newRow += '<tr bgcolor="#DDFFDD">';
-                                            } else {
-                                                newRow += '<tr bgcolor="#FFFFFF">';
-                                            }
-                                            newRow += '<td><input type="radio" name="attSelect" value="'+att.RfID+'"/></td>';
-                                            newRow += "<td>"+att.LastName+"</td><td>"+att.FirstName+"</td><td>"+att.ParticipantID+"</td><td>"+att.PrimaryID+"</td><td>"+att.ParticipantType+"</td><td>"+att.RSVPStatus.trim()+"</td><td>"+att.RfID+"</td><td>"+att.Mobile+"</td><td>"+att.ActivityListNames+"</td>";
-                                            newRow += '<td>';
-                                            newRow += '<a href="/Host/AttendeesDetails/'+att.ID+'?filter='+att.EventID+'">AttendeesDetails</a>';
-                                            newRow += '</td></tr>';
-                                            $("#attendee-table-body").append(newRow);
-                                        }
-                                        // now populate page nav
-                                        $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
-
-                                        for (var i=0;i<data.Pages.length;i++){
-                                            var page = data.Pages[i];
-                                            if(page == data.CurPage){$("#page-list-nav").append('<span style="margin: 1em"><stong>'+page+'</stong></span>');
-                                            } else {
-                                                $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum='+page+'&searchString=@ViewBag.CurSearch" class="btn btn-default">'+page+'</a>');
-                                            }
-                                        }
-                                        $("#page-list-nav").append('..<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
-
-
-                                    });
-                            });
-                            $("#submit-search").click(function () {
-                                var search = this.value;
-                                var aID = $('#agendaSelect').val();;
-                                var cID = $('#activitySelect').val();
-                                if(cID <= 0){cID = -1;}
-                                dStr = "";
-                                attID = "";
-                                if($("input:radio[name='groupDir']:checked").val()){
-                                    dStr = $("input:radio[name='groupDir']:checked").val();
-                                }
-                                if($("input:radio[name='attSelect']:checked").val()){
-                                    attID = $("input:radio[name='attSelect']:checked").val();
-                                }
-                                $.getJSON("/api/Call/TagAttendeeInByID",
-                                    {
-                                        // arguments
-                                        rfid: attID,
-                                        agendaID: aID,
-                                        activityID: cID,
-                                        dir: dStr
-                                    }, function (data){
-                                        // check the return code
-
-                                        if (data.Attendee.ID == 0){
-                                            $("body").css ("background-color", "red");
-                                            setTimeout (function () {
-                                                $("body").css ("background-color", "white");
-                                            }, 1000);
-                                            // more than one found
-                                            $('#fullName').html('NO USER FOUND FOR THIS RFID');
-                                        } else{
-                                            $("body").css ("background-color", "green");
-                                            setTimeout (function () {
-                                                $("body").css ("background-color", "white");
-                                            }, 1000);
-                                            // only one found
-                                            $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
-                                            $('#attendeeCurrentCount').html(data.CheckedInCount);
-                                        }
-                                        if(data.DuplicateCheckin){
-                                            $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
-                                        }
-                                    });
-                            });
-
                         });
+                        $('#SearchString').keyup(function() {
+                            var search = this.value;
+                            $.getJSON("/api/Call/GetAttendeesFiltered", {
+                                id: @ViewBag.EventID,
+                                sortOrder: "@ViewBag.LastSort",
+                                searchString: search,
+                                pageNum: 1
+                            },
+                                function(data) {
+                                    // clear rows and pagenav
+                                    $("#attendee-table-body").empty();
+                                    $("#page-list-nav").empty();
+                                    // populate new rows
+                                    for (var i = 0; i < data.Attendees.length; i++) {
+                                        var att = data.Attendees[i];
+                                        if (att.ActivityListNames == null) {
+                                            att.ActivityListNames = "";
+                                        }
+                                        var newRow = "";
+                                        if (att.RSVPStatus != 0) {
+                                            newRow += '<tr bgcolor="#DDFFDD">';
+                                        } else {
+                                            newRow += '<tr bgcolor="#FFFFFF">';
+                                        }
+                                        newRow += '<td><input type="radio" name="attSelect" value="' + att.RfID + '"/></td>';
+                                        newRow += "<td>" + att.LastName + "</td><td>" + att.FirstName + "</td><td>" + att.ParticipantID + "</td><td>" + att.PrimaryID + "</td><td>" + att.ParticipantType + "</td><td>" + att.RSVPStatus.trim() + "</td><td>" + att.RfID + "</td><td>" + att.Mobile + "</td><td>" + att.ActivityListNames + "</td>";
+                                        newRow += '<td>';
+                                        newRow += '<a href="/Host/AttendeesDetails/' + att.ID + '?filter=' + att.EventID + '">AttendeesDetails</a>';
+                                        newRow += '</td></tr>';
+                                        $("#attendee-table-body").append(newRow);
+                                    }
+                                    // now populate page nav
+                                    $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.LowerLim&searchString=@ViewBag.CurSearch" class="btn btn-default">First</a>..');
+
+                                    for (var i = 0; i < data.Pages.length; i++) {
+                                        var page = data.Pages[i];
+                                        if (page == data.CurPage) {
+                                            $("#page-list-nav").append('<span style="margin: 1em"><stong>' + page + '</stong></span>');
+                                        } else {
+                                            $("#page-list-nav").append('<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=' + page + '&searchString=@ViewBag.CurSearch" class="btn btn-default">' + page + '</a>');
+                                        }
+                                    }
+                                    $("#page-list-nav").append('..<a href="/Attendees?filter=@ViewBag.FilterID&sortOrder=@ViewBag.LastSort&pageNum=@ViewBag.UpperLim&searchString=@ViewBag.CurSearch" class="btn btn-default">Last</a>');
+
+
+                                });
+                        });
+                        $("#submit-search").click(function() {
+                            var search = this.value;
+                            var aID = $('#agendaSelect').val();;
+                            var cID = $('#activitySelect').val();
+                            if (cID <= 0) {
+                                cID = -1;
+                            }
+                            dStr = "";
+                            attID = "";
+                            if ($("input:radio[name='groupDir']:checked").val()) {
+                                dStr = $("input:radio[name='groupDir']:checked").val();
+                            }
+                            if ($("input:radio[name='attSelect']:checked").val()) {
+                                attID = $("input:radio[name='attSelect']:checked").val();
+                            }
+                            $.getJSON("/api/Call/TagAttendeeInByID", {
+                                // arguments
+                                rfid: attID,
+                                agendaID: aID,
+                                activityID: cID,
+                                dir: dStr
+                            }, function(data) {
+                                // check the return code
+
+                                if (data.Attendee.ID == 0) {
+                                    $("body").css("background-color", "red");
+                                    setTimeout(function() {
+                                        $("body").css("background-color", "white");
+                                    }, 1000);
+                                    // more than one found
+                                    $('#fullName').html('NO USER FOUND FOR THIS RFID');
+                                } else {
+                                    $("body").css("background-color", "green");
+                                    setTimeout(function() {
+                                        $("body").css("background-color", "white");
+                                    }, 1000);
+                                    // only one found
+                                    $('#fullName').html(data.Attendee.LastName + ", " + data.Attendee.FirstName);
+                                    $('#attendeeCurrentCount').html(data.CheckedInCount);
+                                }
+                                if (data.DuplicateCheckin) {
+                                    $('#alert-text').html('THIS USER IS ALREADY CHECKED IN / OUT');
+                                }
+                            });
+                        });
+
                     });
+*/
+                });
         });
-    </script>}
+        </script>}
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>
 <script src="/Scripts/breadcrumbs.js"></script>
