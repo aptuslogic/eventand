@@ -20,6 +20,7 @@ namespace ATAPS.Controllers
         public ActionResult Index(int? filter)
         {
             ViewBag.FilterID = filter;
+            ViewBag.RegistrationAgendaID = ATAPS_Pile.GetRegistrationAgendaID();
             List<EventDateDisplayObject> datesDO = new List<EventDateDisplayObject>();
             if (filter == null || filter == 0)
             {

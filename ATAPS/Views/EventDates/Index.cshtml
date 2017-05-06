@@ -50,7 +50,7 @@
                 <p>
                     <a href="/Agenda/Details/@agenda.ID?filter=@agenda.EventDateID">
                         @Html.DisplayFor(dateMod => agenda.AgendaName)
-                        @if (agenda.AgendaName == "Registration")
+                        @if (agenda.ID == ViewBag.RegistrationAgendaID)
                         {
                             ViewBag.showDelete = false;
                         }

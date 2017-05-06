@@ -21,6 +21,7 @@ namespace ATAPS.Controllers
         {
             if(filter == null) { return HttpNotFound(); }
             ViewBag.FilterID = filter;
+            ViewBag.RegistrationAgendaID = ATAPS_Pile.GetRegistrationAgendaID();
 
             List<Agenda> aList = db.Agendas.Where(o => o.EventDateID == filter).ToList();
             List<AgendaDisplayObject> retList = new List<AgendaDisplayObject>();

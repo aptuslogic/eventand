@@ -65,7 +65,7 @@
 
             <a href="/Agenda/Details/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Details</a>
 
-            @if (item.Agenda.AgendaName != "Registration")
+            @if (item.Agenda.ID != ViewBag.RegistrationAgendaID)
             {
                 <text>| <a href="/Agenda/Delete/@item.Agenda.ID?filter=@item.Agenda.EventDateID">Delete</a></text>
             }
