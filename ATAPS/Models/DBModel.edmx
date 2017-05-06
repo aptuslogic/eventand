@@ -199,14 +199,7 @@ warning 6002: The table/view 'ATAPSDB.dbo.EventRecords' does not have a primary 
     [ActivityDetail].[ActivityTime] AS [ActivityTime]
     FROM [dbo].[ActivityDetail] AS [ActivityDetail]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Agendas].[ID] AS [ID], 
-    [Agendas].[EventDateID] AS [EventDateID], 
-    [Agendas].[AgendaName] AS [AgendaName], 
-    [Agendas].[AgendaOrder] AS [AgendaOrder], 
-    [Agendas].[AgendaType] AS [AgendaType]
-    FROM [dbo].[Agendas] AS [Agendas]</DefiningQuery>
+          <EntitySet Name="Agendas" EntityType="Self.Agendas" store:Type="Tables" Schema="dbo">
           </EntitySet>
           <EntitySet Name="Attendees" EntityType="Self.Attendees" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 

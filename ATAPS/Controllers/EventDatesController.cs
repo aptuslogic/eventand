@@ -110,6 +110,12 @@ namespace ATAPS.Controllers
                     // push all the dates to the db
                     db.SaveChanges();
 
+                    // create registration agenda if it doesn't exist
+                    if (ATAPS_Pile.GetRegistrationAgendaID(filter) == null)
+                    {
+                        ATAPS_Pile.CreateRegistrationAgenda(filter);
+                    }
+
                     return RedirectToAction("Index", new { filter = filter });
                 }
             }

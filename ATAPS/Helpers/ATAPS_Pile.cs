@@ -84,12 +84,27 @@ namespace ATAPS.Helpers
             return retVal;
         }
 
-        internal static bool CreateRegistrationAgenda()
+        internal static int? GetRegistrationAgendaID(int? accessEventID=null)
+        {
+            RFIDDBEntities db = new RFIDDBEntities();
+            accessEventID = accessEventID ?? int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            Parm checkinParm = db.Parms.Where(o => o.ParmName == "RegistrationAgendaID" + accessEventID).FirstOrDefault();
+            if (checkinParm == null)
+            {
+                return (null);
+            }
+            else
+            {
+                return (Int32.Parse(checkinParm.ParmValue));
+            }
+        }
+
+        internal static bool CreateRegistrationAgenda(int? accessEventID=null)
         {
             // no Registration Agenda has yet been created for this Event
 
             RFIDDBEntities db = new RFIDDBEntities();
-            int accessEventID = int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
+            accessEventID = accessEventID ?? int.Parse(ConfigurationManager.AppSettings["ActiveEvent"]);
             Parm checkinParm = new Parm();
 
             List<EventDate> eDates = db.EventDates.Where(o => o.EventRecordsID == accessEventID).OrderBy(o => o.EventDate1).ToList();
